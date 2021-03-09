@@ -1,22 +1,6 @@
 line 2:9 token recognition error at: '"'
-line 2:10 token recognition error at: 'C'
-line 2:11 token recognition error at: 'e'
-line 2:12 token recognition error at: 'c'
-line 2:13 token recognition error at: 'i '
-line 2:15 token recognition error at: 'e'
-line 2:16 token recognition error at: 's'
-line 2:17 token recognition error at: 't'
-line 2:19 token recognition error at: 'u'
-line 2:20 token recognition error at: 'n'
-line 2:21 token recognition error at: 'e'
-line 2:23 token recognition error at: 'e'
-line 2:24 token recognition error at: 'rr'
-line 2:26 token recognition error at: 'e'
-line 2:27 token recognition error at: 'u'
-line 2:28 token recognition error at: 'r"'
-line 2:30 missing CONST at ';'
-terminate called after throwing an instance of 'std::invalid_argument'
-  what():  stoi
-Aborted (core dumped)
+line 2:29 token recognition error at: '"'
+line 2:10 mismatched input 'Ceci' expecting CONST
+Segmentation fault (core dumped)
 
-return code: 134
+return code: 139
