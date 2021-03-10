@@ -1,9 +1,7 @@
-line 2:6 token recognition error at: 'a'
 line 2:8 token recognition error at: '='
-line 3:2 token recognition error at: 'if'
-line 3:5 token recognition error at: 'a'
 line 3:6 token recognition error at: '='
 line 3:7 token recognition error at: '='
-line 2:2 mismatched input 'int' expecting 'return'
+line 2:10 extraneous input '2' expecting ';'
+line 3:2 mismatched input 'if' expecting '}'
 
 return code: 0
