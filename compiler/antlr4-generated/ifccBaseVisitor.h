@@ -43,7 +43,15 @@ public:
     return visitChildren(ctx);
   }
 
+  virtual antlrcpp::Any visitVardefaff(ifccParser::VardefaffContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
   virtual antlrcpp::Any visitVardef(ifccParser::VardefContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitVirgulename(ifccParser::VirgulenameContext *ctx) override {
     return visitChildren(ctx);
   }
 

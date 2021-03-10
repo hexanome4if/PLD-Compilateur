@@ -5,14 +5,14 @@
 
 class SymbolTable {
 public:
-    SymbolTable();
-    void openContext();
-    void closeContext();
-    Symbol* addSymbol(string name, string type, string value);
-    Symbol* getSymbol(string name);
-    bool symbolExists(string name);
+SymbolTable();
+void openContext();
+void closeContext();
+Symbol* addSymbol(string name, string type, string value);
+Symbol* getSymbol(string name);
+bool symbolExists(string name);
 
 private:
-    Context* currentContext;
-    int memoryAddress = 4;
+Context* currentContext;
+int memoryAddress = 0;
 };

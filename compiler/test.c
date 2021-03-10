@@ -2,9 +2,10 @@
 
 int main()
 {
-	int a = 42;
-	int b = 36;
-	b = a;
-	a = 2;
-	return a;
+				int a = 42;
+				int b = 36;
+				int c,d,e;
+				b = a;
+				a = 2;
+				return e;
 }

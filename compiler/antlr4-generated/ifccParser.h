@@ -13,13 +13,14 @@ class  ifccParser : public antlr4::Parser {
 public:
   enum {
     T__0 = 1, T__1 = 2, T__2 = 3, T__3 = 4, T__4 = 5, T__5 = 6, T__6 = 7, 
-    CONST = 8, TYPE = 9, NAME = 10, COMMENT = 11, DIRECTIVE = 12, WS = 13
+    T__7 = 8, TYPE = 9, CONST = 10, NAME = 11, COMMENT = 12, DIRECTIVE = 13, 
+    WS = 14
   };
 
   enum {
     RuleAxiom = 0, RuleProg = 1, RuleFunc = 2, RuleBlock = 3, RuleBlock_content = 4, 
-    RuleFunc_return_const = 5, RuleFunc_return_var = 6, RuleVardef = 7, 
-    RuleVaraffvar = 8, RuleVaraffconst = 9
+    RuleFunc_return_const = 5, RuleFunc_return_var = 6, RuleVardefaff = 7, 
+    RuleVardef = 8, RuleVirgulename = 9, RuleVaraffvar = 10, RuleVaraffconst = 11
   };
 
   ifccParser(antlr4::TokenStream *input);
@@ -39,7 +40,9 @@ public:
   class Block_contentContext;
   class Func_return_constContext;
   class Func_return_varContext;
+  class VardefaffContext;
   class VardefContext;
+  class VirgulenameContext;
   class VaraffvarContext;
   class VaraffconstContext; 
 
@@ -87,7 +90,8 @@ public:
   public:
     BlockContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
-    Block_contentContext *block_content();
+    std::vector<Block_contentContext *> block_content();
+    Block_contentContext* block_content(size_t i);
 
     virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
    
@@ -100,9 +104,9 @@ public:
     Block_contentContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     Func_return_constContext *func_return_const();
-    Block_contentContext *block_content();
     Func_return_varContext *func_return_var();
     VardefContext *vardef();
+    VardefaffContext *vardefaff();
     VaraffvarContext *varaffvar();
     VaraffconstContext *varaffconst();
 
@@ -136,9 +140,9 @@ public:
 
   Func_return_varContext* func_return_var();
 
-  class  VardefContext : public antlr4::ParserRuleContext {
+  class  VardefaffContext : public antlr4::ParserRuleContext {
   public:
-    VardefContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    VardefaffContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *TYPE();
     antlr4::tree::TerminalNode *NAME();
@@ -148,7 +152,34 @@ public:
    
   };
 
+  VardefaffContext* vardefaff();
+
+  class  VardefContext : public antlr4::ParserRuleContext {
+  public:
+    VardefContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    antlr4::tree::TerminalNode *TYPE();
+    antlr4::tree::TerminalNode *NAME();
+    std::vector<VirgulenameContext *> virgulename();
+    VirgulenameContext* virgulename(size_t i);
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
   VardefContext* vardef();
+
+  class  VirgulenameContext : public antlr4::ParserRuleContext {
+  public:
+    VirgulenameContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    antlr4::tree::TerminalNode *NAME();
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  VirgulenameContext* virgulename();
 
   class  VaraffvarContext : public antlr4::ParserRuleContext {
   public:

@@ -33,7 +33,11 @@ public:
 
     virtual antlrcpp::Any visitFunc_return_var(ifccParser::Func_return_varContext *context) = 0;
 
+    virtual antlrcpp::Any visitVardefaff(ifccParser::VardefaffContext *context) = 0;
+
     virtual antlrcpp::Any visitVardef(ifccParser::VardefContext *context) = 0;
+
+    virtual antlrcpp::Any visitVirgulename(ifccParser::VirgulenameContext *context) = 0;
 
     virtual antlrcpp::Any visitVaraffvar(ifccParser::VaraffvarContext *context) = 0;
 
