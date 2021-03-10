@@ -55,11 +55,35 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitVaraffvar(ifccParser::VaraffvarContext *ctx) override {
+  virtual antlrcpp::Any visitVaraff(ifccParser::VaraffContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitVaraffconst(ifccParser::VaraffconstContext *ctx) override {
+  virtual antlrcpp::Any visitPar(ifccParser::ParContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitDiv(ifccParser::DivContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitMult(ifccParser::MultContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitConst(ifccParser::ConstContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitName(ifccParser::NameContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitSubstr(ifccParser::SubstrContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitPlus(ifccParser::PlusContext *ctx) override {
     return visitChildren(ctx);
   }
 

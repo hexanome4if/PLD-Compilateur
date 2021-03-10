@@ -140,43 +140,9 @@ antlrcpp::Any Visitor::visitVirgulename(ifccParser::VirgulenameContext *context)
 				return context->NAME()->getText();
 }
 
-
-antlrcpp::Any Visitor::visitVaraffvar(ifccParser::VaraffvarContext *context)  {
-				string varName = context->NAME(0)->getText();
-				string otherVarName = context->NAME(1)->getText();
-
-				if (!symbolTable.symbolExists(varName)) {
-								cerr << "Undefined variable named '" << varName << "'" << endl;
-								return 1;
-				}
-
-				if (!symbolTable.symbolExists(otherVarName)) {
-								cerr << "Undefined variable named '" << otherVarName << "'" << endl;
-								return 1;
-				}
-
-				// Get variables symbols
-				Symbol* varSymbol = symbolTable.getSymbol(varName);
-				Symbol* otherVarSymbol = symbolTable.getSymbol(otherVarName);
-
-				// Check variables types
-				if (varSymbol->getType() != otherVarSymbol->getType()) {
-								cerr << "Incompatible type" << endl;
-								return 1;
-				}
-
-				varSymbol->setValue(otherVarSymbol->getValue());
-
-				// Write ASSEMBLY code
-				cout << "   movl -" << otherVarSymbol->getMemoryAddress() << "(%rbp), %eax\n";
-				cout << "   movl %eax, -" << varSymbol->getMemoryAddress() << "(%rbp)\n";
-
-				return 0;
-}
-
-antlrcpp::Any Visitor::visitVaraffconst(ifccParser::VaraffconstContext *context)  {
+antlrcpp::Any Visitor::visitVaraff(ifccParser::VaraffContext *context) {
 				string varName = context->NAME()->getText();
-				string varValue = context->CONST()->getText();
+				Symbol* expr = visit(context->expr());
 
 				if (!symbolTable.symbolExists(varName)) {
 								cerr << "Undefined variable named '" << varName << "'" << endl;
@@ -185,10 +151,55 @@ antlrcpp::Any Visitor::visitVaraffconst(ifccParser::VaraffconstContext *context)
 
 				// Get variable symbol
 				Symbol* varSymbol = symbolTable.getSymbol(varName);
-				varSymbol->setValue(varValue);
 
 				// Write ASSEMBLY code
-				cout << "   movl $" << varSymbol->getValue() << ", -" << varSymbol->getMemoryAddress() << "(%rbp)\n";
-
+				cout << "   movl -" << expr->getMemoryAddress() << "(%rbp), %eax\n";
+				cout << "   movl %eax, -" << varSymbol->getMemoryAddress() << "(%rbp)\n";
 				return 0;
+}
+
+antlrcpp::Any Visitor::visitPar(ifccParser::ParContext *context) {
+				return nullptr;
+}
+
+antlrcpp::Any Visitor::visitDiv(ifccParser::DivContext *context) {
+				return nullptr;
+}
+
+antlrcpp::Any Visitor::visitMult(ifccParser::MultContext *context) {
+				return nullptr;
+}
+
+antlrcpp::Any Visitor::visitConst(ifccParser::ConstContext *context) {
+				string value = context->CONST()->getText();
+				Symbol* temp = symbolTable.addTempSymbol("int",value);
+				cout << "   movl $" << value << ", -" << temp->getMemoryAddress() << "(%rbp)\n";
+				return temp;
+}
+
+antlrcpp::Any Visitor::visitName(ifccParser::NameContext *context) {
+				string varName = context->NAME()->getText();
+				if (!symbolTable.symbolExists(varName)) {
+								cerr << "Undefined variable named '" << varName << "'" << endl;
+								return 1;
+				}
+
+				// Get variable symbol
+				Symbol* varSymbol = symbolTable.getSymbol(varName);
+				return varSymbol;
+}
+
+antlrcpp::Any Visitor::visitSubstr(ifccParser::SubstrContext *context) {
+				return nullptr;
+}
+
+antlrcpp::Any Visitor::visitPlus(ifccParser::PlusContext *context) {
+				Symbol* expr0 = visit(context->expr(0));
+				Symbol* expr1 = visit(context->expr(1));
+				Symbol* temp = symbolTable.addTempSymbol("int","0");
+				cout << "   movl	-"<< expr0->getMemoryAddress() <<"(%rbp), %edx\n";
+				cout << "   movl	-"<< expr1->getMemoryAddress() <<"(%rbp), %eax\n";
+				cout << "   addl	%edx, %eax\n";
+				cout << "   movl	%eax, -"<< temp->getMemoryAddress() <<"(%rbp)"<< endl;
+				return temp;
 }

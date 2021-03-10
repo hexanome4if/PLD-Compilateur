@@ -12,8 +12,7 @@ block_content: func_return_const
              | func_return_var
              | vardef
 						 | vardefaff
-             | varaffvar
-             | varaffconst
+             | varaff
           	 ;
 
 
@@ -27,9 +26,16 @@ vardefaff: TYPE NAME '=' CONST ';' ;
 vardef: TYPE NAME virgulename* ';';
 virgulename: ',' NAME ;
 
-varaffvar: NAME '=' NAME ';' ;
+varaff: NAME '=' expr ';' ;
 
-varaffconst: NAME '=' CONST ';' ;
+expr: expr '+' expr #plus
+		| expr '*' expr #mult
+		| expr '-' expr #substr
+		| expr '/' expr #div
+		| '(' expr ')' #par
+		| NAME #name
+		| CONST #const
+		;
 
 TYPE: 'int' | 'char' ;
 

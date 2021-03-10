@@ -7,5 +7,6 @@ int main()
 				int c,d,e;
 				b = a;
 				a = 2;
-				return e;
+				c = a + b;
+				return c;
 }

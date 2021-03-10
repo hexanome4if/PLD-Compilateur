@@ -30,8 +30,14 @@ virtual antlrcpp::Any visitFunc_return_var(ifccParser::Func_return_varContext *c
 virtual antlrcpp::Any visitVardefaff(ifccParser::VardefaffContext *context) override;
 virtual antlrcpp::Any visitVardef(ifccParser::VardefContext *context) override;
 virtual antlrcpp::Any visitVirgulename(ifccParser::VirgulenameContext *context) override;
-virtual antlrcpp::Any visitVaraffvar(ifccParser::VaraffvarContext *context) override;
-virtual antlrcpp::Any visitVaraffconst(ifccParser::VaraffconstContext *context) override;
+virtual antlrcpp::Any visitVaraff(ifccParser::VaraffContext *context) override;
+virtual antlrcpp::Any visitPar(ifccParser::ParContext *context) override;
+virtual antlrcpp::Any visitDiv(ifccParser::DivContext *context) override;
+virtual antlrcpp::Any visitMult(ifccParser::MultContext *context) override;
+virtual antlrcpp::Any visitConst(ifccParser::ConstContext *context) override;
+virtual antlrcpp::Any visitName(ifccParser::NameContext *context) override;
+virtual antlrcpp::Any visitSubstr(ifccParser::SubstrContext *context) override;
+virtual antlrcpp::Any visitPlus(ifccParser::PlusContext *context) override;
 
 private:
 
