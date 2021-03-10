@@ -6,7 +6,7 @@
 ./run.sh
 ```
 
-## Pour compiler dans compile_docker
+## Pour compiler dans Docker
 
 ```
 cd compiler/
