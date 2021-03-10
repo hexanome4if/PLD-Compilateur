@@ -33,28 +33,28 @@ antlrcpp::Any Visitor::visitFunc(ifccParser::FuncContext *context)
 				cout << "   pushq %rbp\n";
 				cout << "   movq %rsp, %rbp\n";
 
-				visitChildren(context);
+				int res = (int) visitChildren(context);
 
 				cout << "   popq %rbp\n";
 				cout << "   ret\n";
 
-				return 0;
+				return res;
 }
 
 antlrcpp::Any Visitor::visitBlock(ifccParser::BlockContext *context)
 {
 				symbolTable.openContext();
-				visitChildren(context);
+				int res = (int) visitChildren(context);
+				cout << "ok visit block" << endl;
 				symbolTable.closeContext();
-				return 0;
+				return res;
 }
 
 antlrcpp::Any Visitor::visitBlock_content(ifccParser::Block_contentContext *context)
 {
-
-				visitChildren(context);
-
-				return 0;
+				int res =  visitChildren(context);
+				cout << "ok visit children dans visit block" << endl;
+				return res;
 }
 
 antlrcpp::Any Visitor::visitFunc_return_const(ifccParser::Func_return_constContext *context)
@@ -89,6 +89,7 @@ antlrcpp::Any Visitor::visitVardefaff(ifccParser::VardefaffContext *context)  {
 
 				if (symbolTable.symbolExists(varName)) {
 								// ERROR here
+								cerr << "Variable " << varName << " already defined." << endl;
 								return 1;
 				}
 
@@ -108,6 +109,7 @@ antlrcpp::Any Visitor::visitVardef(ifccParser::VardefContext *context)  {
 
 				if (symbolTable.symbolExists(varName)) {
 								// ERROR here
+								cerr << "Variable " << varName << " already defined." << endl;
 								return 1;
 				}
 
@@ -124,6 +126,7 @@ antlrcpp::Any Visitor::visitVardef(ifccParser::VardefContext *context)  {
 
 								if (symbolTable.symbolExists(varname)) {
 												// ERROR here
+												cerr << "Variable " << varName << " already defined." << endl;
 												return 1;
 								}
 
@@ -143,7 +146,7 @@ antlrcpp::Any Visitor::visitVirgulename(ifccParser::VirgulenameContext *context)
 antlrcpp::Any Visitor::visitVaraff(ifccParser::VaraffContext *context) {
 				string varName = context->NAME()->getText();
 				Symbol* expr = visit(context->expr());
-
+				if (expr == nullptr ) return 1;
 				if (!symbolTable.symbolExists(varName)) {
 								cerr << "Undefined variable named '" << varName << "'" << endl;
 								return 1;
@@ -159,7 +162,7 @@ antlrcpp::Any Visitor::visitVaraff(ifccParser::VaraffContext *context) {
 }
 
 antlrcpp::Any Visitor::visitPar(ifccParser::ParContext *context) {
-				return nullptr;
+				return visit(context->expr());
 }
 
 antlrcpp::Any Visitor::visitDiv(ifccParser::DivContext *context) {
@@ -167,7 +170,15 @@ antlrcpp::Any Visitor::visitDiv(ifccParser::DivContext *context) {
 }
 
 antlrcpp::Any Visitor::visitMult(ifccParser::MultContext *context) {
-				return nullptr;
+				Symbol* expr0 = visit(context->expr(0));
+				Symbol* expr1 = visit(context->expr(1));
+				if (expr0 == nullptr || expr1== nullptr) return nullptr;
+				Symbol* temp = symbolTable.addTempSymbol("int","0");
+				cout << "   movl	-"<< expr0->getMemoryAddress() <<"(%rbp), %edx\n";
+				cout << "   movl	-"<< expr1->getMemoryAddress() <<"(%rbp), %eax\n";
+				cout << "   imull	%edx, %eax\n";
+				cout << "   movl	%eax, -"<< temp->getMemoryAddress() <<"(%rbp)"<< endl;
+				return temp;
 }
 
 antlrcpp::Any Visitor::visitConst(ifccParser::ConstContext *context) {
@@ -181,7 +192,7 @@ antlrcpp::Any Visitor::visitName(ifccParser::NameContext *context) {
 				string varName = context->NAME()->getText();
 				if (!symbolTable.symbolExists(varName)) {
 								cerr << "Undefined variable named '" << varName << "'" << endl;
-								return 1;
+								return nullptr;
 				}
 
 				// Get variable symbol
@@ -196,6 +207,7 @@ antlrcpp::Any Visitor::visitSubstr(ifccParser::SubstrContext *context) {
 antlrcpp::Any Visitor::visitPlus(ifccParser::PlusContext *context) {
 				Symbol* expr0 = visit(context->expr(0));
 				Symbol* expr1 = visit(context->expr(1));
+				if (expr0 == nullptr || expr1== nullptr) return nullptr;
 				Symbol* temp = symbolTable.addTempSymbol("int","0");
 				cout << "   movl	-"<< expr0->getMemoryAddress() <<"(%rbp), %edx\n";
 				cout << "   movl	-"<< expr1->getMemoryAddress() <<"(%rbp), %eax\n";
