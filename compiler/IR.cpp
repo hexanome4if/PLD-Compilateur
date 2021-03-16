@@ -17,7 +17,8 @@ class IRInstr {
 	void gen_asm(ostream &o) {
         switch(op) {
             case copy :
-                o << "mov" << "l ou q ou etc..." << "";
+                o << "mov" << t.getLetter();
+                
                 break;
             case ldconst :
                 break;
