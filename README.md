@@ -10,7 +10,7 @@
 
 ```
 cd compiler/
-./compile_on_docker
+./compile_on_docker.sh
 ```
 
 ## Pour lancer les tests
