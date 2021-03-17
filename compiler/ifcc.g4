@@ -6,14 +6,25 @@ axiom : prog
 prog : func*;
 
 func: TYPE NAME '(' ')' block ;
-block: '{' block_content* '}';
+block: '{' instr* '}';
 
-block_content: func_return
+instr : func_return
              | vardef
-						 | vardefaff
+			 | vardefaff
              | varaff
+			 | while
+			 | if
+			 | for
+			 | funccall
           	 ;
 
+while : 'while' '(' expr ')' block ;
+
+if : 'if' '(' expr ')' block else? ;
+
+else : 'else' block ;
+
+for : 'for' '(' expr ';' expr ';' expr ')' block ;
 
 func_return : 'return' expr ';' ;
 
@@ -24,12 +35,16 @@ virgulename: ',' NAME ;
 
 varaff: NAME '=' expr ';' ;
 
+funccall : NAME '(' expr? virguleexpr* ')' ';' ;
+virguleexpr: ',' expr ; 
+
 expr: expr binopmd expr #multdiv
 		| expr binoppm  expr #plusmoins
 		| '(' expr ')' #par
 		| NAME #name
 		| CONST #const
 		| '-' expr #negative
+		| funccall
 		;
 
 binopmd: ('*' | '/');
