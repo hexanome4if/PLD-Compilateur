@@ -1,6 +1,0 @@
-line 2:9 token recognition error at: '"'
-line 2:29 token recognition error at: '"'
-line 2:10 mismatched input 'Ceci' expecting CONST
-Segmentation fault (core dumped)
-
-return code: 139

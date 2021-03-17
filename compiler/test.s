@@ -10,13 +10,9 @@ main:
 	.cfi_offset 6, -16
 	movq	%rsp, %rbp
 	.cfi_def_cfa_register 6
-	movl	$42, -12(%rbp)
-	movl	$36, -8(%rbp)
-	movl	-12(%rbp), %eax
-	movl	%eax, -8(%rbp)
-	movl	$2, -12(%rbp)
-	movl	-12(%rbp), %eax
-	addl	-8(%rbp), %eax
+	movl	$40, -8(%rbp)
+	movl	-8(%rbp), %eax
+	negl	%eax
 	movl	%eax, -4(%rbp)
 	movl	-4(%rbp), %eax
 	popq	%rbp

@@ -26,12 +26,11 @@ int main(int argn, const char **argv) {
 //  for (auto token : tokens.getTokens()) {
 //    std::cout << token->toString() << std::endl;
 //  }
-
+				if (lexer.getNumberOfSyntaxErrors()>0) return 1;
 				ifccParser parser(&tokens);
 				tree::ParseTree* tree = parser.axiom();
 				if (parser.getNumberOfSyntaxErrors()>0) return 1;
 				Visitor visitor;
 				visitor.visit(tree);
-				return 0;
-
+				return visitor.getReturnCode();
 }

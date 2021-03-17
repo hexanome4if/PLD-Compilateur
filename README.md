@@ -1,19 +1,19 @@
 # PLD - Compilateur
 
-##Lancer l'image docker
+## Lancer l'image docker
 
 ```
 ./run.sh
 ```
 
-##Pour compiler dans compile_docker
+## Pour compiler dans Docker
 
 ```
 cd compiler/
-./compile_on_docker
+./compile_on_docker.sh
 ```
 
-##Pour lancer les tests
+## Pour lancer les tests
 
 ```
 cd tests/

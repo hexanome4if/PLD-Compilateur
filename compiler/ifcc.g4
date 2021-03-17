@@ -3,41 +3,40 @@ grammar ifcc;
 axiom : prog
 			;
 
-prog : func prog | EOF;
+prog : func*;
 
 func: TYPE NAME '(' ')' block ;
 block: '{' block_content* '}';
 
-block_content: func_return_const
-             | func_return_var
+block_content: func_return
              | vardef
 						 | vardefaff
              | varaff
           	 ;
 
 
+func_return : 'return' expr ';' ;
 
-func_return_const : 'return' CONST ';' ;
-
-func_return_var: 'return' NAME ';' ;
-
-vardefaff: TYPE NAME '=' CONST ';' ;
+vardefaff: TYPE NAME '=' expr ';' ;
 
 vardef: TYPE NAME virgulename* ';';
 virgulename: ',' NAME ;
 
 varaff: NAME '=' expr ';' ;
 
-expr: expr '+' expr #plus
-		| expr '*' expr #mult
-		| expr '-' expr #substr
-		| expr '/' expr #div
+expr: expr binopmd expr #multdiv
+		| expr binoppm  expr #plusmoins
 		| '(' expr ')' #par
 		| NAME #name
 		| CONST #const
+		| '-' expr #negative
 		;
 
-TYPE: 'int' | 'char' ;
+binopmd: ('*' | '/');
+
+binoppm: ('-' | '+');
+
+TYPE: 'int' ;
 
 CONST : [0-9]+ ;
 NAME: [a-zA-Z0-9]+;
