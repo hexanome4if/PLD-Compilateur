@@ -2,3 +2,4 @@
 test/pld-test-output
 compiler/output
 compiler/.Rhistory
+test.s

@@ -2,25 +2,29 @@
 
 
 SymbolTable::SymbolTable() {
-    currentContext = new Context(nullptr);
+				currentContext = new Context(nullptr);
 }
 
 void SymbolTable::openContext() {
-    currentContext = new Context(currentContext);
+				currentContext = new Context(currentContext);
 }
 
 void SymbolTable::closeContext() {
-    currentContext = currentContext->getParentContext();
+				currentContext = currentContext->getParentContext();
 }
 
 bool SymbolTable::symbolExists(string name) {
-    return currentContext->symbolExists(name);
+				return currentContext->symbolExists(name);
 }
 
 Symbol* SymbolTable::addSymbol(string name, string type, string value) {
-    return currentContext->addSymbol(name, type, value, memoryAddress = memoryAddress + 4);
+				return currentContext->addSymbol(name, type, value, memoryAddress = memoryAddress + 4);
 }
 
 Symbol * SymbolTable::getSymbol(string name) {
-    return currentContext->getSymbol(name);
+				return currentContext->getSymbol(name);
+}
+
+Symbol* SymbolTable::addTempSymbol(string type, string value) {
+				return currentContext->addSymbol(to_string(currentTemp++) + "_temp", type, value, memoryAddress = memoryAddress + 4);
 }
