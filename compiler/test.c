@@ -3,7 +3,7 @@
 int main()
 {
 				int a = 42;
-				int c,d,e;
-				c = a;
+				int b = 3;
+				int c = -a;
 				return c;
 }
