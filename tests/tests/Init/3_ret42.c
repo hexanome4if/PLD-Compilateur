@@ -1,4 +1,4 @@
-int main() {
-  /* code */
-  return 42;
+int main (){
+				/* code */
+				return 42;
 }

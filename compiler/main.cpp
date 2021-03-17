@@ -13,25 +13,24 @@ using namespace antlr4;
 using namespace std;
 
 int main(int argn, const char **argv) {
-  stringstream in;
-  if (argn==2) {
-     ifstream lecture(argv[1]);
-     in << lecture.rdbuf();
-  }
-  ANTLRInputStream input(in.str());
-  ifccLexer lexer(&input);
-  CommonTokenStream tokens(&lexer);
+				stringstream in;
+				if (argn==2) {
+								ifstream lecture(argv[1]);
+								in << lecture.rdbuf();
+				}
+				ANTLRInputStream input(in.str());
+				ifccLexer lexer(&input);
+				CommonTokenStream tokens(&lexer);
 
-  tokens.fill();
+				tokens.fill();
 //  for (auto token : tokens.getTokens()) {
 //    std::cout << token->toString() << std::endl;
 //  }
-
-  ifccParser parser(&tokens);
-  tree::ParseTree* tree = parser.axiom();
-
-  Visitor visitor;
-  visitor.visit(tree);
-
-  return 0;
+				if (lexer.getNumberOfSyntaxErrors()>0) return 1;
+				ifccParser parser(&tokens);
+				tree::ParseTree* tree = parser.axiom();
+				if (parser.getNumberOfSyntaxErrors()>0) return 1;
+				Visitor visitor;
+				visitor.visit(tree);
+				return visitor.getReturnCode();
 }

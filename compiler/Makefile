@@ -1,5 +1,6 @@
 OUTPUT=output
 GENERATED=antlr4-generated
+SYMBOL_TABLE=symbol-table
 GRAMMAR=ifcc.g4
 
 #override with your local installation
@@ -18,9 +19,12 @@ ifcc: dirs antlr  main.cpp visitor.cpp visitor.h
 	$(CC) $(CCARGS) $(GENERATED)/ifccBaseVisitor.cpp -o $(OUTPUT)/ifccBaseVisitor.o 
 	$(CC) $(CCARGS) $(GENERATED)/ifccLexer.cpp -o $(OUTPUT)/ifccLexer.o 
 	$(CC) $(CCARGS) $(GENERATED)/ifccVisitor.cpp -o $(OUTPUT)/ifccVisitor.o 
-	$(CC) $(CCARGS) $(GENERATED)/ifccParser.cpp -o $(OUTPUT)/ifccParser.o 
+	$(CC) $(CCARGS) $(GENERATED)/ifccParser.cpp -o $(OUTPUT)/ifccParser.o
+	$(CC) $(CCARGS) $(SYMBOL_TABLE)/Symbol.cpp -o $(OUTPUT)/Symbol.o
+	$(CC) $(CCARGS) $(SYMBOL_TABLE)/Context.cpp -o $(OUTPUT)/Context.o
+	$(CC) $(CCARGS) $(SYMBOL_TABLE)/SymbolTable.cpp -o $(OUTPUT)/SymbolTable.o
 	$(CC) $(CCARGS) visitor.cpp -o $(OUTPUT)/visitor.o 
-	$(CC) $(LDARGS) $(OUTPUT)/main.o $(OUTPUT)/ifccBaseVisitor.o $(OUTPUT)/ifccLexer.o $(OUTPUT)/ifccVisitor.o $(OUTPUT)/ifccParser.o $(OUTPUT)/visitor.o $(ANTLR4_LIBDIR)/libantlr4-runtime.a -o ifcc
+	$(CC) $(LDARGS) $(OUTPUT)/main.o $(OUTPUT)/Symbol.o $(OUTPUT)/Context.o $(OUTPUT)/SymbolTable.o $(OUTPUT)/ifccBaseVisitor.o $(OUTPUT)/ifccLexer.o $(OUTPUT)/ifccVisitor.o $(OUTPUT)/ifccParser.o $(OUTPUT)/visitor.o $(ANTLR4_LIBDIR)/libantlr4-runtime.a -o ifcc
 
 antlr: $(GRAMMAR)
 	$(ANTLR4_BINDIR)/antlr4 -visitor -no-listener -Dlanguage=Cpp -o $(GENERATED) $(GRAMMAR)
