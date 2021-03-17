@@ -3,7 +3,7 @@ grammar ifcc;
 axiom : prog
 			;
 
-prog : func prog | EOF;
+prog : func*;
 
 func: TYPE NAME '(' ')' block ;
 block: '{' block_content* '}';

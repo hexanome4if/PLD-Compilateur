@@ -1,5 +1,8 @@
 .idea/
-test/pld-test-output
+tests/pld-test-output
 compiler/output
 compiler/.Rhistory
-test.s
+**/*.s
+**/*.o
+**/*.out
+compiler/antlr4-generated

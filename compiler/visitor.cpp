@@ -10,17 +10,19 @@ Visitor::Visitor() {
 
 antlrcpp::Any Visitor::visitAxiom(ifccParser::AxiomContext *ctx)
 {
-				return visitChildren(ctx);
+				returnCode = (int) visitChildren(ctx);
+				return returnCode;
 }
 antlrcpp::Any Visitor::visitProg(ifccParser::ProgContext *ctx)
 {
-				return visitChildren(ctx);
-// int retval = stoi(ctx->CONST()->getText());
-// cout << ".globl	main\n"
-// 													" main: \n"
-// 													" 	movl	$"
-// 										<< retval << ", %eax\n"
-// 																							" 	ret\n";
+				int res = 0;
+				vector<ifccParser::FuncContext *> func = ctx->func();
+				vector<ifccParser::FuncContext *>::iterator it;
+
+				for(it = func.begin(); it!=func.end(); ++it) {
+								res += (int) visit(*it);
+				}
+				return res>0 ? 1 : 0;
 }
 
 antlrcpp::Any Visitor::visitFunc(ifccParser::FuncContext *context)
@@ -44,16 +46,22 @@ antlrcpp::Any Visitor::visitFunc(ifccParser::FuncContext *context)
 antlrcpp::Any Visitor::visitBlock(ifccParser::BlockContext *context)
 {
 				symbolTable.openContext();
-				int res = (int) visitChildren(context);
-				cout << "ok visit block" << endl;
+				int res = 0;
+
+				vector<ifccParser::Block_contentContext *> block_content = context->block_content();
+				vector<ifccParser::Block_contentContext *>::iterator it;
+
+				for(it = block_content.begin(); it!=block_content.end(); ++it) {
+								res += (int) visit(*it);
+				}
+
 				symbolTable.closeContext();
-				return res;
+				return res>0 ? 1 : 0;
 }
 
 antlrcpp::Any Visitor::visitBlock_content(ifccParser::Block_contentContext *context)
 {
 				int res =  visitChildren(context);
-				cout << "ok visit children dans visit block" << endl;
 				return res;
 }
 
@@ -214,4 +222,8 @@ antlrcpp::Any Visitor::visitPlus(ifccParser::PlusContext *context) {
 				cout << "   addl	%edx, %eax\n";
 				cout << "   movl	%eax, -"<< temp->getMemoryAddress() <<"(%rbp)"<< endl;
 				return temp;
+}
+
+int Visitor::getReturnCode() {
+				return returnCode;
 }

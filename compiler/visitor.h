@@ -39,7 +39,10 @@ virtual antlrcpp::Any visitName(ifccParser::NameContext *context) override;
 virtual antlrcpp::Any visitSubstr(ifccParser::SubstrContext *context) override;
 virtual antlrcpp::Any visitPlus(ifccParser::PlusContext *context) override;
 
+int getReturnCode();
+
 private:
 
 SymbolTable symbolTable;
+int returnCode;
 };
