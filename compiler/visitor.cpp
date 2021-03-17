@@ -196,7 +196,13 @@ antlrcpp::Any Visitor::visitName(ifccParser::NameContext *context)
 
 antlrcpp::Any Visitor::visitNegative(ifccParser::NegativeContext *context)
 {
-	return nullptr;
+	Symbol *expr = visit(context->expr());
+	if (expr== nullptr) return nullptr;
+	Symbol *temp = symbolTable.addTempSymbol("int", "0");
+	cout << "   movl	-" << expr->getMemoryAddress() << "(%rbp), %eax\n";
+	cout << "   negl %eax\n";
+	cout << "   movl %eax, -" << temp->getMemoryAddress() << "(%rbp)\n";
+	return temp;
 }
 
 antlrcpp::Any Visitor::visitMultdiv(ifccParser::MultdivContext *context)
