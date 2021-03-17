@@ -171,16 +171,6 @@ antlrcpp::Any Visitor::visitPar(ifccParser::ParContext *context)
 	return visit(context->expr());
 }
 
-antlrcpp::Any Visitor::visitDiv(ifccParser::DivContext *context)
-{
-	return false;
-}
-
-antlrcpp::Any Visitor::visitMult(ifccParser::MultContext *context)
-{
-	return true;
-}
-
 antlrcpp::Any Visitor::visitConst(ifccParser::ConstContext *context)
 {
 	string value = context->CONST()->getText();
@@ -223,8 +213,11 @@ antlrcpp::Any Visitor::visitMultdiv(ifccParser::MultdivContext *context)
 		cout << "   movl	-" << expr1->getMemoryAddress() << "(%rbp), %eax\n";
 		cout << "   imull	%edx, %eax\n";
 		cout << "   movl	%eax, -" << temp->getMemoryAddress() << "(%rbp)" << endl;
-	}else {
-		//todo
+	} else {
+		cout << "   movl	-" << expr0->getMemoryAddress() << "(%rbp), %eax\n";
+		cout << "   cltd\n";
+		cout << "   idivl -" << expr1->getMemoryAddress() << "(%rbp)\n";
+		cout << "   movl	%eax, -" << temp->getMemoryAddress() << "(%rbp)" << endl;
 	}
 	return temp;
 
@@ -260,6 +253,11 @@ antlrcpp::Any Visitor::visitBinoppm(ifccParser::BinoppmContext *context)
 	return isPlus;
 }
 
+antlrcpp::Any Visitor::visitBinopmd(ifccParser::BinopmdContext *context)
+{
+	bool isMult = context -> getText() == "*";
+	return isMult;
+}
 
 int Visitor::getReturnCode()
 {

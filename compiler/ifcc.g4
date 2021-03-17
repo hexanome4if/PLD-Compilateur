@@ -32,9 +32,7 @@ expr: expr binopmd expr #multdiv
 		| '-' expr #negative
 		;
 
-binopmd: '*' #mult
-			 | '/' #div
-			 ;
+binopmd: ('*' | '/');
 
 binoppm: ('-' | '+');
 

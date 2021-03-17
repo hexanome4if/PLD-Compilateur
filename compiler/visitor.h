@@ -31,14 +31,13 @@ virtual antlrcpp::Any visitVardef(ifccParser::VardefContext *context) override;
 virtual antlrcpp::Any visitVirgulename(ifccParser::VirgulenameContext *context) override;
 virtual antlrcpp::Any visitVaraff(ifccParser::VaraffContext *context) override;
 virtual antlrcpp::Any visitPar(ifccParser::ParContext *context) override;
-virtual antlrcpp::Any visitDiv(ifccParser::DivContext *context) override;
-virtual antlrcpp::Any visitMult(ifccParser::MultContext *context) override;
 virtual antlrcpp::Any visitConst(ifccParser::ConstContext *context) override;
 virtual antlrcpp::Any visitName(ifccParser::NameContext *context) override;
 virtual antlrcpp::Any visitNegative(ifccParser::NegativeContext *context) override;
 virtual antlrcpp::Any visitMultdiv(ifccParser::MultdivContext *context) override;
 virtual antlrcpp::Any visitPlusmoins(ifccParser::PlusmoinsContext *context) override;
 virtual antlrcpp::Any visitBinoppm(ifccParser::BinoppmContext *context) override;
+virtual antlrcpp::Any visitBinopmd(ifccParser::BinopmdContext *context) override;
 
 int getReturnCode();
 
