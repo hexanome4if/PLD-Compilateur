@@ -15,12 +15,98 @@ class IRInstr {
 	/** Actual code generation */
     /**< x86 assembly code generation for this IR instruction */
 	void gen_asm(ostream &o) {
+        string suffix = this->t.getLetter();
         switch(op) {
             case copy :
-                o << "mov" << t.getLetter();
-                
+                if(params.size()==2){
+                    //mov var1, rax
+                    o << "mov" << suffix << " -";
+                    o << this.bb->cfg->get_var_index(params[1]);
+                    o << "(%rbp), %rax" << endl;
+                    //mov rax, var0
+                    o << "mov" << suffix << " %rax, -";
+                    o << this.bb->cfg->get_var_index(params[0]);
+                    o << "(%rbp)" << endl;
+                }
                 break;
             case ldconst :
+                if(params.size()==2){
+                    //mov const, var
+                    o << "mov" << suffix << " $" << params[1];
+                    int index = this.bb->cfg->get_var_index(params[0]);
+                    o << ", -" << index << "(%rbp)" << endl;
+                }
+                break;
+            case add :
+                if(params.size()==3){
+                    o << "mov" << suffix << " -";
+                    o << this.bb->cfg->get_var_index(params[1]);
+                    o << "(%rbp), %rax" << endl;
+
+                    o << "add" << suffix << " -";
+                    o << this.bb->cfg->get_var_index(params[2]);
+                    o << "(%rbp), %rax" << endl;
+
+                    o << "mov" << suffix << " %rax, -";
+                    o << this.bb->cfg->get_var_index(params[0]);
+                    o << "(%rbp)" << endl;
+                }
+                break;
+            case sub : // sub dest, src <-- dest = dest - src
+                if(params.size()==3){
+                    o << "mov" << suffix << " -";
+                    o << this.bb->cfg->get_var_index(params[2]);
+                    o << "(%rbp), %rax" << endl;
+
+                    o << "sub" << suffix << " -";
+                    o << this.bb->cfg->get_var_index(params[1]);
+                    o << "(%rbp), %rax" << endl;
+
+                    o << "mov" << suffix << " %rax, -";
+                    o << this.bb->cfg->get_var_index(params[0]);
+                    o << "(%rbp)" << endl;
+                }
+                break;
+            case mul : // mul S ：R[%rdx] : R[%rax] <-- S * R[%rax]
+                if(params.size()==3){
+                    o << "mov" << suffix << " -";
+                    o << this.bb->cfg->get_var_index(params[1]);
+                    o << "(%rbp), %rax" << endl;
+
+                    o << "sub" << suffix << " -";
+                    o << this.bb->cfg->get_var_index(params[2]);
+                    o << "(%rbp)" << endl;
+
+                    o << "mov" << suffix << " %rax, -";
+                    o << this.bb->cfg->get_var_index(params[0]);
+                    o << "(%rbp)" << endl;
+                }
+                break;
+            case rmem : //rmem dest addr
+                if(params.size()==2){
+                    //mov addr, rax
+                    o << "mov" << suffix << " -";
+                    o << this.bb->cfg->get_var_index(params[1]);
+                    o << "(%rbp), %rax" << endl;
+                    //mov [rax], dest
+                    o << "mov" << suffix << " [%rax], -";
+                    o << this.bb->cfg->get_var_index(params[1]);
+                    o << "(%rbp)" << endl;
+                }
+                break;
+            case wmem : //wmem addr var
+                if(params.size()==2){
+                    //mov addr, rax
+                    o << "mov" << suffix << " -";
+                    o << this.bb->cfg->get_var_index(params[0]);
+                    o << "(%rbp), %rax" << endl;
+                    //mov var, r10
+                    o << "mov" << suffix << " -";
+                    o << this.bb->cfg->get_var_index(params[1]);
+                    o << "(%rbp), %r10" << endl;
+                    //mov r10, [rax]
+                    o << "mov" << suffix << " %r10, [%rax]" << endl; //!!! faut vérifier
+                }
                 break;
             default :
         }
