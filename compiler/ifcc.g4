@@ -12,19 +12,19 @@ instr : func_return
              | vardef
 			 | vardefaff
              | varaff
-			 | while
-			 | if
-			 | for
+			 | whiledef
+			 | ifdef
+			 | fordef
 			 | funccall
           	 ;
 
-while : 'while' '(' expr ')' block ;
+whiledef : 'while' '(' expr ')' block ;
 
-if : 'if' '(' expr ')' block else? ;
+ifdef : 'if' '(' expr ')' block elsedef? ;
 
-else : 'else' block ;
+elsedef : 'else' block ;
 
-for : 'for' '(' expr ';' expr ';' expr ')' block ;
+fordef : 'for' '(' expr ';' expr ';' expr ')' block ;
 
 func_return : 'return' expr ';' ;
 
@@ -38,14 +38,19 @@ varaff: NAME '=' expr ';' ;
 funccall : NAME '(' expr? virguleexpr* ')' ';' ;
 virguleexpr: ',' expr ; 
 
-expr: expr binopmd expr #multdiv
-		| expr binoppm  expr #plusmoins
-		| '(' expr ')' #par
+exprsimple : exprsimple binopmd exprsimple #multdiv
+		| exprsimple binoppm  exprsimple #plusmoins
+		| '(' exprsimple ')' #par
 		| NAME #name
 		| CONST #const
-		| '-' expr #negative
-		| funccall
+		| '-' exprsimple #negative
+		| funccall #functioncall
+		| '(' NAME '=' exprsimple ')' #affecsimple
 		;
+
+expr : NAME ('=' NAME)* ('=' exprsimple)?
+	| exprsimple
+	;
 
 binopmd: ('*' | '/');
 
