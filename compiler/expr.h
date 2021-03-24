@@ -7,9 +7,11 @@
 typedef enum {
     add,
     mult,
-    div,
+    divi,
     subs
 } Operation; 
+
+
 
 class Expr {
     public:
@@ -19,6 +21,7 @@ class Expr {
 class BinOp : public Expr{
     public :
         BinOp(Expr e1, Expr e2, int op) : expr1(e1), expr2(e2), operation(op) {}
+        string buildIR(CFG* cfg)
         Expr expr1;
         Expr expr2;
         int operation;
@@ -28,6 +31,7 @@ class BinOp : public Expr{
 class ConstExpr : public Expr {
     public :
         ConstExpr(string v) : val(v) {}
+        string buildIR(CFG* cfg)
         string val;
 };
 
@@ -35,6 +39,7 @@ class ConstExpr : public Expr {
 class VarExpr : public Expr {
     public :
         VarExpr(string v) : varName(v) {}
+        string buildIR(CFG* cfg)
         string varName;
 };
 

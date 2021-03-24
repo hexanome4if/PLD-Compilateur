@@ -5,7 +5,7 @@ class IRInstr {
    public:
 
 	/**  constructor */
-	IRInstr(BasicBlock* bb_, Operation op, Type t, vector<string> params) {
+	IRInstr(BasicBlock* bb_, Operation op, string t, vector<string> params) {
         this.bb = bb_;
         this.op = op;
         this.t = t;
@@ -138,7 +138,7 @@ class BasicBlock {
             // TO DO !
         }
 
-	    void add_IRInstr(IRInstr::Operation op, Type t, vector<string> params) {
+	    void add_IRInstr(IRInstr::Operation op, string t, vector<string> params) {
             // TO DO !
         }
 
@@ -162,17 +162,17 @@ class CFG {
 	    void gen_asm_epilogue(ostream& o);
 
 	    // symbol table methods
-	    void add_to_symbol_table(string name, Type t);
-	    string create_new_tempvar(Type t);
+	    void add_to_symbol_table(string name, string t);
+	    string create_new_tempvar(string t);
 	    int get_var_index(string name);
-	    Type get_var_type(string name);
+	    string get_var_type(string name);
 
 	    // basic block management
 	    string new_BB_name();
 	    BasicBlock* current_bb;
 
     protected:
-	    map <string, Type> SymbolType; /**< part of the symbol table  */
+	    map <string, string> SymbolType; /**< part of the symbol table  */
 	    map <string, int> SymbolIndex; /**< part of the symbol table  */
 	    int nextFreeSymbolIndex; /**< to allocate new symbols in the symbol table */
 	    int nextBBnumber; /**< just for naming */
