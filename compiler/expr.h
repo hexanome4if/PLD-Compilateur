@@ -12,7 +12,8 @@ typedef enum {
 } Operation; 
 
 class Expr {
-
+    public:
+        virtual string buildIR(CFG* cfg);
 };
 
 class BinOp : public Expr{

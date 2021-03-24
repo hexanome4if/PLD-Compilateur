@@ -5,6 +5,8 @@
 #include <vector>
 #include "./symbol-table/Context.h" 
 #include "expr.h"
+#include "IR.h"
+
 using namespace std;
 
 typedef enum {
@@ -23,20 +25,26 @@ typedef enum {
     FUNCCALL
 } Instruction;
 
-class Block {
+class Node {
+    public:
+        virtual string buildIR(CFG* cfg);
+};
+
+class Block : public Node{
     public :
         Block(Context* c) : context(c) {}
         void addInstr(Instr instr);
+        string buildIR(CFG* cfg);
         vector<Instr> instrs;
         Context* context;
 };
 
-class Func {
+class Func : public Node{
     public : 
         Func(int t, string n, Context* c) : type(t), name(n), block(Block(c)) {}
         void addParam(string param);
         void addInstr(Instr instr);
-
+        string buildIR(CFG* cfg);
         int type;
         string name;
         vector<string> params;
@@ -46,9 +54,10 @@ class Func {
 
 
 
-class Instr {
+class Instr : public Node{
     public :
         Instr(Instruction inst) : instruction(inst) {}
+        virtual string buildIR(CFG* cfg);
         int instruction;
 };
 
@@ -57,6 +66,7 @@ class Instr {
 class Aff : public Instr, public Expr {
     public :
         Aff(string id, Expr ex) : Instr(AFF), varId(id), expr(ex) {}
+        string buildIR(CFG* cfg);
         string varId;
         Expr expr;
 };
@@ -72,6 +82,7 @@ class Decl : public Instr {
 class DeclAff : public Instr {
     public :
         DeclAff(string id, Expr ex) : Instr(DECLAFF), varId(id), expr(ex) {}
+        string buildIR(CFG* cfg);
         string varId;
         Expr expr;
 };
@@ -79,6 +90,7 @@ class DeclAff : public Instr {
 class Ret : public Instr {
     public :
         Ret(Expr ex): Instr(RET), expr(ex) {}
+        string buildIR(CFG* cfg);
         Expr expr;
 };
 
@@ -87,7 +99,8 @@ class If : public Instr {
         If(Expr cond, Context* cif, Context* celse): Instr(IF), condition(cond), 
             blockIf(Block(cif)), blockElse(Block(celse)){ }
         void addInstrIf(Instr instr);
-        void addInstrElse(Instr instr);    
+        void addInstrElse(Instr instr);   
+        string buildIR(CFG* cfg); 
         Expr condition;
         Block blockIf;
         Block blockElse;
@@ -97,6 +110,7 @@ class While : public Instr {
     public :
         While(Expr cond, Context* c): Instr(WHILE), condition(cond), block(Block(c)){}
         void addInstr(Instr instr);   
+        string buildIR(CFG* cfg);
         Expr condition;
         Block block;
 };
@@ -105,6 +119,7 @@ class For : public Instr {
     public :
         For(Expr i, Expr cond, Expr p, Context* c) : Instr(FOR), init(i), condition(cond), progression(p), block(Block(c)) {}
         void addInstr(Instr instr);  
+        string buildIR(CFG* cfg);
         Expr init;
         Expr condition;
         Expr progression;
@@ -115,6 +130,7 @@ class FuncCall : public Instr, public Expr {
     public :
         FuncCall(string fn): Instr(FUNCCALL), funcName(fn) {}
         void addParam(Expr param);  
+        string buildIR(CFG* cfg);
         string funcName;
         vector<Expr> params;
 };
