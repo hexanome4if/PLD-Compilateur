@@ -2,39 +2,39 @@
 
 
 bool Context::symbolExists(string name) {
-    if (symbols.find(name) != symbols.end()) {
-        return true;
-    }
+				if (symbols.find(name) != symbols.end()) {
+								return true;
+				}
 
-    if (parentContext != nullptr) {
-        return parentContext->symbolExists(name);
-    }
+				if (parentContext != nullptr) {
+								return parentContext->symbolExists(name);
+				}
 
-    return false;
+				return false;
 }
 
-Symbol* Context::addSymbol(string name, string type, string value, int memoryAddress) {
-    if (symbols.find(name) != symbols.end()) {
-        return nullptr;
-    }
+Symbol* Context::addSymbol(string name, string type) {
+				if (symbols.find(name) != symbols.end()) {
+								return nullptr;
+				}
 
-    Symbol* newSymbol = new Symbol(name, type, value, memoryAddress);
+				Symbol* newSymbol = new Symbol(name, type);
 
-    symbols[name] = newSymbol;
-    return newSymbol;
+				symbols[name] = newSymbol;
+				return newSymbol;
 }
 
 Symbol * Context::getSymbol(string name) {
-    if (symbols.find(name) != symbols.end()) {
-        return symbols[name];
-    }
+				if (symbols.find(name) != symbols.end()) {
+								return symbols[name];
+				}
 
-    if (parentContext != nullptr) {
-        return parentContext->getSymbol(name);
-    }
-    return nullptr;
+				if (parentContext != nullptr) {
+								return parentContext->getSymbol(name);
+				}
+				return nullptr;
 }
 
 Context * Context::getParentContext() {
-    return parentContext;
+				return parentContext;
 }

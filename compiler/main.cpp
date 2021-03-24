@@ -8,6 +8,7 @@
 #include "antlr4-generated/ifccParser.h"
 #include "antlr4-generated/ifccBaseVisitor.h"
 #include "visitor.h"
+#include "ast.h"
 
 using namespace antlr4;
 using namespace std;
@@ -30,7 +31,8 @@ int main(int argn, const char **argv) {
 				ifccParser parser(&tokens);
 				tree::ParseTree* tree = parser.axiom();
 				if (parser.getNumberOfSyntaxErrors()>0) return 1;
-				Visitor visitor;
+				Ast* ast = new Ast();
+				Visitor visitor(ast);
 				visitor.visit(tree);
 				return visitor.getReturnCode();
 }

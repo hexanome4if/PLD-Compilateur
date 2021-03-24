@@ -5,8 +5,9 @@ SymbolTable::SymbolTable() {
 				currentContext = new Context(nullptr);
 }
 
-void SymbolTable::openContext() {
+Context* SymbolTable::openContext() {
 				currentContext = new Context(currentContext);
+				return currentContext;
 }
 
 void SymbolTable::closeContext() {
@@ -17,14 +18,14 @@ bool SymbolTable::symbolExists(string name) {
 				return currentContext->symbolExists(name);
 }
 
-Symbol* SymbolTable::addSymbol(string name, string type, string value) {
-				return currentContext->addSymbol(name, type, value, memoryAddress = memoryAddress + 4);
+Symbol* SymbolTable::addSymbol(string name, string type) {
+				return currentContext->addSymbol(name, type);
 }
 
 Symbol * SymbolTable::getSymbol(string name) {
 				return currentContext->getSymbol(name);
 }
 
-Symbol* SymbolTable::addTempSymbol(string type, string value) {
-				return currentContext->addSymbol(to_string(currentTemp++) + "_temp", type, value, memoryAddress = memoryAddress + 4);
+Symbol* SymbolTable::addTempSymbol(string type) {
+				return currentContext->addSymbol(to_string(currentTemp++) + "_temp", type);
 }
