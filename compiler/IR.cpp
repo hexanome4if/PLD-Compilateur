@@ -108,6 +108,16 @@ class IRInstr {
                     o << "mov" << suffix << " %r10, [%rax]" << endl; //!!! faut vérifier
                 }
                 break;
+            case cmp_eq : //cmp_eq dest op1 op2
+				if(params.size()==3){
+					//cmp op1 op2
+					o << "cmp";
+					o << " -" << this.bb->cfg->get_var_index(params[1]) << "(%rbp), ";
+					o << " -" << this.bb->cfg->get_var_index(params[2]) << "(%rbp)" << endl;
+					//LAHF %ah = x1xxxxxx si egale, x0xxxxxx si !=
+					o << "lahf" << endl;
+					//mov 7eme bit de ah(ZF) --> dest
+				}
             default :
         }
     } 
