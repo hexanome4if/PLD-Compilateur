@@ -6,11 +6,11 @@ using namespace std;
 
 class Ast {
 
-public:
+	public:
 
-	Ast() {	}
-	void addNode(Node* n);
+		Ast() {	}
+		void addNode(Node* n);
 
-private:
-	vector<Node*> nodes;
+	private:
+		vector<Node*> nodes;
 };

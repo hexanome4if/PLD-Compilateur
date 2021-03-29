@@ -9,8 +9,10 @@
 
 // Declarations from the parser -- replace with your own
 #include "type.h"
-#include "./symbol-table/Symbol.h"
+#include "./symbol-table/SymbolTable.h"
+#include "ast.h"
 
+using namespace std;
 class BasicBlock;
 class CFG;
 class DefFonction;
@@ -98,7 +100,6 @@ class BasicBlock {
 													 store here the name of the variable that holds the value of expr */
  protected:
 
- 
 };
 
 
@@ -115,9 +116,9 @@ class BasicBlock {
  */
 class CFG {
  public:
-	CFG(DefFonction* ast);
+	CFG(Ast* ast);
 
-	DefFonction* ast; /**< The AST this CFG comes from */
+	Ast* ast; /**< The AST this CFG comes from */
 	
 	void add_bb(BasicBlock* bb); 
 
@@ -130,7 +131,7 @@ class CFG {
 	// symbol table methods
 	void add_to_symbol_table(string name, string t);
 	string create_new_tempvar(string t);
-	int get_var_index(string name);
+	//int get_var_index(string name);
 	string get_var_type(string name);
 
 	// basic block management
@@ -138,9 +139,10 @@ class CFG {
 	BasicBlock* current_bb;
 
  protected:
-	map <string, string> SymbolType; /**< part of the symbol table  */
-	map <string, int> SymbolIndex; /**< part of the symbol table  */
-	int nextFreeSymbolIndex; /**< to allocate new symbols in the symbol table */
+	//map <string, string> SymbolType; /**< part of the symbol table  */
+	//map <string, int> SymbolIndex; /**< part of the symbol table  */
+	SymbolTable symbolTable;
+	//int nextFreeSymbolIndex; /**< to allocate new symbols in the symbol table */
 	int nextBBnumber; /**< just for naming */
 	
 	vector <BasicBlock*> bbs; /**< all the basic blocks of this CFG*/

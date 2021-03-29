@@ -172,4 +172,49 @@ void BasicBlock :: add_IRInstr(IRInstr::Operation op, string t, vector<string> p
     instrs.push_back(&instr);
 }
 
+/** CFG **/
 
+CFG :: CFG(Ast* ast) {
+    this->ast = ast;
+    nextBBnumber = 0;
+}
+
+void CFG :: add_bb(BasicBlock* bb) {
+    bbs.push_back(bb);
+}
+
+void CFG :: gen_asm(ostream& o) {
+    // TO DO
+}
+
+string CFG :: IR_reg_to_asm(string reg) {
+    string res = "-" + reg + "(%rbp)";
+    return res;
+}
+
+void CFG :: gen_asm_prologue(ostream& o) {
+    // TO DO
+}
+
+void CFG :: gen_asm_epilogue(ostream& o) {
+    // TO DO
+}
+
+void CFG :: add_to_symbol_table(string name, string t) {
+    symbolTable.addSymbol(name,t);
+}
+
+string CFG :: create_new_tempvar(string t) {
+    Symbol* s = symbolTable.addTempSymbol(t);
+    return s->getName();
+}
+
+string CFG :: get_var_type(string name) {
+    return symbolTable.getSymbol(name)->getType();
+}
+
+string CFG :: new_BB_name() {
+    string res = "BB_" + nextBBnumber ;
+    nextBBnumber++;
+    return res;
+}

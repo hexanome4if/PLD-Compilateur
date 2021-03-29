@@ -3,3 +3,7 @@
 string Symbol::getType() {
 				return type;
 }
+
+string Symbol::getName() {
+				return name;
+}
