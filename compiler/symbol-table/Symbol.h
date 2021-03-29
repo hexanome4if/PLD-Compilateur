@@ -6,14 +6,11 @@ using namespace std;
 
 class Symbol {
 public:
-    Symbol(string name, string type, string value, int memoryAddress): name(name), type(type), value(value), memoryAddress(memoryAddress) {}
-    string getValue();
-    string getType();
-    int getMemoryAddress();
-    void setValue(string value);
+Symbol(string name, string type) : name(name), type(type) {
+}
+string getType();
+
 private:
-    string name;
-    string type;
-    string value;
-    int memoryAddress;
+string name;
+string type;
 };

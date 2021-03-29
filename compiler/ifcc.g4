@@ -35,8 +35,9 @@ virgulename: ',' NAME ;
 
 varaff: NAME '=' expr ';' ;
 
-funccall : NAME '(' expr? virguleexpr* ')' ';' ;
-virguleexpr: ',' expr ; 
+funccall : (NAME '(' ')' ';')
+					| (NAME '(' expr virguleexpr* ')' ';') ;
+virguleexpr: ',' expr ;
 
 exprsimple : exprsimple binopmd exprsimple #multdiv
 		| exprsimple binoppm  exprsimple #plusmoins

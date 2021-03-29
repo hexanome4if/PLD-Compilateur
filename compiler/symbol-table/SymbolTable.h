@@ -6,15 +6,14 @@
 class SymbolTable {
 public:
 SymbolTable();
-void openContext();
+Context* openContext();
 void closeContext();
-Symbol* addSymbol(string name, string type, string value);
+Symbol* addSymbol(string name, string type);
 Symbol* getSymbol(string name);
 bool symbolExists(string name);
-Symbol* addTempSymbol(string type, string value);
+Symbol* addTempSymbol(string type);
 
 private:
 Context* currentContext;
-int memoryAddress = 0;
 int currentTemp = 0;
 };

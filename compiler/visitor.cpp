@@ -3,269 +3,332 @@
 
 #include "visitor.h"
 
-Visitor::Visitor()
+Visitor::Visitor(Ast* ast)
+				: ast(ast)
 {
-	symbolTable = SymbolTable();
+				symbolTable = SymbolTable();
 }
 
 antlrcpp::Any Visitor::visitAxiom(ifccParser::AxiomContext *ctx)
 {
-	returnCode = (int)visitChildren(ctx);
-	return returnCode;
+				returnCode = (int)visitChildren(ctx);
+				return returnCode;
 }
 antlrcpp::Any Visitor::visitProg(ifccParser::ProgContext *ctx)
 {
-	int res = 0;
-	vector<ifccParser::FuncContext *> func = ctx->func();
-	vector<ifccParser::FuncContext *>::iterator it;
+				int res = 0;
+				vector<ifccParser::FuncContext *> func = ctx->func();
+				vector<ifccParser::FuncContext *>::iterator it;
 
-	for (it = func.begin(); it != func.end(); ++it)
-	{
-		res += (int)visit(*it);
-	}
-	return res > 0 ? 1 : 0;
+				for (it = func.begin(); it != func.end(); ++it)
+				{
+								res += (int)visit(*it);
+				}
+				return res > 0 ? 1 : 0;
 }
 
 antlrcpp::Any Visitor::visitFunc(ifccParser::FuncContext *context)
 {
-	string functionType = context->TYPE()->getText();
-	string functionName = context->NAME()->getText();
+				string functionType = context->TYPE()->getText();
+				string functionName = context->NAME()->getText();
 
-	cout << ".globl " << functionName << "\n";
-	cout << " " << functionName << ": \n";
-	cout << "   pushq %rbp\n";
-	cout << "   movq %rsp, %rbp\n";
+				Block block = (Block)visitChildren(context);
+				Func func = Func(getTypeFromString(functionType), functionName, block);
 
-	int res = (int)visitChildren(context);
-
-	cout << "   popq %rbp\n";
-	cout << "   ret\n";
-
-	return res;
+				return func;
 }
 
 antlrcpp::Any Visitor::visitBlock(ifccParser::BlockContext *context)
 {
-	symbolTable.openContext();
-	int res = 0;
+				Context* context = symbolTable.openContext();
+				Block block = Block(context);
+				int res = 0;
 
-	vector<ifccParser::Block_contentContext *> block_content = context->block_content();
-	vector<ifccParser::Block_contentContext *>::iterator it;
+				vector<ifccParser::InstrContext *> instr = context->instr();
+				vector<ifccParser::InstrContext *>::iterator it;
 
-	for (it = block_content.begin(); it != block_content.end(); ++it)
-	{
-		res += (int)visit(*it);
-	}
+				for (it = instr.begin(); it != instr.end(); ++it)
+				{
+								Instr* visited = visit(*it);
+								if (visited != nullptr) block.addInstr(*visited);
 
-	symbolTable.closeContext();
-	return res > 0 ? 1 : 0;
+				}
+
+				symbolTable.closeContext();
+				return block;
 }
 
-antlrcpp::Any Visitor::visitBlock_content(ifccParser::Block_contentContext *context)
+antlrcpp::Any Visitor::visitInstr(ifccParser::InstrContext *context)
 {
-	int res = visitChildren(context);
-	return res;
+				Inst* instr = (Instr*) visitChildren(context);
+				return instr;
+}
+
+antlrcpp::Any Visitor::visitWhiledef(ifccParser::WhiledefContext *context) {
+				Expr expr = visit(context->expr());
+				if (expr == nullptr) return nullptr;
+				Block b = visit(context->block());
+				While w = While(expr,b);
+				return w;
+}
+
+antlrcpp::Any Visitor::visitIfdef(ifccParser::IfdefContext *context) {
+				Expr expr = visit(context->expr());
+				if (expr == nullptr) return nullptr;
+				Block bIf = visit(context->block());
+				Block bElse = context->elsedef() == nullptr ? Block() : visit(context->elsedef()); //TODO changer en pointeur plus tards nullptr
+				If i = If(expr,b);
+				return w;
+}
+
+antlrcpp::Any Visitor::visitElsedef(ifccParser::ElsedefContext *context) {
+				return visit(context->block());
+}
+
+antlrcpp::Any Visitor::visitFordef(ifccParser::FordefContext *context) {
+				Expr init = visit(context->expr(0));
+				if (init == nullptr) return nullptr;
+				Expr condition = visit(context->expr(1));
+				if (condition == nullptr) return nullptr;
+				Expr progression = visit(context->expr(2));
+				if (progression == nullptr) return nullptr;
+				Block b = visit(context->block());
+				For f = For(init,condition,progression,b);
 }
 
 
 antlrcpp::Any Visitor::visitFunc_return(ifccParser::Func_returnContext *context)
 {
-	Symbol *expr = visit(context->expr());
-	if (expr == nullptr) return 1;
-	// Write ASSEMBLY code
-	cout << "   movl -" << expr->getMemoryAddress() << "(%rbp), %eax\n";
-	return 0;
+				Expr expr = visit(context->expr());
+				if (expr == nullptr) return nullptr;
+				Ret* ret = new Ret(expr);
+				return ret;
 }
 
 antlrcpp::Any Visitor::visitVardefaff(ifccParser::VardefaffContext *context)
 {
-	string varType = context->TYPE()->getText();
-	string varName = context->NAME()->getText();
+				string varType = context->TYPE()->getText();
+				string varName = context->NAME()->getText();
 
-	if (symbolTable.symbolExists(varName))
-	{
-		// ERROR here
-		cerr << "Variable " << varName << " already defined." << endl;
-		return 1;
-	}
+				if (symbolTable.symbolExists(varName))
+				{
+								// ERROR here
+								cerr << "Variable " << varName << " already defined." << endl;
+								return nullptr;
+				}
 
-	// Add the variable in the symbol table
-	Symbol *symbol = visit(context -> expr());
-	if (symbol == nullptr) return 1;
-	Symbol* newsymb = symbolTable.addSymbol(varName, varType, symbol -> getValue());
-
-	// Write ASSEMBLY code
-	cout << "   movl -" << symbol->getMemoryAddress() << "(%rbp), %eax\n";
-	cout << "   movl %eax, -" << newsymb->getMemoryAddress() << "(%rbp)\n";
-	return 0;
+				// Add the variable in the symbol table
+				Expr expr = visit(context->expr());
+				if (expr == nullptr) return nullptr;
+				symbolTable.addSymbol(varName, varType);
+				Aff* aff = new Aff(varName, expr);
+				return aff;
 }
 
 antlrcpp::Any Visitor::visitVardef(ifccParser::VardefContext *context)
 {
-	string varType = context->TYPE()->getText();
-	string varName = context->NAME()->getText();
+				string varType = context->TYPE()->getText();
+				string varName = context->NAME()->getText();
 
-	if (symbolTable.symbolExists(varName))
-	{
-		// ERROR here
-		cerr << "Variable " << varName << " already defined." << endl;
-		return 1;
-	}
+				if (symbolTable.symbolExists(varName))
+				{
+								// ERROR here
+								cerr << "Variable " << varName << " already defined." << endl;
+								return nullptr;
+				}
 
-	// Add the variable in the symbol table
-	Symbol *symbol = symbolTable.addSymbol(varName, varType, "0");
-	// Write ASSEMBLY code
-	cout << "   movl $" << symbol->getValue() << ", -" << symbol->getMemoryAddress() << "(%rbp)\n";
+				// Add the variable in the symbol table
+				Symbol *symbol = symbolTable.addSymbol(varName, varType);
 
-	vector<ifccParser::VirgulenameContext *> virgulename = context->virgulename();
-	vector<ifccParser::VirgulenameContext *>::iterator it;
+				vector<ifccParser::VirgulenameContext *> virgulename = context->virgulename();
+				vector<ifccParser::VirgulenameContext *>::iterator it;
 
-	for (it = virgulename.begin(); it != virgulename.end(); ++it)
-	{
-		string varname = visit(*it);
+				for (it = virgulename.begin(); it != virgulename.end(); ++it)
+				{
+								string varname = visit(*it);
 
-		if (symbolTable.symbolExists(varname))
-		{
-			// ERROR here
-			cerr << "Variable " << varName << " already defined." << endl;
-			return 1;
-		}
+								if (symbolTable.symbolExists(varname))
+								{
+												// ERROR here
+												cerr << "Variable " << varName << " already defined." << endl;
+												return nullptr;
+								}
 
-		// Add the variable in the symbol table
-		symbol = symbolTable.addSymbol(varname, varType, "0");
-		// Write ASSEMBLY code
-		cout << "   movl $" << symbol->getValue() << ", -" << symbol->getMemoryAddress() << "(%rbp)\n";
-	}
+								// Add the variable in the symbol table
+								symbol = symbolTable.addSymbol(varname, varType);
+				}
 
-	return 0;
+				return nullptr;
 }
 
 antlrcpp::Any Visitor::visitVirgulename(ifccParser::VirgulenameContext *context)
 {
-	return context->NAME()->getText();
+				return context->NAME()->getText();
 }
 
 antlrcpp::Any Visitor::visitVaraff(ifccParser::VaraffContext *context)
 {
-	string varName = context->NAME()->getText();
-	Symbol *expr = visit(context->expr());
-	if (expr == nullptr)
-		return 1;
-	if (!symbolTable.symbolExists(varName))
-	{
-		cerr << "Undefined variable named '" << varName << "'" << endl;
-		return 1;
-	}
+				string varName = context->NAME()->getText();
+				Expr expr = (Expr) visit(context->expr());
+				if (expr == nullptr)
+								return nullptr;
+				if (!symbolTable.symbolExists(varName))
+				{
+								cerr << "Undefined variable named '" << varName << "'" << endl;
+								return nullptr;
+				}
 
-	// Get variable symbol
-	Symbol *varSymbol = symbolTable.getSymbol(varName);
+				return new Aff(varName, expr);
+}
 
-	// Write ASSEMBLY code
-	cout << "   movl -" << expr->getMemoryAddress() << "(%rbp), %eax\n";
-	cout << "   movl %eax, -" << varSymbol->getMemoryAddress() << "(%rbp)\n";
-	return 0;
+antlrcpp::Any Visitor::visitFunccall(ifccParser::FunccallContext *context){
+				string funcName = context->NAME()->getText();
+				FunCall fc = FuncCall(funcName);
+				if(context->expr() != nullptr) {
+								fc.addParam((Expr) visit(context->expr()));
+								vector<ifccParser::VirguleexprContext *> virguleexpr = context->virguleexpr();
+								vector<ifccParser::VirguleexprContext *>::iterator it;
+								for (it = virguleexpr.begin(); it != virguleexpr.end(); ++it)
+								{
+												fc.addParam((Expr) visit(*it));
+								}
+				}
+				return fc;
+}
+
+
+antlrcpp::Any Visitor::visitVirguleexpr(ifccParser::VirguleexprContext *context){
+				return (Expr) visit(context->expr());
+}
+
+antlrcpp::Any Visitor::visitExpr(ifccParser::ExprContext *context) {
+				vector<antlr4::tree::TerminalNode *> name = context->NAME();
+				ifccParser::ExprsimpleContext* escontext = context->exprsimple();
+				if(name.size()>0) {
+								if(escontext != nullptr) {
+												Expr expr = visit(escontext);
+												Aff* aff = new Aff(name[name.size()-1],expr);
+												for (int i=name.size()-2; i>=0; --i) {
+																aff = new Aff(name[i],*aff);
+												}
+												return aff;
+								}else{
+												Aff* aff = new Aff(name[name.size()-2],VarExpr(name[name.size()-1]));
+												for (int i=name.size()-3; i>=0; --i) {
+																aff = new Aff(name[i],*aff);
+												}
+												return aff;
+								}
+
+				}else{
+								return visit(escontext);
+				}
 }
 
 antlrcpp::Any Visitor::visitPar(ifccParser::ParContext *context)
 {
-	return visit(context->expr());
+				return visit(context->expr());
 }
 
 antlrcpp::Any Visitor::visitConst(ifccParser::ConstContext *context)
 {
-	string value = context->CONST()->getText();
-	Symbol *temp = symbolTable.addTempSymbol("int", value);
-	cout << "   movl $" << value << ", -" << temp->getMemoryAddress() << "(%rbp)\n";
-	return temp;
+				string value = context->CONST()->getText();
+				return new ConstExpr(value);
 }
 
 antlrcpp::Any Visitor::visitName(ifccParser::NameContext *context)
 {
-	string varName = context->NAME()->getText();
-	if (!symbolTable.symbolExists(varName))
-	{
-		cerr << "Undefined variable named '" << varName << "'" << endl;
-		return nullptr;
-	}
+				string varName = context->NAME()->getText();
+				if (!symbolTable.symbolExists(varName))
+				{
+								cerr << "Undefined variable named '" << varName << "'" << endl;
+								return nullptr;
+				}
 
-	// Get variable symbol
-	Symbol *varSymbol = symbolTable.getSymbol(varName);
-	return varSymbol;
+				return new VarExpr(varName);
 }
 
+antlrcpp::Any Visitor::visitFunctioncall(ifccParser::FunctioncallContext *context) {
+
+}
+
+antlrcpp::Any Visitor::visitAffecsimple(ifccParser::AffecsimpleContext *context) {
+
+}
 
 antlrcpp::Any Visitor::visitNegative(ifccParser::NegativeContext *context)
 {
-	Symbol *expr = visit(context->expr());
-	if (expr== nullptr) return nullptr;
-	Symbol *temp = symbolTable.addTempSymbol("int", "0");
-	cout << "   movl	-" << expr->getMemoryAddress() << "(%rbp), %eax\n";
-	cout << "   negl %eax\n";
-	cout << "   movl %eax, -" << temp->getMemoryAddress() << "(%rbp)\n";
-	return temp;
+				Expr expr = (Expr) visit(context->exprsimple());
+				UnOp up = UnOp(expr, NEGL);
+				if (expr== nullptr) return nullptr;
+				Symbol *temp = symbolTable.addTempSymbol("int", "0");
+				cout << "   movl	-"<< expr->getMemoryAddress() << "(%rbp), %eax\n";
+				cout << "   negl %eax\n";
+				cout << "   movl %eax, -" << temp->getMemoryAddress() << "(%rbp)\n";
+				return temp;
 }
 
 antlrcpp::Any Visitor::visitMultdiv(ifccParser::MultdivContext *context)
 {
-	bool isMult = visit(context->binopmd());
-	Symbol *expr0 = visit(context->expr(0));
-	Symbol *expr1 = visit(context->expr(1));
-	if (expr0 == nullptr || expr1 == nullptr)
-		return nullptr;
-	Symbol *temp = symbolTable.addTempSymbol("int", "0");
+				bool isMult = visit(context->binopmd());
+				Symbol *expr0 = visit(context->expr(0));
+				Symbol *expr1 = visit(context->expr(1));
+				if (expr0 == nullptr || expr1 == nullptr)
+								return nullptr;
+				Symbol *temp = symbolTable.addTempSymbol("int", "0");
 
-	if (isMult) {
-		cout << "   movl	-" << expr0->getMemoryAddress() << "(%rbp), %edx\n";
-		cout << "   movl	-" << expr1->getMemoryAddress() << "(%rbp), %eax\n";
-		cout << "   imull	%edx, %eax\n";
-		cout << "   movl	%eax, -" << temp->getMemoryAddress() << "(%rbp)" << endl;
-	} else {
-		cout << "   movl	-" << expr0->getMemoryAddress() << "(%rbp), %eax\n";
-		cout << "   cltd\n";
-		cout << "   idivl -" << expr1->getMemoryAddress() << "(%rbp)\n";
-		cout << "   movl	%eax, -" << temp->getMemoryAddress() << "(%rbp)" << endl;
-	}
-	return temp;
+				if (isMult) {
+								cout << "   movl	-"<< expr0->getMemoryAddress() << "(%rbp), %edx\n";
+								cout << "   movl	-"<< expr1->getMemoryAddress() << "(%rbp), %eax\n";
+								cout << "   imull	%edx, %eax\n";
+								cout << "   movl	%eax, -"<< temp->getMemoryAddress() << "(%rbp)" << endl;
+				} else {
+								cout << "   movl	-"<< expr0->getMemoryAddress() << "(%rbp), %eax\n";
+								cout << "   cltd\n";
+								cout << "   idivl -" << expr1->getMemoryAddress() << "(%rbp)\n";
+								cout << "   movl	%eax, -"<< temp->getMemoryAddress() << "(%rbp)" << endl;
+				}
+				return temp; antlrcpp::Any visitAffecsimple(ifccParser::AffecsimpleContext *context)
 
 }
 
 antlrcpp::Any Visitor::visitPlusmoins(ifccParser::PlusmoinsContext *context)
 {
-	bool isPlus = visit(context->binoppm());
-	Symbol *expr0 = visit(context->expr(0));
-	Symbol *expr1 = visit(context->expr(1));
-	if (expr0 == nullptr || expr1 == nullptr) return nullptr;
-	Symbol *temp = symbolTable.addTempSymbol("int", "0");
+				bool isPlus = visit(context->binoppm());
+				Symbol *expr0 = visit(context->expr(0));
+				Symbol *expr1 = visit(context->expr(1));
+				if (expr0 == nullptr || expr1 == nullptr) return nullptr;
+				Symbol *temp = symbolTable.addTempSymbol("int", "0");
 
-	if (isPlus) {
-		cout << "   movl	-" << expr0->getMemoryAddress() << "(%rbp), %edx\n";
-		cout << "   movl	-" << expr1->getMemoryAddress() << "(%rbp), %eax\n";
-		cout << "   addl	%edx, %eax\n";
-		cout << "   movl	%eax, -" << temp->getMemoryAddress() << "(%rbp)" << endl;
+				if (isPlus) {
+								cout << "   movl	-"<< expr0->getMemoryAddress() << "(%rbp), %edx\n";
+								cout << "   movl	-"<< expr1->getMemoryAddress() << "(%rbp), %eax\n";
+								cout << "   addl	%edx, %eax\n";
+								cout << "   movl	%eax, -"<< temp->getMemoryAddress() << "(%rbp)" << endl;
 
-	} else {
-		cout << "   movl	-" << expr0->getMemoryAddress() << "(%rbp), %eax\n";
-		cout << "   movl	-" << expr1->getMemoryAddress() << "(%rbp), %edx\n";
-		cout << "   subl	%edx, %eax\n";
-		cout << "   movl	%eax, -" << temp->getMemoryAddress() << "(%rbp)" << endl;
-	}
+				} else {
+								cout << "   movl	-"<< expr0->getMemoryAddress() << "(%rbp), %eax\n";
+								cout << "   movl	-"<< expr1->getMemoryAddress() << "(%rbp), %edx\n";
+								cout << "   subl	%edx, %eax\n";
+								cout << "   movl	%eax, -"<< temp->getMemoryAddress() << "(%rbp)" << endl;
+				}
 
-	return temp;
+				return temp;
 }
 
 antlrcpp::Any Visitor::visitBinoppm(ifccParser::BinoppmContext *context)
 {
-	bool isPlus = context -> getText() == "+";
-	return isPlus;
+				bool isPlus = context->getText() == "+";
+				return isPlus;
 }
 
 antlrcpp::Any Visitor::visitBinopmd(ifccParser::BinopmdContext *context)
 {
-	bool isMult = context -> getText() == "*";
-	return isMult;
+				bool isMult = context->getText() == "*";
+				return isMult;
 }
 
 int Visitor::getReturnCode()
 {
-	return returnCode;
+				return returnCode;
 }

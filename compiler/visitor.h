@@ -5,8 +5,8 @@
 
 #include "antlr4-runtime.h"
 #include "antlr4-generated/ifccVisitor.h"
-
 #include "symbol-table/SymbolTable.h"
+#include "ast.h"
 
 using namespace std;
 
@@ -18,26 +18,35 @@ class Visitor : public ifccVisitor
 {
 public:
 
-Visitor();
+Visitor(Ast* ast);
 
-virtual antlrcpp::Any visitAxiom(ifccParser::AxiomContext *ctx) override;
-virtual antlrcpp::Any visitProg(ifccParser::ProgContext *ctx) override;
-virtual antlrcpp::Any visitFunc(ifccParser::FuncContext *context) override;
-virtual antlrcpp::Any visitBlock(ifccParser::BlockContext *context) override;
-virtual antlrcpp::Any visitBlock_content(ifccParser::Block_contentContext *context) override;
-virtual antlrcpp::Any visitFunc_return(ifccParser::Func_returnContext *context) override;
-virtual antlrcpp::Any visitVardefaff(ifccParser::VardefaffContext *context) override;
-virtual antlrcpp::Any visitVardef(ifccParser::VardefContext *context) override;
-virtual antlrcpp::Any visitVirgulename(ifccParser::VirgulenameContext *context) override;
-virtual antlrcpp::Any visitVaraff(ifccParser::VaraffContext *context) override;
-virtual antlrcpp::Any visitPar(ifccParser::ParContext *context) override;
-virtual antlrcpp::Any visitConst(ifccParser::ConstContext *context) override;
-virtual antlrcpp::Any visitName(ifccParser::NameContext *context) override;
-virtual antlrcpp::Any visitNegative(ifccParser::NegativeContext *context) override;
-virtual antlrcpp::Any visitMultdiv(ifccParser::MultdivContext *context) override;
-virtual antlrcpp::Any visitPlusmoins(ifccParser::PlusmoinsContext *context) override;
-virtual antlrcpp::Any visitBinoppm(ifccParser::BinoppmContext *context) override;
-virtual antlrcpp::Any visitBinopmd(ifccParser::BinopmdContext *context) override;
+antlrcpp::Any visitAxiom(ifccParser::AxiomContext *context) override;
+antlrcpp::Any visitProg(ifccParser::ProgContext *context) override;
+antlrcpp::Any visitFunc(ifccParser::FuncContext *context) override; //ok
+antlrcpp::Any visitBlock(ifccParser::BlockContext *context) override; //ok
+antlrcpp::Any visitInstr(ifccParser::InstrContext *context) override; //ok
+antlrcpp::Any visitWhiledef(ifccParser::WhiledefContext *context) override; //ok
+antlrcpp::Any visitIfdef(ifccParser::IfdefContext *context) override; //ok
+antlrcpp::Any visitElsedef(ifccParser::ElsedefContext *context) override; //ok
+antlrcpp::Any visitFordef(ifccParser::FordefContext *context) override; //ok
+antlrcpp::Any visitFunc_return(ifccParser::Func_returnContext *context) override; //ok
+antlrcpp::Any visitVardefaff(ifccParser::VardefaffContext *context) override; //ok
+antlrcpp::Any visitVardef(ifccParser::VardefContext *context) override; //ok
+antlrcpp::Any visitVirgulename(ifccParser::VirgulenameContext *context) override; //ok
+antlrcpp::Any visitVaraff(ifccParser::VaraffContext *context) override; //ok
+antlrcpp::Any visitFunccall(ifccParser::FunccallContext *context) override; //ok
+antlrcpp::Any visitVirguleexpr(ifccParser::VirguleexprContext *context) override; //ok
+antlrcpp::Any visitPar(ifccParser::ParContext *context) override; //ok
+antlrcpp::Any visitNegative(ifccParser::NegativeContext *context) override;
+antlrcpp::Any visitConst(ifccParser::ConstContext *context) override; //ok
+antlrcpp::Any visitFunctioncall(ifccParser::FunctioncallContext *context) override;
+antlrcpp::Any visitAffecsimple(ifccParser::AffecsimpleContext *context) override;
+antlrcpp::Any visitMultdiv(ifccParser::MultdivContext *context) override;
+antlrcpp::Any visitName(ifccParser::NameContext *context) override; //ok
+antlrcpp::Any visitPlusmoins(ifccParser::PlusmoinsContext *context) override;
+antlrcpp::Any visitExpr(ifccParser::ExprContext *context) override; //ok
+antlrcpp::Any visitBinopmd(ifccParser::BinopmdContext *context) override;
+antlrcpp::Any visitBinoppm(ifccParser::BinoppmContext *context) override;
 
 int getReturnCode();
 
@@ -45,4 +54,5 @@ private:
 
 SymbolTable symbolTable;
 int returnCode;
+Ast* ast;
 };
