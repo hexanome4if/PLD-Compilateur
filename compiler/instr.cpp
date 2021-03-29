@@ -69,11 +69,42 @@ string Aff :: buildIR (CFG* cfg) {
     return varId;
 }
 
+string Ret :: buildIR(CFG *cfg) {
+	string varExpr = expr.buildIR(cfg);
+	vector<string> params;
+	params.push_back(varExpr);
+	cfg->current_bb->add_IRInstr(IRInstr::ret, "int64",params );
+}
+
+string Func :: buildIR(CFG* cfg) {
+	//Générer prologue
+	BasicBlock prologue = BasicBlock(cfg, cfg->new_BB_name());
+	vector<string> empty;
+	prologue.add_IRInstr(IRInstr::prol, "notype", empty);
+	cfg->add_bb(&prologue);
+
+	//Générer la fonction
+	BasicBlock body = BasicBlock(cfg, cfg->new_BB_name());
+	prologue.exit_true = &body;
+	cfg->add_bb(&body);
+	cfg->current_bb = &body;
+	block.buildIR(cfg);
+
+	
+	//Générer épilogue
+	BasicBlock epilogue = BasicBlock(cfg, cfg->new_BB_name());
+	epilogue.add_IRInstr(IRInstr::epil, "notype", empty);
+	body.exit_true= &epilogue;
+	cfg->add_bb(&epilogue);
+}
+
 /*
 void Func::addParam(Decl p) {
     params.push_back(p);
 }
 */
+/*
 void Func::addInstr(Instr i) {
     block.push_back(i);
 }
+*/
