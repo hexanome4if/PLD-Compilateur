@@ -16,15 +16,15 @@ antlrcpp::Any Visitor::visitAxiom(ifccParser::AxiomContext *ctx)
 }
 antlrcpp::Any Visitor::visitProg(ifccParser::ProgContext *ctx)
 {
-				int res = 0;
 				vector<ifccParser::FuncContext *> func = ctx->func();
 				vector<ifccParser::FuncContext *>::iterator it;
 
 				for (it = func.begin(); it != func.end(); ++it)
 				{
-								res += (int)visit(*it);
+								Node node = (Node)visit(*it);
+								ast.addNode(node);
 				}
-				return res > 0 ? 1 : 0;
+				return 0;
 }
 
 antlrcpp::Any Visitor::visitFunc(ifccParser::FuncContext *context)
@@ -183,7 +183,7 @@ antlrcpp::Any Visitor::visitVaraff(ifccParser::VaraffContext *context)
 
 antlrcpp::Any Visitor::visitFunccall(ifccParser::FunccallContext *context){
 				string funcName = context->NAME()->getText();
-				FunCall fc = FuncCall(funcName);
+				FuncCall fc = FuncCall(funcName);
 				if(context->expr() != nullptr) {
 								fc.addParam((Expr) visit(context->expr()));
 								vector<ifccParser::VirguleexprContext *> virguleexpr = context->virguleexpr();
@@ -249,71 +249,58 @@ antlrcpp::Any Visitor::visitName(ifccParser::NameContext *context)
 }
 
 antlrcpp::Any Visitor::visitFunctioncall(ifccParser::FunctioncallContext *context) {
-
+				return visit(context->funccall());
 }
 
 antlrcpp::Any Visitor::visitAffecsimple(ifccParser::AffecsimpleContext *context) {
-
+				string varName = context->NAME()->getText();
+				if (!symbolTable.symbolExists(varName))
+				{
+								cerr << "Undefined variable named '" << varName << "'" << endl;
+								return nullptr;
+				}
+				Expr expr = (Expr) visit(context->exprsimple());
+				Aff aff = Aff(varName, expr);
+				return aff;
 }
 
 antlrcpp::Any Visitor::visitNegative(ifccParser::NegativeContext *context)
 {
 				Expr expr = (Expr) visit(context->exprsimple());
-				UnOp up = UnOp(expr, NEGL);
 				if (expr== nullptr) return nullptr;
-				Symbol *temp = symbolTable.addTempSymbol("int", "0");
-				cout << "   movl	-"<< expr->getMemoryAddress() << "(%rbp), %eax\n";
-				cout << "   negl %eax\n";
-				cout << "   movl %eax, -" << temp->getMemoryAddress() << "(%rbp)\n";
-				return temp;
+				UnOp up = UnOp(expr, NEGL);
+				return up;
 }
 
 antlrcpp::Any Visitor::visitMultdiv(ifccParser::MultdivContext *context)
 {
 				bool isMult = visit(context->binopmd());
-				Symbol *expr0 = visit(context->expr(0));
-				Symbol *expr1 = visit(context->expr(1));
+				Expr expr0 = visit(context->exprsimple(0));
+				Expr expr1 = visit(context->exprsimple(1));
 				if (expr0 == nullptr || expr1 == nullptr)
 								return nullptr;
-				Symbol *temp = symbolTable.addTempSymbol("int", "0");
-
+				BinOp bo;
 				if (isMult) {
-								cout << "   movl	-"<< expr0->getMemoryAddress() << "(%rbp), %edx\n";
-								cout << "   movl	-"<< expr1->getMemoryAddress() << "(%rbp), %eax\n";
-								cout << "   imull	%edx, %eax\n";
-								cout << "   movl	%eax, -"<< temp->getMemoryAddress() << "(%rbp)" << endl;
+								bo = BinOp(expr0, expr1, MULT);
 				} else {
-								cout << "   movl	-"<< expr0->getMemoryAddress() << "(%rbp), %eax\n";
-								cout << "   cltd\n";
-								cout << "   idivl -" << expr1->getMemoryAddress() << "(%rbp)\n";
-								cout << "   movl	%eax, -"<< temp->getMemoryAddress() << "(%rbp)" << endl;
+								bo = BinOp(expr0, expr1, DIV);
 				}
-				return temp; antlrcpp::Any visitAffecsimple(ifccParser::AffecsimpleContext *context)
-
+				return bo;
 }
 
 antlrcpp::Any Visitor::visitPlusmoins(ifccParser::PlusmoinsContext *context)
 {
 				bool isPlus = visit(context->binoppm());
-				Symbol *expr0 = visit(context->expr(0));
-				Symbol *expr1 = visit(context->expr(1));
+				Expr expr0 = visit(context->exprsimple(0));
+				Expr expr1 = visit(context->exprsimple(1));
 				if (expr0 == nullptr || expr1 == nullptr) return nullptr;
-				Symbol *temp = symbolTable.addTempSymbol("int", "0");
-
+				BinOp bo;
 				if (isPlus) {
-								cout << "   movl	-"<< expr0->getMemoryAddress() << "(%rbp), %edx\n";
-								cout << "   movl	-"<< expr1->getMemoryAddress() << "(%rbp), %eax\n";
-								cout << "   addl	%edx, %eax\n";
-								cout << "   movl	%eax, -"<< temp->getMemoryAddress() << "(%rbp)" << endl;
-
+								bo = BinOp(expr0, expr1, ADD);
 				} else {
-								cout << "   movl	-"<< expr0->getMemoryAddress() << "(%rbp), %eax\n";
-								cout << "   movl	-"<< expr1->getMemoryAddress() << "(%rbp), %edx\n";
-								cout << "   subl	%edx, %eax\n";
-								cout << "   movl	%eax, -"<< temp->getMemoryAddress() << "(%rbp)" << endl;
+								bo = BinOp(expr0, expr1, SUBS);
 				}
-
-				return temp;
+				return bo;
 }
 
 antlrcpp::Any Visitor::visitBinoppm(ifccParser::BinoppmContext *context)

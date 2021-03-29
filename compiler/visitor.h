@@ -37,16 +37,16 @@ antlrcpp::Any visitVaraff(ifccParser::VaraffContext *context) override; //ok
 antlrcpp::Any visitFunccall(ifccParser::FunccallContext *context) override; //ok
 antlrcpp::Any visitVirguleexpr(ifccParser::VirguleexprContext *context) override; //ok
 antlrcpp::Any visitPar(ifccParser::ParContext *context) override; //ok
-antlrcpp::Any visitNegative(ifccParser::NegativeContext *context) override;
+antlrcpp::Any visitNegative(ifccParser::NegativeContext *context) override; //ok
 antlrcpp::Any visitConst(ifccParser::ConstContext *context) override; //ok
-antlrcpp::Any visitFunctioncall(ifccParser::FunctioncallContext *context) override;
-antlrcpp::Any visitAffecsimple(ifccParser::AffecsimpleContext *context) override;
-antlrcpp::Any visitMultdiv(ifccParser::MultdivContext *context) override;
+antlrcpp::Any visitFunctioncall(ifccParser::FunctioncallContext *context) override; //ok
+antlrcpp::Any visitAffecsimple(ifccParser::AffecsimpleContext *context) override; //ok
+antlrcpp::Any visitMultdiv(ifccParser::MultdivContext *context) override; //ok
 antlrcpp::Any visitName(ifccParser::NameContext *context) override; //ok
-antlrcpp::Any visitPlusmoins(ifccParser::PlusmoinsContext *context) override;
+antlrcpp::Any visitPlusmoins(ifccParser::PlusmoinsContext *context) override; //ok
 antlrcpp::Any visitExpr(ifccParser::ExprContext *context) override; //ok
-antlrcpp::Any visitBinopmd(ifccParser::BinopmdContext *context) override;
-antlrcpp::Any visitBinoppm(ifccParser::BinoppmContext *context) override;
+antlrcpp::Any visitBinopmd(ifccParser::BinopmdContext *context) override; //ok
+antlrcpp::Any visitBinoppm(ifccParser::BinoppmContext *context) override; //ok
 
 int getReturnCode();
 

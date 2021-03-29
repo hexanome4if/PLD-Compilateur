@@ -3,6 +3,7 @@
 
 
 #include <string>
+#include "IR.h"
 
 typedef enum {
 				ADD,
@@ -28,7 +29,7 @@ Operation operation;
 
 class UnOp : public Expr {
 public:
-UnOp(Expr e, Operation op) : expr(e) operation(op) {
+UnOp(Expr e, Operation op) : expr(e), operation(op) {
 }
 Expr expr;
 Operation operation;

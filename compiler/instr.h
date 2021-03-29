@@ -8,19 +8,11 @@
 
 using namespace std;
 
-typedef enum {
-				int64,
-				int32
-} Type;
-
-Type getTypeFromString(string string_type) {
-				switch(string_type) {
-				case "int":
-								return int32;
-								break;
-				default:
+TypeName getTypeFromString(string string_type) {
+				if(string_type == "int") {
 								return int32;
 				}
+				return int32; //TODO ajouter char
 }
 
 typedef enum {
@@ -39,6 +31,14 @@ public:
 virtual string buildIR(CFG* cfg);
 };
 
+class Instr : public Node {
+public:
+Instr(Instruction inst) : instruction(inst) {
+}
+virtual string buildIR(CFG* cfg);
+int instruction;
+};
+
 class Block : public Node {
 public:
 Block(Context* c) : context(c) {
@@ -51,26 +51,15 @@ Context* context;
 
 class Func : public Node {
 public:
-Func(Type t, string n, Block b) : type(t), name(n), block(b) {
+Func(TypeName t, string n, Block b) : type(t), name(n), block(b) {
 }
 void addParam(string param);
 void addInstr(Instr instr);
 string buildIR(CFG* cfg);
-Type type;
+TypeName type;
 string name;
 vector<string> params;
 Block block;
-};
-
-
-
-
-class Instr : public Node {
-public:
-Instr(Instruction inst) : instruction(inst) {
-}
-virtual string buildIR(CFG* cfg);
-int instruction;
 };
 
 
@@ -111,7 +100,7 @@ Expr expr;
 
 class If : public Instr {
 public:
-If(Expr cond, BLock bif, BLock belse) : Instr(IF), condition(cond),
+If(Expr cond, Block bif, Block belse) : Instr(IF), condition(cond),
 				blockIf(bif), blockElse(belse){
 }
 void addInstrIf(Instr instr);
