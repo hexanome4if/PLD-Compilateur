@@ -15,23 +15,23 @@ typedef enum {
 
 class Expr {
 public:
-virtual string buildIR(CFG* cfg);
+//virtual string buildIR(CFG* cfg);
 };
 
 class BinOp : public Expr {
 public:
-BinOp(Expr e1, Expr e2, Operation op) : expr1(e1), expr2(e2), operation(op) {
+BinOp(Expr* e1, Expr* e2, Operation op) : expr1(e1), expr2(e2), operation(op) {
 }
-Expr expr1;
-Expr expr2;
+Expr* expr1;
+Expr* expr2;
 Operation operation;
 };
 
 class UnOp : public Expr {
 public:
-UnOp(Expr e, Operation op) : expr(e), operation(op) {
+UnOp(Expr* e, Operation op) : expr(e), operation(op) {
 }
-Expr expr;
+Expr* expr;
 Operation operation;
 };
 
