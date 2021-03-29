@@ -4,13 +4,14 @@
 
 #include <string>
 
-typedef enum {
-    add,
-    mult,
-    divi,
-    subs
-} Operation; 
 
+typedef enum {
+    ADD,
+    MULT,
+    DIV,
+    SUBS,
+    NEGL
+} Operation;
 
 
 class Expr {
@@ -21,17 +22,24 @@ class Expr {
 class BinOp : public Expr{
     public :
         BinOp(Expr e1, Expr e2, int op) : expr1(e1), expr2(e2), operation(op) {}
-        string buildIR(CFG* cfg)
+        string buildIR(CFG* cfg);
         Expr expr1;
         Expr expr2;
-        int operation;
+        Operation operation;
 };
 
+class UnOp : public Expr {
+    public:
+        UnOp(Expr e, Operation op) : expr(e), operation(op) {}
+        string buildIR(CFG* cfg); 
+        Expr expr;
+        Operation operation;
+};
 
 class ConstExpr : public Expr {
     public :
         ConstExpr(string v) : val(v) {}
-        string buildIR(CFG* cfg)
+        string buildIR(CFG* cfg);
         string val;
 };
 
@@ -39,7 +47,7 @@ class ConstExpr : public Expr {
 class VarExpr : public Expr {
     public :
         VarExpr(string v) : varName(v) {}
-        string buildIR(CFG* cfg)
+        string buildIR(CFG* cfg);
         string varName;
 };
 

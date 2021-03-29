@@ -2,6 +2,7 @@
 #include "IR.h"
 #include "expr.h"
 
+/* BuildIR for the expr */
 
 string BinOp :: buildIR (CFG* cfg) {
     
@@ -10,16 +11,16 @@ string BinOp :: buildIR (CFG* cfg) {
     string var3 = cfg->create_new_tempvar("int64");
     IRInstr::Operation op;
     switch (operation){
-        case add:
+        case ADD:
             op=IRInstr::add;
             break;
-        case mult:
+        case MULT:
             op=IRInstr::mul;
             break;
-        case divi:
+        case DIV:
             op=IRInstr::div;
             break;
-        case subs:
+        case SUBS:
             op=IRInstr::sub;
             break;    
     }
@@ -29,6 +30,13 @@ string BinOp :: buildIR (CFG* cfg) {
     params.push_back(var2);
     cfg->current_bb->add_IRInstr(op, "int64", params);
     return var3;
+}
+
+string UnOp :: buildIR (CFG* cfg) {
+    Expr zero = ConstExpr("0");
+    BinOp minus = BinOp(zero, expr, SUBS);
+    string var = minus.buildIR(cfg);
+    return var;
 }
 
 string ConstExpr :: buildIR(CFG* cfg){
@@ -45,22 +53,37 @@ string VarExpr ::buildIR(CFG*cfg){
 }
 
 
+
 string Block :: buildIR (CFG* cfg) {
     for (int i = 0; i < instrs.size(); i++){
         instrs[i].buildIR(cfg);   
     }
+    return "BLOCK";
 }
 
 string Aff :: buildIR (CFG* cfg) {
-    
-    IRInstr(cfg->current_bb, copy, cfg->get_var_type(varId), )
-    
+    string varExpr = expr.buildIR(cfg);
+    vector<string> params;
+    params.push_back(varId);
+    params.push_back(varExpr);
+    cfg->current_bb->add_IRInstr(IRInstr::copy, "int64", params);
+    return varId;
 }
 
+string DeclAff :: buildIR (CFG* cfg) {
+    string varExpr = expr.buildIR(cfg);
+    vector<string> params;
+    params.push_back(varId);
+    params.push_back(varExpr);
+    cfg->current_bb->add_IRInstr(IRInstr::copy, "int64", params);
+    return varId;
+}
+
+/*
 void Func::addParam(Decl p) {
     params.push_back(p);
 }
-
+*/
 void Func::addInstr(Instr i) {
     block.push_back(i);
 }
