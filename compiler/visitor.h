@@ -25,17 +25,17 @@ antlrcpp::Any visitProg(ifccParser::ProgContext *context) override;
 antlrcpp::Any visitFunc(ifccParser::FuncContext *context) override; //ok
 antlrcpp::Any visitBlock(ifccParser::BlockContext *context) override; //ok
 antlrcpp::Any visitInstr(ifccParser::InstrContext *context) override; //ok
-antlrcpp::Any visitWhiledef(ifccParser::WhiledefContext *context) override;
-antlrcpp::Any visitIfdef(ifccParser::IfdefContext *context) override;
-antlrcpp::Any visitElsedef(ifccParser::ElsedefContext *context) override;
-antlrcpp::Any visitFordef(ifccParser::FordefContext *context) override;
+antlrcpp::Any visitWhiledef(ifccParser::WhiledefContext *context) override; //ok
+antlrcpp::Any visitIfdef(ifccParser::IfdefContext *context) override; //ok
+antlrcpp::Any visitElsedef(ifccParser::ElsedefContext *context) override; //ok
+antlrcpp::Any visitFordef(ifccParser::FordefContext *context) override; //ok
 antlrcpp::Any visitFunc_return(ifccParser::Func_returnContext *context) override; //ok
 antlrcpp::Any visitVardefaff(ifccParser::VardefaffContext *context) override; //ok
 antlrcpp::Any visitVardef(ifccParser::VardefContext *context) override; //ok
-antlrcpp::Any visitVirgulename(ifccParser::VirgulenameContext *context) override;
+antlrcpp::Any visitVirgulename(ifccParser::VirgulenameContext *context) override; //ok
 antlrcpp::Any visitVaraff(ifccParser::VaraffContext *context) override; //ok
-antlrcpp::Any visitFunccall(ifccParser::FunccallContext *context) override;
-antlrcpp::Any visitVirguleexpr(ifccParser::VirguleexprContext *context) override;
+antlrcpp::Any visitFunccall(ifccParser::FunccallContext *context) override; //ok
+antlrcpp::Any visitVirguleexpr(ifccParser::VirguleexprContext *context) override; //ok
 antlrcpp::Any visitPar(ifccParser::ParContext *context) override; //ok
 antlrcpp::Any visitNegative(ifccParser::NegativeContext *context) override;
 antlrcpp::Any visitConst(ifccParser::ConstContext *context) override; //ok

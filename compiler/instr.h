@@ -111,8 +111,8 @@ Expr expr;
 
 class If : public Instr {
 public:
-If(Expr cond, Context* cif, Context* celse) : Instr(IF), condition(cond),
-				blockIf(Block(cif)), blockElse(Block(celse)){
+If(Expr cond, BLock bif, BLock belse) : Instr(IF), condition(cond),
+				blockIf(bif), blockElse(belse){
 }
 void addInstrIf(Instr instr);
 void addInstrElse(Instr instr);
@@ -124,7 +124,7 @@ Block blockElse;
 
 class While : public Instr {
 public:
-While(Expr cond, Context* c) : Instr(WHILE), condition(cond), block(Block(c)){
+While(Expr cond, Block b) : Instr(WHILE), condition(cond), block(b){
 }
 void addInstr(Instr instr);
 string buildIR(CFG* cfg);
@@ -134,7 +134,7 @@ Block block;
 
 class For : public Instr {
 public:
-For(Expr i, Expr cond, Expr p, Context* c) : Instr(FOR), init(i), condition(cond), progression(p), block(Block(c)) {
+For(Expr i, Expr cond, Expr p, Block b) : Instr(FOR), init(i), condition(cond), progression(p), block(b) {
 }
 void addInstr(Instr instr);
 string buildIR(CFG* cfg);

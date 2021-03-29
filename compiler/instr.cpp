@@ -19,3 +19,7 @@ void Func::addParam(Decl p) {
 void Func::addInstr(Instr i) {
 				block.push_back(i);
 }
+
+void FuncCall::addParam(Expr e) {
+				params.push_back(e);
+}

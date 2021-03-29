@@ -65,19 +65,35 @@ antlrcpp::Any Visitor::visitInstr(ifccParser::InstrContext *context)
 }
 
 antlrcpp::Any Visitor::visitWhiledef(ifccParser::WhiledefContext *context) {
-
+				Expr expr = visit(context->expr());
+				if (expr == nullptr) return nullptr;
+				Block b = visit(context->block());
+				While w = While(expr,b);
+				return w;
 }
 
 antlrcpp::Any Visitor::visitIfdef(ifccParser::IfdefContext *context) {
-
+				Expr expr = visit(context->expr());
+				if (expr == nullptr) return nullptr;
+				Block bIf = visit(context->block());
+				Block bElse = context->elsedef() == nullptr ? Block() : visit(context->elsedef()); //TODO changer en pointeur plus tards nullptr
+				If i = If(expr,b);
+				return w;
 }
 
 antlrcpp::Any Visitor::visitElsedef(ifccParser::ElsedefContext *context) {
-
+				return visit(context->block());
 }
 
 antlrcpp::Any Visitor::visitFordef(ifccParser::FordefContext *context) {
-
+				Expr init = visit(context->expr(0));
+				if (init == nullptr) return nullptr;
+				Expr condition = visit(context->expr(1));
+				if (condition == nullptr) return nullptr;
+				Expr progression = visit(context->expr(2));
+				if (progression == nullptr) return nullptr;
+				Block b = visit(context->block());
+				For f = For(init,condition,progression,b);
 }
 
 
@@ -166,12 +182,23 @@ antlrcpp::Any Visitor::visitVaraff(ifccParser::VaraffContext *context)
 }
 
 antlrcpp::Any Visitor::visitFunccall(ifccParser::FunccallContext *context){
-
+				string funcName = context->NAME()->getText();
+				FunCall fc = FuncCall(funcName);
+				if(context->expr() != nullptr) {
+								fc.addParam((Expr) visit(context->expr()));
+								vector<ifccParser::VirguleexprContext *> virguleexpr = context->virguleexpr();
+								vector<ifccParser::VirguleexprContext *>::iterator it;
+								for (it = virguleexpr.begin(); it != virguleexpr.end(); ++it)
+								{
+												fc.addParam((Expr) visit(*it));
+								}
+				}
+				return fc;
 }
 
 
 antlrcpp::Any Visitor::visitVirguleexpr(ifccParser::VirguleexprContext *context){
-
+				return (Expr) visit(context->expr());
 }
 
 antlrcpp::Any Visitor::visitExpr(ifccParser::ExprContext *context) {
@@ -221,10 +248,18 @@ antlrcpp::Any Visitor::visitName(ifccParser::NameContext *context)
 				return new VarExpr(varName);
 }
 
+antlrcpp::Any Visitor::visitFunctioncall(ifccParser::FunctioncallContext *context) {
+
+}
+
+antlrcpp::Any Visitor::visitAffecsimple(ifccParser::AffecsimpleContext *context) {
+
+}
 
 antlrcpp::Any Visitor::visitNegative(ifccParser::NegativeContext *context)
 {
-				Symbol *expr = visit(context->expr());
+				Expr expr = (Expr) visit(context->exprsimple());
+				UnOp up = UnOp(expr, NEGL);
 				if (expr== nullptr) return nullptr;
 				Symbol *temp = symbolTable.addTempSymbol("int", "0");
 				cout << "   movl	-"<< expr->getMemoryAddress() << "(%rbp), %eax\n";
@@ -253,7 +288,7 @@ antlrcpp::Any Visitor::visitMultdiv(ifccParser::MultdivContext *context)
 								cout << "   idivl -" << expr1->getMemoryAddress() << "(%rbp)\n";
 								cout << "   movl	%eax, -"<< temp->getMemoryAddress() << "(%rbp)" << endl;
 				}
-				return temp;
+				return temp; antlrcpp::Any visitAffecsimple(ifccParser::AffecsimpleContext *context)
 
 }
 
