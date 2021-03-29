@@ -8,10 +8,9 @@ class Ast {
 
 public:
 
-				Ast() {
-				}
-				void addNode(Node* n);
+	Ast() {	}
+	void addNode(Node* n);
 
 private:
-				vecotr<Node*> nodes;
-}
+	vector<Node*> nodes;
+};
