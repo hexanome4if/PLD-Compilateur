@@ -52,56 +52,56 @@ void IRInstr :: gen_asm(ostream &o) {
             break;
         case sub : // sub dest, src <-- dest = dest - src
             if(params.size()==3){
-                o << "mov" << suffix << " -";
-                o << this.bb->cfg->get_var_index(params[2]);
-                o << "(%rbp), %rax" << endl;
+                o << "mov" << suffix << " ";
+                o << this->bb->cfg->IR_reg_to_asm(params[2]);
+                o << ", %rax" << endl;
 
-                o << "sub" << suffix << " -";
-                o << this.bb->cfg->get_var_index(params[1]);
-                o << "(%rbp), %rax" << endl;
+                o << "sub" << suffix << " ";
+                o << this->bb->cfg->IR_reg_to_asm(params[1]);
+                o << ", %rax" << endl;
 
-                o << "mov" << suffix << " %rax, -";
-                o << this.bb->cfg->get_var_index(params[0]);
-                o << "(%rbp)" << endl;
+                o << "mov" << suffix << " %rax, ";
+                o << this->bb->cfg->IR_reg_to_asm(params[0]);
+                o << endl;
             }
             break;
         case mul : // mul S ：R[%rdx] : R[%rax] <-- S * R[%rax]
             if(params.size()==3){
-                o << "mov" << suffix << " -";
-                o << this->bb->cfg->get_var_index(params[1]);
-                o << "(%rbp), %rax" << endl;
+                o << "mov" << suffix << " ";
+                o << this->bb->cfg->IR_reg_to_asm(params[1]);
+                o << ", %rax" << endl;
 
-                o << "sub" << suffix << " -";
-                o << this->bb->cfg->get_var_index(params[2]);
-                o << "(%rbp)" << endl;
+                o << "imul" << suffix << " ";
+                o << this->bb->cfg->IR_reg_to_asm(params[2]);
+                o << ", %rax" << endl;
 
-                o << "mov" << suffix << " %rax, -";
-                o << this->bb->cfg->get_var_index(params[0]);
-                o << "(%rbp)" << endl;
+                o << "mov" << suffix << " %rax, ";
+                o << this->bb->cfg->IR_reg_to_asm(params[0]);
+                o << endl;
             }
             break;
         case rmem : //rmem dest addr
             if(params.size()==2){
                 //mov addr, rax
-                o << "mov" << suffix << " -";
-                o << this->bb->cfg->get_var_index(params[1]);
-                o << "(%rbp), %rax" << endl;
+                o << "mov" << suffix << " ";
+                o << this->bb->cfg->IR_reg_to_asm(params[1]);
+                o << ", %rax" << endl;
                 //mov [rax], dest
-                o << "mov" << suffix << " [%rax], -";
-                o << this->bb->cfg->get_var_index(params[1]);
-                o << "(%rbp)" << endl;
+                o << "mov" << suffix << " [%rax], ";
+                o << this->bb->cfg->IR_reg_to_asm(params[1]);
+                o << endl;
             }
             break;
         case wmem : //wmem addr var
             if(params.size()==2){
                 //mov addr, rax
-                o << "mov" << suffix << " -";
-                o << this->bb->cfg->get_var_index(params[0]);
-                o << "(%rbp), %rax" << endl;
+                o << "mov" << suffix << " ";
+                o << this->bb->cfg->IR_reg_to_asm(params[0]);
+                o << ", %rax" << endl;
                 //mov var, r10
-                o << "mov" << suffix << " -";
-                o << this->bb->cfg->get_var_index(params[1]);
-                o << "(%rbp), %r10" << endl;
+                o << "mov" << suffix << " ";
+                o << this->bb->cfg->IR_reg_to_asm(params[1]);
+                o << ", %r10" << endl;
                 //mov r10, [rax]
                 o << "mov" << suffix << " %r10, [%rax]" << endl; //!!! faut vérifier
             }
@@ -147,6 +147,46 @@ void IRInstr :: gen_asm(ostream &o) {
                 o << "mov" << suffix << " %eax, ";
                 o << this->bb->cfg->IR_reg_to_asm(params[0]) << endl;
             }
+            break;
+        case call : //call lable dest params[]
+                int NombreDeVarExces = params.size() - 8;
+                for(int i=params.size()-1; i>=0; i--) {
+                    if(i > 7) {
+                        o << "pushq" << this->bb->cfg->IR_reg_to_asm(params[i]) << endl;
+                    } else if (i > 1) {
+                        //Attention!!! problem 32/64 bits à gérer ici!
+                        o << "movl " << this->bb->cfg->IR_reg_to_asm(params[i]);
+                        o << ", ";
+                        switch(i) {
+                            case 7 :
+                            o << "%r9d";
+                            break;
+                            case 6 :
+                            o << "%r8d";
+                            break;
+                            case 5 :
+                            o << "%ecx";
+                            break;
+                            case 4 :
+                            o << "%edx";
+                            break;
+                            case 3 :
+                            o << "%esi";
+                            break;
+                            case 2 :
+                            o << "%edi";
+                            break;
+                        }
+                        o << endl;
+                    }
+                }
+                o << "call " << params[0] << "(A faire)";
+                if(NombreDeVarExces > 0) {
+                    o << "addq " << "$" << NombreDeVarExces * 8 << ", %rsp" << endl;
+                }
+                //si destination est de 32 bits
+                o << "movl %eax, " << this->bb->cfg->IR_reg_to_asm(params[1]) << endl;
+                // o << "movq %rax, " << this->bb->cfg->IR_reg_to_asm(params[1]) << endl;
             break;
         default :
     }
