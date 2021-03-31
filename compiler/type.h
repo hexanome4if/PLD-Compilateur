@@ -1,13 +1,16 @@
+#include <string>
+using namespace std;
+
+typedef enum {
+				int64,
+				int32
+} TypeName;
+
 class Type {
-
-    typedef enum {
-        int64,
-        int32
-    } TypeName;
-
-    
-    const string letter[] = { "q","l" };
-    int name;
-    string getLetter() {return letter[name];}
+				const string letter[2] = { "q","l" };
+				int name;
+				string getLetter() {
+								return letter[name];
+				}
 
 };

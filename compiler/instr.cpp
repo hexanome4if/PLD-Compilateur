@@ -5,8 +5,8 @@
 
 string BinOp :: buildIR (CFG* cfg) {
     
-    string var1 = expr1.buildIR(cfg);
-    string var2 = expr2.buildIR(cfg);
+    string var1 = expr1->buildIR(cfg);
+    string var2 = expr2->buildIR(cfg);
     string var3 = cfg->create_new_tempvar("int64");
     IRInstr::Operation op;
     switch (operation){
@@ -21,6 +21,8 @@ string BinOp :: buildIR (CFG* cfg) {
             break;
         case SUBS:
             op=IRInstr::sub;
+            break;
+        default :
             break;    
     }
     vector<string> params;
@@ -32,18 +34,21 @@ string BinOp :: buildIR (CFG* cfg) {
 }
 
 string UnOp :: buildIR (CFG* cfg) {
-    Expr zero = ConstExpr("0");
+    Expr* zero = new ConstExpr("0");
     BinOp minus = BinOp(zero, expr, SUBS);
     string var = minus.buildIR(cfg);
     return var;
 }
 
 string ConstExpr :: buildIR(CFG* cfg){
+    cout << "debut Const" <<  endl;
     string var = cfg->create_new_tempvar("int64");
+    cout << "debut Const apres temp" <<  endl;
     vector<string> params;
     params.push_back(var);
     params.push_back(val);
     cfg->current_bb->add_IRInstr(IRInstr :: ldconst, "int64", params);
+    cout << "fin Const" << var << endl;
     return var;
 }
 
@@ -54,57 +59,139 @@ string VarExpr ::buildIR(CFG*cfg){
 
 
 string Block :: buildIR (CFG* cfg) {
+    cout << "avant buildBlock" << endl;
+    cfg->symbolTable->getNextInnerContext();
     for (int i = 0; i < instrs.size(); i++){
-        instrs[i].buildIR(cfg);   
+        instrs[i]->buildIR(cfg);   
     }
+    cfg->symbolTable->closeContext();
+    cout << "apres buildBlock" << endl;
     return "BLOCK";
 }
 
 string Aff :: buildIR (CFG* cfg) {
-    string varExpr = expr.buildIR(cfg);
+    cout << "debut aff" << endl;
+    string varExpr = expr->buildIR(cfg);
+    cout << "debut aff apres expr_buildir" << endl;
     vector<string> params;
     params.push_back(varId);
     params.push_back(varExpr);
     cfg->current_bb->add_IRInstr(IRInstr::copy, "int64", params);
+    cout << "apres aff" << varId << endl;
     return varId;
 }
 
 string Ret :: buildIR(CFG *cfg) {
-	string varExpr = expr.buildIR(cfg);
+    cout << "avant ret" << endl;
+	string varExpr = expr->buildIR(cfg);
+    cout << "avant ret apres expr" << endl;
 	vector<string> params;
 	params.push_back(varExpr);
 	cfg->current_bb->add_IRInstr(IRInstr::ret, "int64",params );
+    cout << "apres aff" << varExpr << endl;
+    return varExpr;
 }
 
 string Func :: buildIR(CFG* cfg) {
+    cout << "buildIRFunc" << endl; 
 	//Générer prologue
-	BasicBlock prologue = BasicBlock(cfg, cfg->new_BB_name());
+	BasicBlock * prologue = new BasicBlock(cfg, cfg->new_BB_name(), nullptr);
 	vector<string> empty;
-	prologue.add_IRInstr(IRInstr::prol, "notype", empty);
-	cfg->add_bb(&prologue);
+	prologue->add_IRInstr(IRInstr::prol, "notype", empty);
+	cfg->add_bb(prologue);
 
 	//Générer la fonction
-	BasicBlock body = BasicBlock(cfg, name);
-	prologue.exit_true = &body;
-	cfg->add_bb(&body);
-	cfg->current_bb = &body;
-	block.buildIR(cfg);
-
+	BasicBlock * body = new BasicBlock(cfg, name, block->context);
+	prologue->exit_true = body;
+	cfg->add_bb(body);
+	cfg->current_bb = body;
+    cout << "avant buildIRBlock" << endl;
+	block->buildIR(cfg);
+    cout << "apres buildIRBlock" << endl;
 	
 	//Générer épilogue
-	BasicBlock epilogue = BasicBlock(cfg, cfg->new_BB_name());
-	epilogue.add_IRInstr(IRInstr::epil, "notype", empty);
-	body.exit_true= &epilogue;
-	cfg->add_bb(&epilogue);
+	BasicBlock * epilogue = new BasicBlock(cfg, cfg->new_BB_name(), nullptr);
+	epilogue->add_IRInstr(IRInstr::epil, "notype", empty);
+	body->exit_true= epilogue;
+	cfg->add_bb(epilogue);
+
+    return "FUNCTION";
 }
 
-/*
-void Func::addParam(Decl p) {
-    params.push_back(p);
+
+void Block::addInstr(Instr *i)
+{
+	instrs.push_back(i);
 }
-*/
-/*
-void Func::addInstr(Instr i) {
-    block.push_back(i);
+
+void Block::debug(ostream &stream, int space)
+{
+	showSpaces(stream, space);
+	stream << "Block" << endl;
+	context->debug(stream, space);
+	for (int i = 0; i < instrs.size(); ++i)
+	{
+		showSpaces(stream, space + 1);
+		instrs[i]->debug(stream, space);
+		stream << endl;
+	}
 }
-*/
+
+void Func::addParam(string p)
+{
+	params.push_back(p);
+}
+
+void Func::addInstr(Instr *i)
+{
+	block->addInstr(i);
+}
+
+void Func::debug(ostream &stream, int space)
+{
+	showSpaces(stream, space);
+	stream << "Function " << name << endl;
+	block->debug(stream, ++space);
+}
+
+void FuncCall::addParam(Expr *e)
+{
+	params.push_back(e);
+}
+
+void Aff::debug(ostream &stream, int space)
+{
+	stream << "(" << varId << " = ";
+	expr->debug(stream, space);
+	stream << ")";
+}
+void Ret::debug(ostream &stream, int space)
+{
+	stream << "return ";
+	expr->debug(stream, space);
+}
+
+void If::debug(ostream &stream, int space)
+{
+	stream << "if (";
+	condition->debug(stream, space);
+	stream << ")" << endl;
+	blockIf->debug(stream, space + 1);
+	if (blockElse != nullptr)
+	{
+		showSpaces(stream, space);
+		stream << "else" << endl;
+		blockElse->debug(stream, space + 1);
+	}
+}
+
+void FuncCall::debug(ostream &stream, int space)
+{
+	stream << "call to function " << funcName << " with parameters ";
+	for (int i = 0; i < params.size(); ++i)
+	{
+		params[i]->debug(stream, space);
+		stream << " | ";
+	}
+}
+
