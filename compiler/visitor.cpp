@@ -411,6 +411,12 @@ antlrcpp::Any Visitor::visitEqualcompare(ifccParser::EqualcompareContext *contex
 
 }
 
+antlrcpp::Any Visitor:: visitNot(ifccParser::NotContext *context)
+{
+	Expr *expr = (Expr *)visit(context->exprsimple());
+	Expr *up = new Not(expr);
+	return up;
+}
 
 int Visitor::getReturnCode()
 {

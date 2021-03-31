@@ -42,11 +42,7 @@ int main()
   int b = !a;
   int c = !(5 + 9);
   int d = !8;
+  c = !d;
 
-  if ( a ){
-    b = 2;
-  }
-
-  printf("/%d/%d/%d/%d", a, b, c, d);
   return 0;
 }

@@ -149,6 +149,22 @@ Expr *expr1;
 Expr *expr2;
 };
 
+class Not : public Expr
+{
+public:
+Not(Expr *e1) : expr1(e1)
+{
+}
+virtual void debug(ostream &stream, int space) override
+{
+				stream << "(";
+				stream << " ! ";
+				expr1->debug(stream, space);
+				stream << ")";
+}
+Expr *expr1;
+};
+
 class BinOp : public Expr
 {
 public:
