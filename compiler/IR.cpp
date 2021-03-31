@@ -224,6 +224,12 @@ void BasicBlock :: gen_asm(ostream &o) {
     for(int i = 0 ; i < instrs.size() ; i++){
         instrs[i]->gen_asm(o);
     }
+    if(exit_true!=nullptr){
+        exit_true->gen_asm(o);
+    }
+    if(exit_false!=nullptr){
+        exit_false->gen_asm(o);
+    }
 }
 
 void BasicBlock :: add_IRInstr(IRInstr::Operation op, string t, vector<string> params) {
@@ -245,7 +251,9 @@ void CFG :: add_bb(BasicBlock* bb) {
 }
 
 void CFG :: gen_asm(ostream& o) {
-    // TO DO
+    for(int i=0; i<bbs.size(); ++i) {
+        bbs[i]->gen_asm(o);
+    }
 }
 
 string CFG :: IR_reg_to_asm(string reg) {

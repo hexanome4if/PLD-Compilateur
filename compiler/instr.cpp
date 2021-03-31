@@ -99,7 +99,7 @@ string Func ::buildIR(CFG *cfg)
 	//Générer la fonction
 	BasicBlock *body = new BasicBlock(cfg, name, block->context);
 	prologue->exit_true = body;
-	cfg->add_bb(body);
+	//cfg->add_bb(body);
 	cfg->current_bb = body;
 	block->buildIR(cfg);
 
@@ -107,7 +107,7 @@ string Func ::buildIR(CFG *cfg)
 	BasicBlock *epilogue = new BasicBlock(cfg, cfg->new_BB_name(), nullptr);
 	epilogue->add_IRInstr(IRInstr::epil, "notype", empty);
 	body->exit_true = epilogue;
-	cfg->add_bb(epilogue);
+	//cfg->add_bb(epilogue);
 
 	return "FUNCTION";
 }
