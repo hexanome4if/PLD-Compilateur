@@ -84,12 +84,17 @@ exprsimple
 		| NAME 														#name
 		| CONST 													#const
 		| '-' exprsimple 									#negative
+		| '!' exprsimple 									#not
 		| funccall 												#functioncall
 		| '(' NAME '=' exprsimple ')' 		#affecsimple
 		| CHARAC									        #affecchar
 		| exprsimple '&' exprsimple       #andbitwise
 		| exprsimple '^' exprsimple       #xorbitwise
 		| exprsimple '|' exprsimple       #orbitwise
+		| exprsimple '==' exprsimple  #equalcompare
+		| exprsimple '!=' exprsimple  #notequalcompare
+		| exprsimple '<' exprsimple   #infcompare
+		| exprsimple '>' exprsimple   #supcompare
 		;
 
 binopmd: ('*' | '/');

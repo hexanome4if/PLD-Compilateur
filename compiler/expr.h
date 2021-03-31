@@ -75,6 +75,80 @@ Expr *expr1;
 Expr *expr2;
 };
 
+
+class Infcompare : public Expr
+{
+public:
+Infcompare(Expr *e1, Expr *e2) : expr1(e1), expr2(e2)
+{
+}
+virtual void debug(ostream &stream, int space) override
+{
+				stream << "(";
+				expr1->debug(stream, space);
+				stream << " < ";
+				expr2->debug(stream, space);
+				stream << ")";
+}
+Expr *expr1;
+Expr *expr2;
+};
+
+
+class Supcompare : public Expr
+{
+public:
+Supcompare(Expr *e1, Expr *e2) : expr1(e1), expr2(e2)
+{
+}
+virtual void debug(ostream &stream, int space) override
+{
+				stream << "(";
+				expr1->debug(stream, space);
+				stream << " > ";
+				expr2->debug(stream, space);
+				stream << ")";
+}
+Expr *expr1;
+Expr *expr2;
+};
+
+class Notequalcompare : public Expr
+{
+public:
+Notequalcompare(Expr *e1, Expr *e2) : expr1(e1), expr2(e2)
+{
+}
+virtual void debug(ostream &stream, int space) override
+{
+				stream << "(";
+				expr1->debug(stream, space);
+				stream << " != ";
+				expr2->debug(stream, space);
+				stream << ")";
+}
+Expr *expr1;
+Expr *expr2;
+};
+
+class Equalcompare : public Expr
+{
+public:
+Equalcompare(Expr *e1, Expr *e2) : expr1(e1), expr2(e2)
+{
+}
+virtual void debug(ostream &stream, int space) override
+{
+				stream << "(";
+				expr1->debug(stream, space);
+				stream << " == ";
+				expr2->debug(stream, space);
+				stream << ")";
+}
+Expr *expr1;
+Expr *expr2;
+};
+
 class BinOp : public Expr
 {
 public:

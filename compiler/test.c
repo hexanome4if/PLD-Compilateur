@@ -1,6 +1,5 @@
 #include <inttypes.h>
 #include <stdio.h>
-
 /*int func()
    {
         if (1)
@@ -30,15 +29,24 @@
         return a + 10 - 5 * 2;
    }*/
 
-int main() {
-				int abw = 3 & 1; /* result = 1 */
-				int obw = 5 | 2; /* result = 7 */
-				int xbw = 7 ^ 5; /* result =  2 */
+/*int main() {
+				int abw = 3 & 1; /* result = 1 
+				int obw = 5 | 2; /* result = 7  
+				int xbw = 7 ^ 5; /* result =  2 
 				return 0;
-}
+}*/
 
-/*int main()
-   {
-   int a, b;
-   int d = a = b = 2;
-   }*/
+int main()
+{
+  int a = 3 < 5;
+  int b = !a;
+  int c = !(5 + 9);
+  int d = !8;
+
+  if ( a ){
+    b = 2;
+  }
+
+  printf("/%d/%d/%d/%d", a, b, c, d);
+  return 0;
+}

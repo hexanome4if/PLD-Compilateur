@@ -378,6 +378,39 @@ antlrcpp::Any Visitor::visitXorbitwise(ifccParser::XorbitwiseContext *context)
 				return xbw;
 }
 
+antlrcpp::Any Visitor::visitInfcompare(ifccParser::InfcompareContext *context)
+{
+				Expr *expr0 = (Expr *)visit(context->exprsimple(0));
+				Expr *expr1 = (Expr *)visit(context->exprsimple(1));
+				Expr *icmp = new Infcompare(expr0, expr1);
+				return icmp;
+}
+
+antlrcpp::Any Visitor::visitSupcompare(ifccParser::SupcompareContext *context)
+{
+				Expr *expr0 = (Expr *)visit(context->exprsimple(0));
+				Expr *expr1 = (Expr *)visit(context->exprsimple(1));
+				Expr *scmp = new Supcompare(expr0, expr1);
+				return scmp;
+
+}
+antlrcpp::Any Visitor::visitNotequalcompare(ifccParser::NotequalcompareContext *context)
+{
+				Expr *expr0 = (Expr *)visit(context->exprsimple(0));
+				Expr *expr1 = (Expr *)visit(context->exprsimple(1));
+				Expr *necmp = new Notequalcompare(expr0, expr1);
+				return necmp;
+
+}
+antlrcpp::Any Visitor::visitEqualcompare(ifccParser::EqualcompareContext *context)
+{
+				Expr *expr0 = (Expr *)visit(context->exprsimple(0));
+				Expr *expr1 = (Expr *)visit(context->exprsimple(1));
+				Expr *ecmp = new Equalcompare(expr0, expr1);
+				return ecmp;
+
+}
+
 
 int Visitor::getReturnCode()
 {
