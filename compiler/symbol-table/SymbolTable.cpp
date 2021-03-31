@@ -57,10 +57,15 @@ void SymbolTable::setCreationDone()
 	creationDone = true;
 }
 
-Symbol* SymbolTable::addTempSymbol(string type)
+Symbol *SymbolTable::addTempSymbol(string type)
 {
 	string varName = "temp_" + to_string(tempNumber++);
-	Symbol * symbol = new VarSymbol(varName, type);
+	Symbol *symbol = new VarSymbol(varName, type);
 	currentContext->addSymbol(symbol);
 	return symbol;
+}
+
+void SymbolTable::setCurrentContext(Context *context)
+{
+	currentContext = context;
 }

@@ -56,9 +56,7 @@ int main(int argn, const char **argv)
 	Visitor visitor(ast, symbolTable);
 	visitor.visit(tree);
 	ast->debug(cout);
-	cout << "apres debug" << endl;
-	CFG * cfg = new CFG(ast);
-	cout << "apres CFG" << endl;
+	CFG *cfg = new CFG(ast, symbolTable);
 	cfg->buildIR();
 
 	return 0;

@@ -70,7 +70,6 @@ antlrcpp::Any Visitor::visitBlock(ifccParser::BlockContext *context)
 
 antlrcpp::Any Visitor::visitInstr(ifccParser::InstrContext *context)
 {
-	cout << "Instr" << endl;
 	Instr *instr;
 	if (context->funccall())
 	{
@@ -86,7 +85,6 @@ antlrcpp::Any Visitor::visitInstr(ifccParser::InstrContext *context)
 		instr = visitChildren(context);
 	}
 	// Instr *instr = (Instr *)visitChildren(context);
-	cout << "End instr" << endl;
 	return instr;
 }
 
@@ -131,20 +129,17 @@ antlrcpp::Any Visitor::visitFunc_return(ifccParser::Func_returnContext *context)
 
 antlrcpp::Any Visitor::visitVardefaff(ifccParser::VardefaffContext *context)
 {
-	cout << "Var def aff" << endl;
 	string varType = context->TYPE()->getText();
 	string varName = context->NAME()->getText();
 
 	Expr *expr = (Expr *)visit(context->expr());
 	Instr *aff = new Aff(varName, expr);
-	cout << "End var def aff" << endl;
 	return aff;
 }
 
 // TODO for now we could remove this
 antlrcpp::Any Visitor::visitVardef(ifccParser::VardefContext *context)
 {
-	cout << "Var def" << endl;
 	string varType = context->TYPE()->getText();
 	string varName = context->NAME()->getText();
 
@@ -156,7 +151,6 @@ antlrcpp::Any Visitor::visitVardef(ifccParser::VardefContext *context)
 		string varname = visit(*it);
 	}
 
-	cout << "End var def" << endl;
 	return nullptr;
 }
 
@@ -176,7 +170,6 @@ antlrcpp::Any Visitor::visitVaraff(ifccParser::VaraffContext *context)
 
 antlrcpp::Any Visitor::visitFunccall(ifccParser::FunccallContext *context)
 {
-	cout << "Func call" << endl;
 	string funcName = context->NAME()->getText();
 	FuncCall *fc = new FuncCall(funcName);
 	if (context->expr() != nullptr)
@@ -189,7 +182,6 @@ antlrcpp::Any Visitor::visitFunccall(ifccParser::FunccallContext *context)
 			fc->addParam((Expr *)visit(*it));
 		}
 	}
-	cout << "End func call" << endl;
 	Instr *i = fc;
 	return i;
 }
@@ -201,15 +193,12 @@ antlrcpp::Any Visitor::visitVirguleexpr(ifccParser::VirguleexprContext *context)
 
 antlrcpp::Any Visitor::visitExpr(ifccParser::ExprContext *context)
 {
-	cout << "Expr" << endl;
 	vector<antlr4::tree::TerminalNode *> name = context->NAME();
 	ifccParser::ExprsimpleContext *escontext = context->exprsimple();
 	if (name.size() > 0)
 	{
-		cout << "Has name" << endl;
 		if (escontext != nullptr)
 		{
-			cout << "Has escontext" << endl;
 			Expr *expr = (Expr *)visit(escontext);
 			Expr *aff = new Aff(name[name.size() - 1]->getText(), expr);
 			for (int i = name.size() - 2; i >= 0; --i)
