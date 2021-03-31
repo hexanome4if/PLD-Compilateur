@@ -15,7 +15,10 @@ IRInstr::IRInstr(BasicBlock* bb_, Operation operation, string type, vector<strin
 /** Actual code generation */
 /**< x86 assembly code generation for this IR instruction */
 void IRInstr :: gen_asm(ostream &o) {
-    string suffix = this->t.getLetter();
+    string suffix = "l";
+    if(t == "int64") {
+        suffix = "q";
+    }
     switch(op) {
         case copy :
             if(params.size()==2){
@@ -180,7 +183,13 @@ void IRInstr :: gen_asm(ostream &o) {
                         o << endl;
                     }
                 }
-                o << "call " << params[0] << "(A faire)";
+                o << "call " << params[0] << "(";
+                for(int i=2; i<params.size(); i++) {
+                    o << this->bb->cfg->get_var_type(params[i]);
+                    if(i < params.size() - 1)
+                    o << ", ";
+                }
+                o << ")" << endl;
                 if(NombreDeVarExces > 0) {
                     o << "addq " << "$" << NombreDeVarExces * 8 << ", %rsp" << endl;
                 }

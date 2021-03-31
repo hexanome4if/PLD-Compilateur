@@ -6,7 +6,7 @@ class Type {
     } TypeName;
 
     
-    const string letter[] = { "q","l" };
+    
     int name;
     string getLetter() {return letter[name];}
 
