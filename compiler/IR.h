@@ -3,12 +3,14 @@
 
 #include <vector>
 #include <string>
+#include <map>
 #include <iostream>
 #include <initializer_list>
 
 // Declarations from the parser -- replace with your own
 #include "type.h"
 #include "symbol-table/Symbol.h"
+using namespace std;
 
 class BasicBlock;
 class CFG;

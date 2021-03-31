@@ -9,13 +9,16 @@
 #include "antlr4-generated/ifccBaseVisitor.h"
 #include "visitor.h"
 #include "ast.h"
+#include "symbol-visitor.h"
 
 using namespace antlr4;
 using namespace std;
 
-int main(int argn, const char **argv) {
+int main(int argn, const char **argv)
+{
 				stringstream in;
-				if (argn==2) {
+				if (argn == 2)
+				{
 								ifstream lecture(argv[1]);
 								in << lecture.rdbuf();
 				}
@@ -24,15 +27,33 @@ int main(int argn, const char **argv) {
 				CommonTokenStream tokens(&lexer);
 
 				tokens.fill();
-//  for (auto token : tokens.getTokens()) {
-//    std::cout << token->toString() << std::endl;
-//  }
-				if (lexer.getNumberOfSyntaxErrors()>0) return 1;
+				//  for (auto token : tokens.getTokens()) {
+				//    std::cout << token->toString() << std::endl;
+				//  }
+				if (lexer.getNumberOfSyntaxErrors() > 0)
+								return 1;
 				ifccParser parser(&tokens);
-				tree::ParseTree* tree = parser.axiom();
-				if (parser.getNumberOfSyntaxErrors()>0) return 1;
-				Ast* ast = new Ast();
-				Visitor visitor(ast);
+				tree::ParseTree *tree = parser.axiom();
+				if (parser.getNumberOfSyntaxErrors() > 0)
+								return 1;
+				SymbolTable *symbolTable = new SymbolTable();
+				SymbolVisitor symbolVisitor(symbolTable);
+				symbolVisitor.visit(tree);
+				symbolTable->setCreationDone();
+
+				ErrorManager *symbolErrorManager = symbolVisitor.getErrorManager();
+				if (symbolErrorManager->hasErrorOrWarning())
+				{
+								symbolErrorManager->showAll(cerr);
+								if (symbolErrorManager->hasError())
+								{
+												return 1;
+								}
+				}
+
+				Ast *ast = new Ast();
+				Visitor visitor(ast, symbolTable);
 				visitor.visit(tree);
-				return visitor.getReturnCode();
+				ast->debug(cout);
+				return 0;
 }
