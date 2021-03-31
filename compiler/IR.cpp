@@ -15,6 +15,7 @@ IRInstr::IRInstr(BasicBlock* bb_, Operation operation, string type, vector<strin
 /** Actual code generation */
 /**< x86 assembly code generation for this IR instruction */
 void IRInstr :: gen_asm(ostream &o) {
+	
     string suffix = "l";
     if(t == "int64") {
         suffix = "q";
@@ -204,6 +205,8 @@ void IRInstr :: gen_asm(ostream &o) {
         case ret:
             break;
         case prol:
+        	o << "pushq %rbp" << endl;
+        	o << "movq %rsp, %rbp" << endl;
             break;
         case epil:
             break;
@@ -233,8 +236,8 @@ void BasicBlock :: gen_asm(ostream &o) {
 }
 
 void BasicBlock :: add_IRInstr(IRInstr::Operation op, string t, vector<string> params) {
-    IRInstr instr = IRInstr(this, op, t, params);
-    instrs.push_back(&instr);
+    IRInstr *instr = new IRInstr(this, op, t, params);
+    instrs.push_back(instr);
 }
 
 /** CFG **/
@@ -257,7 +260,7 @@ void CFG :: gen_asm(ostream& o) {
 }
 
 string CFG :: IR_reg_to_asm(string reg) {
-    string res = "-" + reg + "(%rbp)";
+    string res = "-" +  + "(%rbp)";
     return res;
 }
 

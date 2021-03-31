@@ -58,7 +58,6 @@ int main(int argn, const char **argv)
 	ast->debug(cout);
 	CFG *cfg = new CFG(ast, symbolTable);
 	cfg->buildIR();
-
 	cfg->gen_asm(cout);
 
 	return 0;
