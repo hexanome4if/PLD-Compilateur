@@ -1,57 +1,92 @@
 grammar ifcc;
 
-axiom : prog
-			;
-
-prog : func*;
-
-func: TYPE NAME '(' ')' block ;
-block: '{' instr* '}';
-
-instr : func_return
-             | vardef
-			 | vardefaff
-             | varaff
-			 | whiledef
-			 | ifdef
-			 | fordef
-			 | funccall
-          	 ;
-
-whiledef : 'while' '(' expr ')' block ;
-
-ifdef : 'if' '(' expr ')' block elsedef? ;
-
-elsedef : 'else' block ;
-
-fordef : 'for' '(' expr ';' expr ';' expr ')' block ;
-
-func_return : 'return' expr ';' ;
-
-vardefaff: TYPE NAME '=' expr ';' ;
-
-vardef: TYPE NAME virgulename* ';';
-virgulename: ',' NAME ;
-
-varaff: NAME '=' expr ';' ;
-
-funccall : (NAME '(' ')' ';')
-					| (NAME '(' expr virguleexpr* ')' ';') ;
-virguleexpr: ',' expr ;
-
-exprsimple : exprsimple binopmd exprsimple #multdiv
-		| exprsimple binoppm  exprsimple #plusmoins
-		| '(' exprsimple ')' #par
-		| NAME #name
-		| CONST #const
-		| '-' exprsimple #negative
-		| funccall #functioncall
-		| '(' NAME '=' exprsimple ')' #affecsimple
+axiom
+		: prog
 		;
 
-expr : NAME ('=' NAME)* ('=' exprsimple)?
-	| exprsimple
-	;
+prog
+		: func*
+		;
+
+func
+		: TYPE NAME '(' ')' block
+		;
+
+block
+		: '{' instr* '}'
+		;
+
+instr
+		: func_return
+		| vardef
+		| vardefaff
+		| varaff
+		| whiledef
+		| ifdef
+		| fordef
+		| funccall ';'
+    ;
+
+whiledef
+		: 'while' '(' expr ')' block
+		;
+
+ifdef
+		: 'if' '(' expr ')' block elsedef?
+		;
+
+elsedef
+		: 'else' block
+		;
+
+fordef
+		: 'for' '(' expr ';' expr ';' expr ')' block
+		;
+
+func_return
+		: 'return' expr ';'
+		;
+
+vardefaff
+		: TYPE NAME '=' expr ';'
+		;
+
+vardef
+		: TYPE NAME virgulename* ';'
+		;
+
+virgulename
+		: ',' NAME
+		;
+
+varaff
+		: NAME '=' expr ';'
+		;
+
+funccall
+		: (NAME '(' ')')
+		| (NAME '(' expr virguleexpr* ')')
+		;
+virguleexpr
+		: ',' expr
+		;
+
+
+expr
+		: (NAME ('=' NAME)* ('=' exprsimple)?)
+		| (exprsimple)
+		;
+
+exprsimple
+		: exprsimple binopmd exprsimple 	#multdiv
+		| exprsimple binoppm  exprsimple 	#plusmoins
+		| '(' exprsimple ')' 							#par
+		| NAME 														#name
+		| CONST 													#const
+		| '-' exprsimple 									#negative
+		| funccall 												#functioncall
+		| '(' NAME '=' exprsimple ')' 		#affecsimple
+		;
 
 binopmd: ('*' | '/');
 

@@ -1,5 +1,5 @@
 #include "IR.h"
-
+#include "ast.h"
 
  
 /** IRInstr **/
@@ -151,7 +151,8 @@ void IRInstr :: gen_asm(ostream &o) {
                 o << this->bb->cfg->IR_reg_to_asm(params[0]) << endl;
             }
             break;
-        case call : //call lable dest params[]
+        case call : 
+            {//call lable dest params[]
                 int NombreDeVarExces = params.size() - 8;
                 for(int i=params.size()-1; i>=0; i--) {
                     if(i > 7) {
@@ -197,15 +198,24 @@ void IRInstr :: gen_asm(ostream &o) {
                 o << "movl %eax, " << this->bb->cfg->IR_reg_to_asm(params[1]) << endl;
                 // o << "movq %rax, " << this->bb->cfg->IR_reg_to_asm(params[1]) << endl;
             break;
-        default :
+        }
+        case div: 
+            break;
+        case ret:
+            break;
+        case prol:
+            break;
+        case epil:
+            break;
     }
 } 
 	
 /** BasicBloc **/
 
 // Constructor
-BasicBlock::BasicBlock(CFG* cfg, string entry_label) {
+BasicBlock::BasicBlock(CFG* cfg, string entry_label, Context * ctx) {
     this->cfg = cfg;
+    this->context = ctx;
     label = entry_label;
 }
 
@@ -223,8 +233,10 @@ void BasicBlock :: add_IRInstr(IRInstr::Operation op, string t, vector<string> p
 
 /** CFG **/
 
-CFG :: CFG(Ast* ast) {
+CFG :: CFG(Ast* ast, SymbolTable * st) {
     this->ast = ast;
+    this->symbolTable = st;
+    st->reinitRun();
     nextBBnumber = 0;
 }
 
@@ -250,20 +262,27 @@ void CFG :: gen_asm_epilogue(ostream& o) {
 }
 
 void CFG :: add_to_symbol_table(string name, string t) {
-    symbolTable.addSymbol(name,t);
+    VarSymbol* vs = new VarSymbol(name,t);
+    symbolTable->addSymbol(vs);
 }
 
 string CFG :: create_new_tempvar(string t) {
-    Symbol* s = symbolTable.addTempSymbol(t);
+    Symbol* s = symbolTable->addTempSymbol(t);
     return s->getName();
 }
 
 string CFG :: get_var_type(string name) {
-    return symbolTable.getSymbol(name)->getType();
+    return ( (VarSymbol*) symbolTable->getSymbol(name))->getVarType();
 }
 
 string CFG :: new_BB_name() {
-    string res = "BB_" + nextBBnumber ;
+    string res = "BB_" + to_string(nextBBnumber) ;
     nextBBnumber++;
     return res;
+}
+
+void CFG :: buildIR() {
+    for(int i = 0 ; i < ast->nodes.size() ; i++) {
+        ast->nodes[i]->buildIR(this);
+    }
 }

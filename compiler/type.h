@@ -1,13 +1,7 @@
-class Type {
+#include <string>
+using namespace std;
 
-    typedef enum {
-        int64,
-        int32
-    } TypeName;
-
-    
-    
-    int name;
-    string getLetter() {return letter[name];}
-
-};
+typedef enum {
+				int64,
+				int32
+} TypeName;
