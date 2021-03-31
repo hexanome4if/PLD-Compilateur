@@ -94,7 +94,9 @@ exprsimple
 		| exprsimple '==' exprsimple  #equalcompare
 		| exprsimple '!=' exprsimple  #notequalcompare
 		| exprsimple '<' exprsimple   #infcompare
-		| exprsimple '>' exprsimple   #supcompare
+		| exprsimple '>' exprsimple   #supcompare		
+		| exprsimple '||' exprsimple #logicalOR
+		| exprsimple '&&' exprsimple #logicalAND
 		;
 
 binopmd: ('*' | '/');

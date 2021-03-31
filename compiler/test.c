@@ -30,13 +30,13 @@
    }*/
 
 /*int main() {
-				int abw = 3 & 1; /* result = 1 
-				int obw = 5 | 2; /* result = 7  
-				int xbw = 7 ^ 5; /* result =  2 
+				int abw = 3 & 1; /* result = 1
+				int obw = 5 | 2; /* result = 7
+				int xbw = 7 ^ 5; /* result =  2
 				return 0;
 }*/
 
-int main()
+/*int main()
 {
   int a = 3 < 5;
   int b = !a;
@@ -45,4 +45,18 @@ int main()
   c = !d;
 
   return 0;
+}*/
+int main()
+{
+  int a = 42;
+	int b = 12;
+	int c;
+	int d = (a==42) && (b==12);
+	if (a == 42 || b == 10) {
+		c = 13;
+	}
+	while (a < 44 && b == 12) {
+		c = 50;
+	}
+  return c;
 }

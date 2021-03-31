@@ -165,6 +165,39 @@ virtual void debug(ostream &stream, int space) override
 Expr *expr1;
 };
 
+
+class LogicalAND : public Expr
+{
+	public:
+	LogicalAND(Expr* e1, Expr* e2) : expr1(e1), expr2(e2) {}
+	virtual void debug (ostream &stream, int space) override
+	{
+		stream << "(";
+		expr1->debug(stream, space);
+		stream << " && ";
+		expr2->debug(stream, space);
+		stream << ")";
+	}
+	Expr* expr1;
+	Expr* expr2;
+};
+
+class LogicalOR : public Expr
+{
+	public:
+	LogicalOR(Expr* e1, Expr* e2) : expr1(e1), expr2(e2) {}
+	virtual void debug (ostream &stream, int space) override
+	{
+		stream << "(";
+		expr1->debug(stream, space);
+		stream << " || ";
+		expr2->debug(stream, space);
+		stream << ")";
+	}
+	Expr* expr1;
+	Expr* expr2;
+};
+
 class BinOp : public Expr
 {
 public:
