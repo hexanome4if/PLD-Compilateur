@@ -136,6 +136,7 @@ public:
 	{
 	}
 	void addInstr(Instr *instr);
+	virtual void debug(ostream &stream, int space) override;
 	//string buildIR(CFG* cfg);
 	Expr *condition;
 	Block *block;

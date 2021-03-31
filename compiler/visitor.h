@@ -47,7 +47,7 @@ antlrcpp::Any visitExpr(ifccParser::ExprContext *context) override;             
 antlrcpp::Any visitBinopmd(ifccParser::BinopmdContext *context) override;             //ok
 antlrcpp::Any visitBinoppm(ifccParser::BinoppmContext *context) override;             //ok
 antlrcpp::Any visitAffecchar(ifccParser::AffeccharContext *context) override;         //ok
-antlrcpp::Any visitAndbitwise(ifccParser::AndbitwiseContext *context) override;		
+antlrcpp::Any visitAndbitwise(ifccParser::AndbitwiseContext *context) override;
 antlrcpp::Any visitOrbitwise(ifccParser::OrbitwiseContext *context) override;
 antlrcpp::Any visitXorbitwise(ifccParser::XorbitwiseContext *context) override;
 
@@ -55,6 +55,8 @@ antlrcpp::Any visitInfcompare(ifccParser::InfcompareContext *context) override;
 antlrcpp::Any visitSupcompare(ifccParser::SupcompareContext *context) override;
 antlrcpp::Any visitNotequalcompare(ifccParser::NotequalcompareContext *context) override;
 antlrcpp::Any visitEqualcompare(ifccParser::EqualcompareContext *context) override;
+antlrcpp::Any visitLogicalAND(ifccParser::LogicalANDContext *context) override;
+antlrcpp::Any visitLogicalOR(ifccParser::LogicalORContext *context) override;
 
 antlrcpp::Any aggregateResult(antlrcpp::Any aggregate, const antlrcpp::Any &nextResult) override;
 

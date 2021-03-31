@@ -411,6 +411,21 @@ antlrcpp::Any Visitor::visitEqualcompare(ifccParser::EqualcompareContext *contex
 
 }
 
+antlrcpp::Any Visitor::visitLogicalAND(ifccParser::LogicalANDContext *context)
+{
+	Expr* expr0 = (Expr*) visit(context->exprsimple(0));
+	Expr* expr1 = (Expr*) visit(context->exprsimple(1));
+	Expr* eland = new LogicalAND(expr0, expr1);
+	return eland;
+}
+
+antlrcpp::Any Visitor::visitLogicalOR(ifccParser::LogicalORContext *context)
+{
+	Expr* expr0  = (Expr*) visit(context->exprsimple(0));
+	Expr* expr1  = (Expr*) visit(context->exprsimple(1));
+	Expr* elor = new LogicalOR(expr0, expr1);
+	return elor;
+}
 
 int Visitor::getReturnCode()
 {
