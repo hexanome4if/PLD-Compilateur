@@ -35,7 +35,10 @@ class IRInstr {
 		cmp_eq,
 		cmp_lt,
 		cmp_le,
-		div
+		div, 
+		ret, 
+		prol,
+		epil
 	} Operation;
 
 
