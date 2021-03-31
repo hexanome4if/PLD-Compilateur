@@ -79,6 +79,14 @@ void If::debug(ostream &stream, int space)
 	}
 }
 
+void While::debug(ostream &stream, int space)
+{
+	stream << "while (";
+	condition->debug(stream, space);
+	stream << ")" << endl;
+	block->debug(stream, space + 1);
+}
+
 void FuncCall::debug(ostream &stream, int space)
 {
 	stream << "call to function " << funcName << " with parameters ";
