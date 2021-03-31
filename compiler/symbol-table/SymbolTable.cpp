@@ -69,3 +69,7 @@ void SymbolTable::setCurrentContext(Context *context)
 {
 	currentContext = context;
 }
+void SymbolTable::assignMemoryAddresses()
+{
+	rootContext->assignMemoryAddresses(4);
+}

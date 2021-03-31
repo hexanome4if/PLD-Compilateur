@@ -17,6 +17,7 @@ public:
 	void setCreationDone();
 	Symbol *addTempSymbol(string type);
 	void setCurrentContext(Context *context);
+	void assignMemoryAddresses();
 
 private:
 	Context *rootContext;

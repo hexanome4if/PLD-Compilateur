@@ -32,7 +32,8 @@ int main()
 
 int main()
 {
-	int a, b;
-	int d = a = b = 2;
-	return a + 10 - 5 * 2;
+	int a = 42;
+	int c, d, e;
+	c = a;
+	return c;
 }

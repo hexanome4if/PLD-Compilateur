@@ -8,7 +8,7 @@ string BinOp ::buildIR(CFG *cfg)
 
 	string var1 = expr1->buildIR(cfg);
 	string var2 = expr2->buildIR(cfg);
-	string var3 = cfg->create_new_tempvar("int64");
+	string var3 = cfg->create_new_tempvar("int32");
 	IRInstr::Operation op;
 	switch (operation)
 	{
@@ -31,7 +31,7 @@ string BinOp ::buildIR(CFG *cfg)
 	params.push_back(var3);
 	params.push_back(var1);
 	params.push_back(var2);
-	cfg->current_bb->add_IRInstr(op, "int64", params);
+	cfg->current_bb->add_IRInstr(op, "int32", params);
 	return var3;
 }
 
@@ -45,11 +45,11 @@ string UnOp ::buildIR(CFG *cfg)
 
 string ConstExpr ::buildIR(CFG *cfg)
 {
-	string var = cfg->create_new_tempvar("int64");
+	string var = cfg->create_new_tempvar("int32");
 	vector<string> params;
 	params.push_back(var);
 	params.push_back(val);
-	cfg->current_bb->add_IRInstr(IRInstr ::ldconst, "int64", params);
+	cfg->current_bb->add_IRInstr(IRInstr ::ldconst, "int32", params);
 	return var;
 }
 
@@ -75,7 +75,7 @@ string Aff ::buildIR(CFG *cfg)
 	vector<string> params;
 	params.push_back(varId);
 	params.push_back(varExpr);
-	cfg->current_bb->add_IRInstr(IRInstr::copy, "int64", params);
+	cfg->current_bb->add_IRInstr(IRInstr::copy, "int32", params);
 	return varId;
 }
 
@@ -84,7 +84,7 @@ string Ret ::buildIR(CFG *cfg)
 	string varExpr = expr->buildIR(cfg);
 	vector<string> params;
 	params.push_back(varExpr);
-	cfg->current_bb->add_IRInstr(IRInstr::ret, "int64", params);
+	cfg->current_bb->add_IRInstr(IRInstr::ret, "int32", params);
 	return varExpr;
 }
 
@@ -92,8 +92,9 @@ string Func ::buildIR(CFG *cfg)
 {
 	//Générer prologue
 	BasicBlock *prologue = new BasicBlock(cfg, cfg->new_BB_name(), nullptr);
-	vector<string> empty;
-	prologue->add_IRInstr(IRInstr::prol, "notype", empty);
+	vector<string> params;
+	params.push_back(name);
+	prologue->add_IRInstr(IRInstr::prol, "notype", params);
 	cfg->add_bb(prologue);
 
 	//Générer la fonction
@@ -104,6 +105,7 @@ string Func ::buildIR(CFG *cfg)
 	block->buildIR(cfg);
 
 	//Générer épilogue
+	vector<string> empty;
 	BasicBlock *epilogue = new BasicBlock(cfg, cfg->new_BB_name(), nullptr);
 	epilogue->add_IRInstr(IRInstr::epil, "notype", empty);
 	body->exit_true = epilogue;

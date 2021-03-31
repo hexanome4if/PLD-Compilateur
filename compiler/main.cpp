@@ -55,9 +55,13 @@ int main(int argn, const char **argv)
 	Ast *ast = new Ast();
 	Visitor visitor(ast, symbolTable);
 	visitor.visit(tree);
-	ast->debug(cout);
+	// ast->debug(cout);
+
 	CFG *cfg = new CFG(ast, symbolTable);
 	cfg->buildIR();
+
+	symbolTable->assignMemoryAddresses();
+
 	cfg->gen_asm(cout);
 
 	return 0;

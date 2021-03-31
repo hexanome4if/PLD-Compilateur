@@ -1,6 +1,7 @@
 #include <algorithm>
 
 #include "Context.h"
+#include "var-symbol.h"
 
 bool Context::symbolExists(string name, SymbolType symbolType)
 {
@@ -94,5 +95,24 @@ void Context::showSpace(ostream &stream, int space)
 	for (int i = 0; i < space; ++i)
 	{
 		stream << "  ";
+	}
+}
+
+void Context::assignMemoryAddresses(int nextAddress)
+{
+	map<string, Symbol *>::iterator it;
+	for (it = symbols.begin(); it != symbols.end(); ++it)
+	{
+		if (it->second->getSymbolType() == VARIABLE)
+		{
+			VarSymbol *var = (VarSymbol *)it->second;
+			var->setMemoryAddress(nextAddress);
+			nextAddress += var->getMemorySize();
+		}
+	}
+
+	for (int i = 0; i < childrenContexts.size(); ++i)
+	{
+		childrenContexts[i]->assignMemoryAddresses(nextAddress);
 	}
 }
