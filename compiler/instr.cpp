@@ -84,7 +84,7 @@ string Func :: buildIR(CFG* cfg) {
 	cfg->add_bb(&prologue);
 
 	//Générer la fonction
-	BasicBlock body = BasicBlock(cfg, cfg->new_BB_name());
+	BasicBlock body = BasicBlock(cfg, name);
 	prologue.exit_true = &body;
 	cfg->add_bb(&body);
 	cfg->current_bb = &body;

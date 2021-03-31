@@ -140,6 +140,8 @@ class CFG {
 	// basic block management
 	string new_BB_name();
 	BasicBlock* current_bb;
+	BasicBlock* entry_block;
+	BasicBlock* exit_block;
 
  protected:
 	//map <string, string> SymbolType; /**< part of the symbol table  */

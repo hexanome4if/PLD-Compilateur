@@ -30,7 +30,7 @@ typedef enum
 {
 	AFF,
 	//    DECL,
-	DECLAFF,
+	// DECLAFF,
 	RET,
 	IF,
 	WHILE,
