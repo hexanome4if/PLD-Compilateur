@@ -4,13 +4,23 @@
 
 using namespace std;
 
-class Symbol {
+typedef enum
+{
+	FUNCTION,
+	VARIABLE,
+} SymbolType;
+
+class Symbol
+{
 public:
-Symbol(string name, string type) : name(name), type(type) {
-}
-string getType();
+	Symbol(string name, SymbolType symbolType) : name(name), symbolType(symbolType)
+	{
+	}
+
+	string getName() { return name; }
+	SymbolType getSymbolType() { return symbolType; }
 
 private:
-string name;
-string type;
+	SymbolType symbolType;
+	string name;
 };

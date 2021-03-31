@@ -2,18 +2,21 @@
 
 #include "Context.h"
 
-
-class SymbolTable {
+class SymbolTable
+{
 public:
-SymbolTable();
-Context* openContext();
-void closeContext();
-Symbol* addSymbol(string name, string type);
-Symbol* getSymbol(string name);
-bool symbolExists(string name);
-Symbol* addTempSymbol(string type);
+	SymbolTable();
+	Context *openContext();
+	void closeContext();
+	void addSymbol(Symbol *);
+	Symbol *getSymbol(string name);
+	bool symbolExists(string name, SymbolType symbolType);
+	Context *getNextInnerContext();
+	void reinitRun();
+	void setCreationDone();
 
 private:
-Context* currentContext;
-int currentTemp = 0;
+	Context *rootContext;
+	Context *currentContext;
+	bool creationDone;
 };

@@ -1,31 +1,57 @@
 #include "SymbolTable.h"
 
-
-SymbolTable::SymbolTable() {
-				currentContext = new Context(nullptr);
+SymbolTable::SymbolTable()
+{
+	currentContext = new Context(nullptr);
+	rootContext = currentContext;
+	creationDone = false;
 }
 
-Context* SymbolTable::openContext() {
-				currentContext = new Context(currentContext);
-				return currentContext;
+Context *SymbolTable::openContext()
+{
+	Context *newContext = new Context(currentContext);
+	currentContext->addChildContext(newContext);
+	currentContext = newContext;
+	return currentContext;
 }
 
-void SymbolTable::closeContext() {
-				currentContext = currentContext->getParentContext();
+Context *SymbolTable::getNextInnerContext()
+{
+	Context *context = currentContext->getNextChild();
+	if (context != nullptr)
+	{
+		currentContext = context;
+	}
+	return context;
 }
 
-bool SymbolTable::symbolExists(string name) {
-				return currentContext->symbolExists(name);
+void SymbolTable::closeContext()
+{
+	currentContext = currentContext->getParentContext();
 }
 
-Symbol* SymbolTable::addSymbol(string name, string type) {
-				return currentContext->addSymbol(name, type);
+bool SymbolTable::symbolExists(string name, SymbolType symbolType)
+{
+	return currentContext->symbolExists(name, symbolType);
 }
 
-Symbol * SymbolTable::getSymbol(string name) {
-				return currentContext->getSymbol(name);
+void SymbolTable::addSymbol(Symbol *symbol)
+{
+	currentContext->addSymbol(symbol);
 }
 
-Symbol* SymbolTable::addTempSymbol(string type) {
-				return currentContext->addSymbol(to_string(currentTemp++) + "_temp", type);
+Symbol *SymbolTable::getSymbol(string name)
+{
+	return currentContext->getSymbol(name);
+}
+
+void SymbolTable::reinitRun()
+{
+	currentContext = rootContext;
+	currentContext->reinitRun();
+}
+
+void SymbolTable::setCreationDone()
+{
+	creationDone = true;
 }
