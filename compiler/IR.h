@@ -3,13 +3,15 @@
 
 #include <vector>
 #include <string>
+#include <map>
 #include <iostream>
 #include <map>
 #include <initializer_list>
 
 // Declarations from the parser -- replace with your own
 #include "type.h"
-#include "./symbol-table/Symbol.h"
+#include "symbol-table/Symbol.h"
+using namespace std;
 
 class BasicBlock;
 class CFG;
@@ -58,28 +60,28 @@ class IRInstr {
 /**  The class for a basic block */
 
 /* A few important comments.
-	 IRInstr has no jump instructions.
-	 cmp_* instructions behaves as an arithmetic two-operand instruction (add or mult),
-	  returning a boolean value (as an int)
+   IRInstr has no jump instructions.
+   cmp_* instructions behaves as an arithmetic two-operand instruction (add or mult),
+    returning a boolean value (as an int)
 
-	 Assembly jumps are generated as follows:
-	 BasicBlock::gen_asm() first calls IRInstr::gen_asm() on all its instructions, and then 
-		    if  exit_true  is a  nullptr, 
+   Assembly jumps are generated as follows:
+   BasicBlock::gen_asm() first calls IRInstr::gen_asm() on all its instructions, and then
+        if  exit_true  is a  nullptr,
             the epilogue is generated
-        else if exit_false is a nullptr, 
+        else if exit_false is a nullptr,
           an unconditional jmp to the exit_true branch is generated
-				else (we have two successors, hence a branch)
+        else (we have two successors, hence a branch)
           an instruction comparing the value of test_var_name to true is generated,
-					followed by a conditional branch to the exit_false branch,
-					followed by an unconditional branch to the exit_true branch
-	 The attribute test_var_name itself is defined when converting 
-  the if, while, etc of the AST  to IR.
+          followed by a conditional branch to the exit_false branch,
+          followed by an unconditional branch to the exit_true branch
+   The attribute test_var_name itself is defined when converting
+   the if, while, etc of the AST  to IR.
 
-Possible optimization:
-     a cmp_* comparison instructions, if it is the last instruction of its block, 
-       generates an actual assembly comparison 
+   Possible optimization:
+     a cmp_* comparison instructions, if it is the last instruction of its block,
+       generates an actual assembly comparison
        followed by a conditional jump to the exit_false branch
-*/
+ */
 
 class BasicBlock {
  public:
@@ -107,9 +109,9 @@ class BasicBlock {
 /** The class for the control flow graph, also includes the symbol table */
 
 /* A few important comments:
-	 The entry block is the one with the same label as the AST function name.
-	   (it could be the first of bbs, or it could be defined by an attribute value)
-	 The exit block is the one with both exit pointers equal to nullptr.
+   The entry block is the one with the same label as the AST function name.
+     (it could be the first of bbs, or it could be defined by an attribute value)
+   The exit block is the one with both exit pointers equal to nullptr.
      (again it could be identified in a more explicit way)
 
  */

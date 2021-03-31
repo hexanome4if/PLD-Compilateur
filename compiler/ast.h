@@ -4,13 +4,17 @@
 
 using namespace std;
 
-class Ast {
+class Ast
+{
 
 public:
-
-	Ast() {	}
-	void addNode(Node* n);
+	Ast()
+	{
+	}
+	void addNode(Node *n);
+	void debug(ostream &stream);
 
 private:
-	vector<Node*> nodes;
+	vector<Node *> nodes;
+
 };
