@@ -94,7 +94,7 @@ exprsimple
 		| exprsimple '==' exprsimple  #equalcompare
 		| exprsimple '!=' exprsimple  #notequalcompare
 		| exprsimple '<' exprsimple   #infcompare
-		| exprsimple '>' exprsimple   #supcompare		
+		| exprsimple '>' exprsimple   #supcompare
 		| exprsimple '||' exprsimple #logicalOR
 		| exprsimple '&&' exprsimple #logicalAND
 		;
@@ -109,7 +109,12 @@ CONST : [0-9]+ ;
 NAME: [a-zA-Z0-9]+;
 CHARAC: '\''[a-zA-Z0-9 ]'\'' ;
 
+ARRAYDEF: TYPE NAME '[' CONST ']' ';'
+		;
+ARRAYDEFAFF: TYPE NAME '[' CONST? ']' '=' '{' ARRAYCONTENT '}'
+		;
 
-COMMENT : '/*' .*? '*/' -> skip ;
+COMMENT : '/*' .*? '*/' -> skip
+		| '//' .*? '\n' -> skip ;
 DIRECTIVE : '#' .*? '\n' -> skip ;
 WS    : [ \t\r\n] -> channel(HIDDEN);
