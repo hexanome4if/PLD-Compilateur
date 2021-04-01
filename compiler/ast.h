@@ -15,6 +15,6 @@ public:
 	void debug(ostream &stream);
 	vector<Node *> nodes;
 private:
-	
+
 
 };
