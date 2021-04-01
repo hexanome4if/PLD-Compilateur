@@ -16,44 +16,53 @@ using namespace std;
 
 int main(int argn, const char **argv)
 {
-				stringstream in;
-				if (argn == 2)
-				{
-								ifstream lecture(argv[1]);
-								in << lecture.rdbuf();
-				}
-				ANTLRInputStream input(in.str());
-				ifccLexer lexer(&input);
-				CommonTokenStream tokens(&lexer);
+	stringstream in;
+	if (argn == 2)
+	{
+		ifstream lecture(argv[1]);
+		in << lecture.rdbuf();
+	}
+	ANTLRInputStream input(in.str());
+	ifccLexer lexer(&input);
+	CommonTokenStream tokens(&lexer);
 
-				tokens.fill();
-				//  for (auto token : tokens.getTokens()) {
-				//    std::cout << token->toString() << std::endl;
-				//  }
-				if (lexer.getNumberOfSyntaxErrors() > 0)
-								return 1;
-				ifccParser parser(&tokens);
-				tree::ParseTree *tree = parser.axiom();
-				if (parser.getNumberOfSyntaxErrors() > 0)
-								return 1;
-				SymbolTable *symbolTable = new SymbolTable();
-				SymbolVisitor symbolVisitor(symbolTable);
-				symbolVisitor.visit(tree);
-				symbolTable->setCreationDone();
+	tokens.fill();
+	//  for (auto token : tokens.getTokens()) {
+	//    std::cout << token->toString() << std::endl;
+	//  }
+	if (lexer.getNumberOfSyntaxErrors() > 0)
+		return 1;
+	ifccParser parser(&tokens);
+	tree::ParseTree *tree = parser.axiom();
+	if (parser.getNumberOfSyntaxErrors() > 0)
+		return 1;
 
-				ErrorManager *symbolErrorManager = symbolVisitor.getErrorManager();
-				if (symbolErrorManager->hasErrorOrWarning())
-				{
-								symbolErrorManager->showAll(cerr);
-								if (symbolErrorManager->hasError())
-								{
-												return 1;
-								}
-				}
+	SymbolTable *symbolTable = new SymbolTable();
+	SymbolVisitor symbolVisitor(symbolTable);
+	symbolVisitor.visit(tree);
+	symbolTable->setCreationDone();
 
-				Ast *ast = new Ast();
-				Visitor visitor(ast, symbolTable);
-				visitor.visit(tree);
-				ast->debug(cout);
-				return 0;
+	ErrorManager *symbolErrorManager = symbolVisitor.getErrorManager();
+	if (symbolErrorManager->hasErrorOrWarning())
+	{
+		symbolErrorManager->showAll(cerr);
+		if (symbolErrorManager->hasError())
+		{
+			return 1;
+		}
+	}
+
+	Ast *ast = new Ast();
+	Visitor visitor(ast, symbolTable);
+	visitor.visit(tree);
+	// ast->debug(cout);
+
+	CFG *cfg = new CFG(ast, symbolTable);
+	cfg->buildIR();
+
+	symbolTable->assignMemoryAddresses();
+
+	cfg->gen_asm(cout);
+
+	return 0;
 }

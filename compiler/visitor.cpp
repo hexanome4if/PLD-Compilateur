@@ -23,8 +23,8 @@ Visitor::Visitor(Ast *ast, SymbolTable *symbolTable) : ast(ast), symbolTable(sym
 
 antlrcpp::Any Visitor::visitAxiom(ifccParser::AxiomContext *ctx)
 {
-				returnCode = (int)visitChildren(ctx);
-				return returnCode;
+	returnCode = (int)visitChildren(ctx);
+	return returnCode;
 }
 
 antlrcpp::Any Visitor::visitProg(ifccParser::ProgContext *ctx)
@@ -41,13 +41,13 @@ antlrcpp::Any Visitor::visitProg(ifccParser::ProgContext *ctx)
 
 antlrcpp::Any Visitor::visitFunc(ifccParser::FuncContext *context)
 {
-				string functionType = context->TYPE()->getText();
-				string functionName = context->NAME()->getText();
+	string functionType = context->TYPE()->getText();
+	string functionName = context->NAME()->getText();
 
 				Block *block = (Block *)visit(context->block());
 				Node *func = new Func(getTypeFromString(functionType), functionName, block);
 
-				return func;
+	return func;
 }
 
 antlrcpp::Any Visitor::visitBlock(ifccParser::BlockContext *context)
@@ -166,7 +166,7 @@ antlrcpp::Any Visitor::visitVardef(ifccParser::VardefContext *context)
 
 antlrcpp::Any Visitor::visitVirgulename(ifccParser::VirgulenameContext *context)
 {
-				return context->NAME()->getText();
+	return context->NAME()->getText();
 }
 
 antlrcpp::Any Visitor::visitVaraff(ifccParser::VaraffContext *context)
@@ -245,6 +245,15 @@ antlrcpp::Any Visitor::visitExpr(ifccParser::ExprContext *context)
 								Expr *var = (Expr *)visit(escontext);
 								return var;
 				}
+				return aff;
+			}
+		}
+	}
+	else
+	{
+		Expr *var = (Expr *)visit(escontext);
+		return var;
+	}
 }
 
 antlrcpp::Any Visitor::visitPar(ifccParser::ParContext *context)
@@ -336,14 +345,14 @@ antlrcpp::Any Visitor::visitPlusmoins(ifccParser::PlusmoinsContext *context)
 
 antlrcpp::Any Visitor::visitBinoppm(ifccParser::BinoppmContext *context)
 {
-				bool isPlus = context->getText() == "+";
-				return isPlus;
+	bool isPlus = context->getText() == "+";
+	return isPlus;
 }
 
 antlrcpp::Any Visitor::visitBinopmd(ifccParser::BinopmdContext *context)
 {
-				bool isMult = context->getText() == "*";
-				return isMult;
+	bool isMult = context->getText() == "*";
+	return isMult;
 }
 
 antlrcpp::Any Visitor::visitAffecchar(ifccParser::AffeccharContext *context)
@@ -436,7 +445,12 @@ antlrcpp::Any Visitor::visitLogicalOR(ifccParser::LogicalORContext *context)
 
 int Visitor::getReturnCode()
 {
-				return returnCode;
+	return returnCode;
+}
+
+antlrcpp::Any Visitor::aggregateResult(antlrcpp::Any aggregate, const antlrcpp::Any &nextResult)
+{
+	return nextResult;
 }
 
 antlrcpp::Any Visitor::aggregateResult(antlrcpp::Any aggregate, const antlrcpp::Any &nextResult)

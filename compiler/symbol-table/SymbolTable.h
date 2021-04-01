@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Context.h"
+#include "var-symbol.h"
 
 class SymbolTable
 {
@@ -14,9 +15,13 @@ public:
 	Context *getNextInnerContext();
 	void reinitRun();
 	void setCreationDone();
+	Symbol *addTempSymbol(string type);
+	void setCurrentContext(Context *context);
+	void assignMemoryAddresses();
 
 private:
 	Context *rootContext;
 	Context *currentContext;
 	bool creationDone;
+	int tempNumber;
 };

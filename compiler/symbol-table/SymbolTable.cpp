@@ -4,6 +4,7 @@ SymbolTable::SymbolTable()
 {
 	currentContext = new Context(nullptr);
 	rootContext = currentContext;
+	tempNumber = 0;
 	creationDone = false;
 }
 
@@ -54,4 +55,21 @@ void SymbolTable::reinitRun()
 void SymbolTable::setCreationDone()
 {
 	creationDone = true;
+}
+
+Symbol *SymbolTable::addTempSymbol(string type)
+{
+	string varName = "temp_" + to_string(tempNumber++);
+	Symbol *symbol = new VarSymbol(varName, type);
+	currentContext->addSymbol(symbol);
+	return symbol;
+}
+
+void SymbolTable::setCurrentContext(Context *context)
+{
+	currentContext = context;
+}
+void SymbolTable::assignMemoryAddresses()
+{
+	rootContext->assignMemoryAddresses(4);
 }

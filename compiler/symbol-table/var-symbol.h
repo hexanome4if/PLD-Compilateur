@@ -12,10 +12,21 @@ public:
 	VarSymbol(string name, string varType, bool initialized) : Symbol(name, VARIABLE), varType(varType), isInitialized(initialized), isUsed(false) {}
 	void initialized() { isInitialized = true; }
 	void used() { isUsed = true; }
-
+	string getVarType() { return varType; }
+	void setMemoryAddress(int memoryAddress) { this->memoryAddress = memoryAddress; }
+	int getMemoryAddress() { return memoryAddress; }
+	int getMemorySize()
+	{
+		if (varType == "int32")
+		{
+			return 4;
+		}
+		return 8;
+	}
 	bool isInitialized;
 	bool isUsed;
 
 private:
 	string varType;
+	int memoryAddress;
 };

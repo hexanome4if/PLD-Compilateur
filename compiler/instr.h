@@ -8,11 +8,19 @@
 
 using namespace std;
 
+/*
+typedef enum
+{
+	int64,
+	int32
+} Type;
+*/
+
 typedef enum
 {
 	AFF,
 	//    DECL,
-	DECLAFF,
+	// DECLAFF,
 	RET,
 	IF,
 	WHILE,
@@ -23,7 +31,7 @@ typedef enum
 class Node
 {
 public:
-	//virtual string buildIR(CFG* cfg);
+	virtual string buildIR(CFG* cfg) {return "buildNode";}
 	virtual void debug(ostream &stream, int space) {}
 	void showSpaces(ostream &stream, int space)
 	{
@@ -40,7 +48,7 @@ public:
 	Instr(Instruction inst) : instruction(inst)
 	{
 	}
-	//virtual string buildIR(CFG* cfg);
+	//virtual string buildIR(CFG* cfg) override;
 	Instruction instruction;
 };
 
@@ -52,7 +60,7 @@ public:
 	}
 	void addInstr(Instr *instr);
 	virtual void debug(ostream &stream, int space) override;
-	//string buildIR(CFG* cfg);
+	virtual string buildIR(CFG* cfg) override;
 	vector<Instr *> instrs;
 	Context *context;
 };
@@ -66,7 +74,7 @@ public:
 	void addParam(string param);
 	void addInstr(Instr *instr);
 	virtual void debug(ostream &stream, int space) override;
-	//string buildIR(CFG* cfg);
+	virtual string buildIR(CFG* cfg) override;
 	TypeName type;
 	string name;
 	vector<string> params;
@@ -80,7 +88,7 @@ public:
 	{
 	}
 	virtual void debug(ostream &stream, int space) override;
-	//string buildIR(CFG* cfg);
+	virtual string buildIR(CFG* cfg) override;
 	string varId;
 	Expr *expr;
 };
@@ -97,7 +105,7 @@ public:
    public:
    DeclAff(string id, Expr ex) : Instr(DECLAFF), varId(id), expr(ex) {
    }
-   string buildIR(CFG* cfg);
+   virtual string buildIR(CFG* cfg) override;
    string varId;
    Expr expr;
    };*/
@@ -109,7 +117,7 @@ public:
 	{
 	}
 	virtual void debug(ostream &stream, int space) override;
-	//string buildIR(CFG* cfg);
+	virtual string buildIR(CFG* cfg) override;
 	Expr *expr;
 };
 
@@ -123,7 +131,7 @@ public:
 	void addInstrIf(Instr *instr);
 	void addInstrElse(Instr *instr);
 	virtual void debug(ostream &stream, int space) override;
-	//string buildIR(CFG* cfg);
+	//virtual string buildIR(CFG* cfg) override;
 	Expr *condition;
 	Block *blockIf;
 	Block *blockElse;
@@ -136,8 +144,7 @@ public:
 	{
 	}
 	void addInstr(Instr *instr);
-	virtual void debug(ostream &stream, int space) override;
-	//string buildIR(CFG* cfg);
+	//virtual string buildIR(CFG* cfg) override ;
 	Expr *condition;
 	Block *block;
 };
@@ -149,7 +156,7 @@ public:
 	{
 	}
 	void addInstr(Instr *instr);
-	//string buildIR(CFG* cfg);
+	//virtual string buildIR(CFG* cfg) override;
 	Expr *init;
 	Expr *condition;
 	Expr *progression;
@@ -164,7 +171,7 @@ public:
 	}
 	void addParam(Expr *param);
 	virtual void debug(ostream &stream, int space) override;
-	//string buildIR(CFG* cfg);
+	//virtual string buildIR(CFG* cfg) override;
 	string funcName;
 	vector<Expr *> params;
 };

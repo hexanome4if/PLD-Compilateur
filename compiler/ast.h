@@ -13,7 +13,8 @@ public:
 	}
 	void addNode(Node *n);
 	void debug(ostream &stream);
-
-private:
 	vector<Node *> nodes;
+private:
+
+
 };
