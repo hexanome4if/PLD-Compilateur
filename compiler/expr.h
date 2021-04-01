@@ -71,8 +71,6 @@ public:
 		stream << "const " << val;
 	}
 	string val;
-virtual void debug(ostream &stream, int space) {
-}
 //virtual string buildIR(CFG* cfg);
 };
 
@@ -253,18 +251,7 @@ class LogicalOR : public Expr
 	Expr* expr2;
 };
 
-class ConstExpr : public Expr
-{
-public:
-ConstExpr(string v) : val(v)
-{
-}
-virtual void debug(ostream &stream, int space) override
-{
-				stream << "const " << val;
-}
-string val;
-};
+
 
 class CharExpr : public Expr
 {

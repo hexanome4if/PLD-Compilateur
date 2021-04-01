@@ -23,8 +23,8 @@ Visitor::Visitor(Ast *ast, SymbolTable *symbolTable) : ast(ast), symbolTable(sym
 
 antlrcpp::Any Visitor::visitAxiom(ifccParser::AxiomContext *ctx)
 {
-	returnCode = (int)visitChildren(ctx);
-	return returnCode;
+				returnCode = (int)visitChildren(ctx);
+				return returnCode;
 }
 
 antlrcpp::Any Visitor::visitProg(ifccParser::ProgContext *ctx)
@@ -41,13 +41,13 @@ antlrcpp::Any Visitor::visitProg(ifccParser::ProgContext *ctx)
 
 antlrcpp::Any Visitor::visitFunc(ifccParser::FuncContext *context)
 {
-	string functionType = context->TYPE()->getText();
-	string functionName = context->NAME()->getText();
+				string functionType = context->TYPE()->getText();
+				string functionName = context->NAME()->getText();
 
 				Block *block = (Block *)visit(context->block());
 				Node *func = new Func(getTypeFromString(functionType), functionName, block);
 
-	return func;
+				return func;
 }
 
 antlrcpp::Any Visitor::visitBlock(ifccParser::BlockContext *context)
@@ -74,7 +74,7 @@ antlrcpp::Any Visitor::visitBlock(ifccParser::BlockContext *context)
 
 antlrcpp::Any Visitor::visitInstr(ifccParser::InstrContext *context)
 {
-				cout << "Instr" << endl;
+				//cout << "Instr" << endl;
 				Instr *instr;
 				if (context->funccall())
 				{
@@ -90,7 +90,7 @@ antlrcpp::Any Visitor::visitInstr(ifccParser::InstrContext *context)
 								instr = visitChildren(context);
 				}
 				// Instr *instr = (Instr *)visitChildren(context);
-				cout << "End instr" << endl;
+				//cout << "End instr" << endl;
 				return instr;
 }
 
@@ -135,20 +135,20 @@ antlrcpp::Any Visitor::visitFunc_return(ifccParser::Func_returnContext *context)
 
 antlrcpp::Any Visitor::visitVardefaff(ifccParser::VardefaffContext *context)
 {
-				cout << "Var def aff" << endl;
+				//cout << "Var def aff" << endl;
 				string varType = context->TYPE()->getText();
 				string varName = context->NAME()->getText();
 
 				Expr *expr = (Expr *)visit(context->expr());
 				Instr *aff = new Aff(varName, expr);
-				cout << "End var def aff" << endl;
+				//cout << "End var def aff" << endl;
 				return aff;
 }
 
 // TODO for now we could remove this
 antlrcpp::Any Visitor::visitVardef(ifccParser::VardefContext *context)
 {
-				cout << "Var def" << endl;
+				//cout << "Var def" << endl;
 				string varType = context->TYPE()->getText();
 				string varName = context->NAME()->getText();
 
@@ -160,13 +160,13 @@ antlrcpp::Any Visitor::visitVardef(ifccParser::VardefContext *context)
 								string varname = visit(*it);
 				}
 
-				cout << "End var def" << endl;
+				//cout << "End var def" << endl;
 				return nullptr;
 }
 
 antlrcpp::Any Visitor::visitVirgulename(ifccParser::VirgulenameContext *context)
 {
-	return context->NAME()->getText();
+				return context->NAME()->getText();
 }
 
 antlrcpp::Any Visitor::visitVaraff(ifccParser::VaraffContext *context)
@@ -180,7 +180,7 @@ antlrcpp::Any Visitor::visitVaraff(ifccParser::VaraffContext *context)
 
 antlrcpp::Any Visitor::visitFunccall(ifccParser::FunccallContext *context)
 {
-				cout << "Func call" << endl;
+				//cout << "Func call" << endl;
 				string funcName = context->NAME()->getText();
 				FuncCall *fc = new FuncCall(funcName);
 				if (context->expr() != nullptr)
@@ -193,7 +193,7 @@ antlrcpp::Any Visitor::visitFunccall(ifccParser::FunccallContext *context)
 												fc->addParam((Expr *)visit(*it));
 								}
 				}
-				cout << "End func call" << endl;
+				//cout << "End func call" << endl;
 				Instr *i = fc;
 				return i;
 }
@@ -205,15 +205,15 @@ antlrcpp::Any Visitor::visitVirguleexpr(ifccParser::VirguleexprContext *context)
 
 antlrcpp::Any Visitor::visitExpr(ifccParser::ExprContext *context)
 {
-				cout << "Expr" << endl;
+				//cout << "Expr" << endl;
 				vector<antlr4::tree::TerminalNode *> name = context->NAME();
 				ifccParser::ExprsimpleContext *escontext = context->exprsimple();
 				if (name.size() > 0)
 				{
-								cout << "Has name" << endl;
+								//cout << "Has name" << endl;
 								if (escontext != nullptr)
 								{
-												cout << "Has escontext" << endl;
+												//cout << "Has escontext" << endl;
 												Expr *expr = (Expr *)visit(escontext);
 												Expr *aff = new Aff(name[name.size() - 1]->getText(), expr);
 												for (int i = name.size() - 2; i >= 0; --i)
@@ -245,15 +245,6 @@ antlrcpp::Any Visitor::visitExpr(ifccParser::ExprContext *context)
 								Expr *var = (Expr *)visit(escontext);
 								return var;
 				}
-				return aff;
-			}
-		}
-	}
-	else
-	{
-		Expr *var = (Expr *)visit(escontext);
-		return var;
-	}
 }
 
 antlrcpp::Any Visitor::visitPar(ifccParser::ParContext *context)
@@ -345,14 +336,14 @@ antlrcpp::Any Visitor::visitPlusmoins(ifccParser::PlusmoinsContext *context)
 
 antlrcpp::Any Visitor::visitBinoppm(ifccParser::BinoppmContext *context)
 {
-	bool isPlus = context->getText() == "+";
-	return isPlus;
+				bool isPlus = context->getText() == "+";
+				return isPlus;
 }
 
 antlrcpp::Any Visitor::visitBinopmd(ifccParser::BinopmdContext *context)
 {
-	bool isMult = context->getText() == "*";
-	return isMult;
+				bool isMult = context->getText() == "*";
+				return isMult;
 }
 
 antlrcpp::Any Visitor::visitAffecchar(ifccParser::AffeccharContext *context)
@@ -420,13 +411,6 @@ antlrcpp::Any Visitor::visitEqualcompare(ifccParser::EqualcompareContext *contex
 
 }
 
-antlrcpp::Any Visitor::visitNot(ifccParser::NotContext *context)
-{
-	Expr *expr = (Expr *)visit(context->exprsimple());
-	Expr *up = new Not(expr);
-	return up;
-}
-
 antlrcpp::Any Visitor::visitLogicalAND(ifccParser::LogicalANDContext *context)
 {
 	Expr* expr0 = (Expr*) visit(context->exprsimple(0));
@@ -443,14 +427,16 @@ antlrcpp::Any Visitor::visitLogicalOR(ifccParser::LogicalORContext *context)
 	return elor;
 }
 
-int Visitor::getReturnCode()
+antlrcpp::Any Visitor::visitNot(ifccParser::NotContext *context)
 {
-	return returnCode;
+	Expr *expr = (Expr *)visit(context->exprsimple());
+	Expr *up = new Not(expr);
+	return up;
 }
 
-antlrcpp::Any Visitor::aggregateResult(antlrcpp::Any aggregate, const antlrcpp::Any &nextResult)
+int Visitor::getReturnCode()
 {
-	return nextResult;
+				return returnCode;
 }
 
 antlrcpp::Any Visitor::aggregateResult(antlrcpp::Any aggregate, const antlrcpp::Any &nextResult)

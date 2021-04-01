@@ -109,12 +109,6 @@ CONST : [0-9]+ ;
 NAME: [a-zA-Z0-9]+;
 CHARAC: '\''[a-zA-Z0-9 ]'\'' ;
 
-ARRAYDEF: TYPE NAME '[' CONST ']' ';'
-		;
-ARRAYDEFAFF: TYPE NAME '[' CONST? ']' '=' '{' ARRAYCONTENT '}'
-		;
-
-COMMENT : '/*' .*? '*/' -> skip
-		| '//' .*? '\n' -> skip ;
+COMMENT : '/*' .*? '*/' -> skip;
 DIRECTIVE : '#' .*? '\n' -> skip ;
 WS    : [ \t\r\n] -> channel(HIDDEN);

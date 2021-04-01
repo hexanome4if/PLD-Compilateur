@@ -51,12 +51,12 @@ int main()
   int a = 42;
 	int b = 12;
 	int c;
-	int d = (a==42) && (b==12);
-	if (a == 42 || b == 10) {
+	/*int d = (a==42) && (b==12);*/
+	/*if (a == 42 || b == 10) {
 		c = 13;
 	}
 	while (a < 44 && b == 12) {
 		c = 50;
-	}
+	}*/
   return c;
 }
