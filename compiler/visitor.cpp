@@ -41,13 +41,27 @@ antlrcpp::Any Visitor::visitProg(ifccParser::ProgContext *ctx)
 
 antlrcpp::Any Visitor::visitFunc(ifccParser::FuncContext *context)
 {
-	string functionType = context->TYPE()->getText();
-	string functionName = context->NAME()->getText();
+	vector<antlr4::tree::TerminalNode *> types = context->TYPE();
+	vector<antlr4::tree::TerminalNode *> names = context->NAME();
+	string functionType = types[0]->getText();
+	string functionName = names[0]->getText();
 
+	if (types.size() > 1)
+	{
+		symbolTable->getNextInnerContext();
+	}
 	Block *block = (Block *)visit(context->block());
-	Node *func = new Func(getTypeFromString(functionType), functionName, block);
+	if (types.size() > 1)
+	{
+		symbolTable->closeContext();
+	}
+	Func *func = new Func(getTypeFromString(functionType), functionName, block);
+	for (int i = 1; i < types.size(); ++i)
+	{
+		func->addParam(names[i]->getText());
+	}
 
-	return func;
+	return (Node *)func;
 }
 
 antlrcpp::Any Visitor::visitBlock(ifccParser::BlockContext *context)

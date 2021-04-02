@@ -10,6 +10,7 @@ prog
 
 func
 		: TYPE NAME '(' ')' block
+		| TYPE NAME '(' TYPE NAME (',' TYPE NAME)* ')' block
 		;
 
 block
