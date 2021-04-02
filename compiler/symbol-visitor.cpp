@@ -10,18 +10,38 @@ SymbolVisitor::SymbolVisitor(SymbolTable *symbolTable)
 
 antlrcpp::Any SymbolVisitor::visitFunc(ifccParser::FuncContext *context)
 {
-	string functionType = context->TYPE()->getText();
-	string functionName = context->NAME()->getText();
+	vector<antlr4::tree::TerminalNode *> types = context->TYPE();
+	vector<antlr4::tree::TerminalNode *> names = context->NAME();
+	string functionType = types[0]->getText();
+	string functionName = names[0]->getText();
 
 	if (symbolTable->symbolExists(functionName, FUNCTION))
 	{
-		throwError(new AlreadydeclaredSymbolError(functionName, context->NAME()));
+		throwError(new AlreadydeclaredSymbolError(functionName, names[0]));
 		return nullptr;
 	}
 
 	symbolTable->addSymbol(new FuncSymbol(functionName, functionType));
 
+	if (types.size() > 1)
+	{
+		symbolTable->openContext();
+		for (int i = 1; i < types.size(); ++i)
+		{
+			if (symbolTable->symbolExists(names[i]->getText(), VARIABLE))
+			{
+				throwError(new AlreadydeclaredSymbolError(names[i]->getText(), names[i]));
+				return nullptr;
+			}
+		}
+	}
+
 	visitChildren(context);
+
+	if (types.size() > 1)
+	{
+		symbolTable->closeContext();
+	}
 
 	return nullptr;
 }
