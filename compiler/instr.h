@@ -9,88 +9,91 @@
 using namespace std;
 
 /*
-typedef enum
-{
-	int64,
-	int32
-} Type;
-*/
+   typedef enum
+   {
+   int64,
+   int32
+   } Type;
+ */
 
 typedef enum
 {
-	AFF,
-	//    DECL,
-	// DECLAFF,
-	RET,
-	IF,
-	WHILE,
-	FOR,
-	FUNCCALL
+				AFF,
+				//    DECL,
+				// DECLAFF,
+				RET,
+				IF,
+				WHILE,
+				FOR,
+				FUNCCALL
 } Instruction;
 
 class Node
 {
 public:
-	virtual string buildIR(CFG* cfg) {return "buildNode";}
-	virtual void debug(ostream &stream, int space) {}
-	void showSpaces(ostream &stream, int space)
-	{
-		for (int i = 0; i < space; ++i)
-		{
-			stream << "  ";
-		}
-	}
+virtual string buildIR(CFG* cfg) {
+				return "buildNode";
+}
+virtual void debug(ostream &stream, int space) {
+}
+void showSpaces(ostream &stream, int space)
+{
+				for (int i = 0; i < space; ++i)
+				{
+								stream << "  ";
+				}
+}
 };
 
 class Instr : public Node
 {
 public:
-	Instr(Instruction inst) : instruction(inst)
-	{
-	}
-	//virtual string buildIR(CFG* cfg) override;
-	Instruction instruction;
+Instr(Instruction inst) : instruction(inst)
+{
+}
+//virtual string buildIR(CFG* cfg) override;
+Instruction instruction;
 };
 
 class Block : public Node
 {
 public:
-	Block(Context *c) : context(c)
-	{
-	}
-	void addInstr(Instr *instr);
-	virtual void debug(ostream &stream, int space) override;
-	virtual string buildIR(CFG* cfg) override;
-	vector<Instr *> instrs;
-	Context *context;
+Block(Context *c) : context(c)
+{
+}
+void addInstr(Instr *instr);
+virtual void debug(ostream &stream, int space) override;
+virtual string buildIR(CFG* cfg) override;
+vector<Instr *> instrs;
+Context *context;
 };
 
 class Func : public Node
 {
 public:
-	Func(TypeName t, string n, Block *b) : type(t), name(n), block(b)
-	{
-	}
-	void addParam(string param);
-	void addInstr(Instr *instr);
-	virtual void debug(ostream &stream, int space) override;
-	virtual string buildIR(CFG* cfg) override;
-	TypeName type;
-	string name;
-	vector<string> params;
-	Block *block;
+Func(TypeName t, string n, Block *b) : type(t), name(n), block(b)
+{
+}
+void addParam(string param);
+void addInstr(Instr *instr);
+virtual void debug(ostream &stream, int space) override;
+virtual string buildIR(CFG* cfg) override;
+TypeName type;
+string name;
+vector<string> params;
+Block *block;
 };
 
 class Aff : public Instr, public Expr
 {
 public:
-	Aff(string id, Expr *ex) : Instr(AFF), varId(id), expr(ex)
-	{
-	}
-	virtual void debug(ostream &stream, int space) override;
-	virtual string buildIR(CFG* cfg) override;
-	string varId;
-	Expr *expr;
+Aff(string id, Expr *ex) : Instr(AFF), varId(id), expr(ex)
+{
+}
+virtual void debug(ostream &stream, int space) override;
+virtual string buildIR(CFG* cfg) override;
+string varId;
+Expr *expr;
 };
 
 /*
@@ -113,66 +116,66 @@ public:
 class Ret : public Instr
 {
 public:
-	Ret(Expr *ex) : Instr(RET), expr(ex)
-	{
-	}
-	virtual void debug(ostream &stream, int space) override;
-	virtual string buildIR(CFG* cfg) override;
-	Expr *expr;
+Ret(Expr *ex) : Instr(RET), expr(ex)
+{
+}
+virtual void debug(ostream &stream, int space) override;
+virtual string buildIR(CFG* cfg) override;
+Expr *expr;
 };
 
 class If : public Instr
 {
 public:
-	If(Expr *cond, Block *bif, Block *belse) : Instr(IF), condition(cond),
-																						 blockIf(bif), blockElse(belse)
-	{
-	}
-	void addInstrIf(Instr *instr);
-	void addInstrElse(Instr *instr);
-	virtual void debug(ostream &stream, int space) override;
-	//virtual string buildIR(CFG* cfg) override;
-	Expr *condition;
-	Block *blockIf;
-	Block *blockElse;
+If(Expr *cond, Block *bif, Block *belse) : Instr(IF), condition(cond),
+				blockIf(bif), blockElse(belse)
+{
+}
+void addInstrIf(Instr *instr);
+void addInstrElse(Instr *instr);
+virtual void debug(ostream &stream, int space) override;
+virtual string buildIR(CFG* cfg) override;
+Expr *condition;
+Block *blockIf;
+Block *blockElse;
 };
 
 class While : public Instr
 {
 public:
-	While(Expr *cond, Block *b) : Instr(WHILE), condition(cond), block(b)
-	{
-	}
-	void addInstr(Instr *instr);
-	//virtual string buildIR(CFG* cfg) override ;
-	void debug(ostream &stream, int space);
-	Expr *condition;
-	Block *block;
+While(Expr *cond, Block *b) : Instr(WHILE), condition(cond), block(b)
+{
+}
+void addInstr(Instr *instr);
+virtual string buildIR(CFG* cfg) override;
+virtual void debug(ostream &stream, int space) override;
+Expr *condition;
+Block *block;
 };
 
 class For : public Instr
 {
 public:
-	For(Expr *i, Expr *cond, Expr *p, Block *b) : Instr(FOR), init(i), condition(cond), progression(p), block(b)
-	{
-	}
-	void addInstr(Instr *instr);
-	//virtual string buildIR(CFG* cfg) override;
-	Expr *init;
-	Expr *condition;
-	Expr *progression;
-	Block *block;
+For(Expr *i, Expr *cond, Expr *p, Block *b) : Instr(FOR), init(i), condition(cond), progression(p), block(b)
+{
+}
+void addInstr(Instr *instr);
+//virtual string buildIR(CFG* cfg) override;
+Expr *init;
+Expr *condition;
+Expr *progression;
+Block *block;
 };
 
 class FuncCall : public Instr, public Expr
 {
 public:
-	FuncCall(string fn) : Instr(FUNCCALL), funcName(fn)
-	{
-	}
-	void addParam(Expr *param);
-	virtual void debug(ostream &stream, int space) override;
-	//virtual string buildIR(CFG* cfg) override;
-	string funcName;
-	vector<Expr *> params;
+FuncCall(string fn) : Instr(FUNCCALL), funcName(fn)
+{
+}
+void addParam(Expr *param);
+virtual void debug(ostream &stream, int space) override;
+virtual string buildIR(CFG* cfg) override;
+string funcName;
+vector<Expr *> params;
 };

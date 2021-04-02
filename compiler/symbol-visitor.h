@@ -21,26 +21,25 @@ using namespace std;
 class SymbolVisitor : public ifccBaseVisitor
 {
 public:
-	SymbolVisitor(SymbolTable *symbolTable);
+SymbolVisitor(SymbolTable *symbolTable);
 
-	void throwError(AbstractError *error);
+void throwError(AbstractError *error);
 
-	antlrcpp::Any visitFunc(ifccParser::FuncContext *context) override;								//ok
-	antlrcpp::Any visitBlock(ifccParser::BlockContext *context) override;							//ok
-	antlrcpp::Any visitVardefaff(ifccParser::VardefaffContext *context) override;			//ok
-	antlrcpp::Any visitVardef(ifccParser::VardefContext *context) override;						//ok
-	antlrcpp::Any visitVirgulename(ifccParser::VirgulenameContext *context) override; //ok
-	antlrcpp::Any visitVaraff(ifccParser::VaraffContext *context) override;						//ok
-	antlrcpp::Any visitFunccall(ifccParser::FunccallContext *context) override;				//ok
-	antlrcpp::Any visitAffecsimple(ifccParser::AffecsimpleContext *context) override; //ok
-	antlrcpp::Any visitName(ifccParser::NameContext *context) override;								//ok
-	antlrcpp::Any visitExpr(ifccParser::ExprContext *context) override;
+antlrcpp::Any visitFunc(ifccParser::FuncContext *context) override;                 //ok
+antlrcpp::Any visitBlock(ifccParser::BlockContext *context) override;               //ok
+antlrcpp::Any visitVardefaff(ifccParser::VardefaffContext *context) override;       //ok
+antlrcpp::Any visitVirgulename(ifccParser::VirgulenameContext *context) override;   //ok
+antlrcpp::Any visitVaraff(ifccParser::VaraffContext *context) override;             //ok
+antlrcpp::Any visitFunccall(ifccParser::FunccallContext *context) override;         //ok
+antlrcpp::Any visitAffecsimple(ifccParser::AffecsimpleContext *context) override;   //ok
+antlrcpp::Any visitName(ifccParser::NameContext *context) override;                 //ok
+antlrcpp::Any visitExpr(ifccParser::ExprContext *context) override;
 
-	void postAnalysis();
+void postAnalysis();
 
-	ErrorManager *getErrorManager(); //ok
+ErrorManager *getErrorManager();   //ok
 
 private:
-	SymbolTable *symbolTable;
-	ErrorManager *errorManager;
+SymbolTable *symbolTable;
+ErrorManager *errorManager;
 };

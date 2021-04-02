@@ -1,12 +1,3 @@
-#include <inttypes.h>
-#include <stdio.h>
-
-int func()
-{
-				int a = 2;
-				return 2;
-}
-
 int main()
 {
 				int a = 5;

@@ -65,6 +65,13 @@ antlrcpp::Any Visitor::visitBlock(ifccParser::BlockContext *context)
 								if (visited.is<Instr *>())
 								{
 												block->addInstr((Instr *)visited);
+								} else if (visited.is<vector<Instr *> >())
+								{
+												vector<Instr *> v_aff = visited.as<vector<Instr *> >();
+												for(int i = 0; i<v_aff.size(); ++i)
+												{
+																block->addInstr(v_aff[i]);
+												}
 								}
 				}
 
@@ -80,10 +87,9 @@ antlrcpp::Any Visitor::visitInstr(ifccParser::InstrContext *context)
 				{
 								instr = (Instr *)visit(context->funccall());
 				}
-				else if (context->vardef())
+				else if (context->vardefaff())
 				{
-								visit(context->vardef());
-								return nullptr;
+								return visit(context->vardefaff());
 				}
 				else
 				{
@@ -139,34 +145,40 @@ antlrcpp::Any Visitor::visitVardefaff(ifccParser::VardefaffContext *context)
 				string varType = context->TYPE()->getText();
 				string varName = context->NAME()->getText();
 
-				Expr *expr = (Expr *)visit(context->expr());
-				Instr *aff = new Aff(varName, expr);
-				//cout << "End var def aff" << endl;
-				return aff;
-}
-
-// TODO for now we could remove this
-antlrcpp::Any Visitor::visitVardef(ifccParser::VardefContext *context)
-{
-				//cout << "Var def" << endl;
-				string varType = context->TYPE()->getText();
-				string varName = context->NAME()->getText();
+				vector<Instr *> v_aff;
+				if(context->expr() == nullptr)
+				{
+								Expr *expr = (Expr *)visit(context->expr());
+								Instr *aff = new Aff(varName, expr);
+								v_aff.push_back(aff);
+				}
 
 				vector<ifccParser::VirgulenameContext *> virgulename = context->virgulename();
 				vector<ifccParser::VirgulenameContext *>::iterator it;
 
 				for (it = virgulename.begin(); it != virgulename.end(); ++it)
 				{
-								string varname = visit(*it);
+								Instr* aff_vn = (Instr *)visit(*it);
+								if(aff_vn != nullptr)
+								{
+												v_aff.push_back(aff_vn);
+								}
 				}
 
-				//cout << "End var def" << endl;
-				return nullptr;
+				//cout << "End var def aff" << endl;
+				return v_aff;
 }
 
 antlrcpp::Any Visitor::visitVirgulename(ifccParser::VirgulenameContext *context)
 {
-				return context->NAME()->getText();
+				string varName = context->NAME()->getText();
+				Instr *aff = nullptr;
+				if(context->expr() == nullptr)
+				{
+								Expr *expr = (Expr *)visit(context->expr());
+								aff = new Aff(varName, expr);
+				}
+				return aff;
 }
 
 antlrcpp::Any Visitor::visitVaraff(ifccParser::VaraffContext *context)
@@ -413,25 +425,25 @@ antlrcpp::Any Visitor::visitEqualcompare(ifccParser::EqualcompareContext *contex
 
 antlrcpp::Any Visitor::visitLogicalAND(ifccParser::LogicalANDContext *context)
 {
-	Expr* expr0 = (Expr*) visit(context->exprsimple(0));
-	Expr* expr1 = (Expr*) visit(context->exprsimple(1));
-	Expr* eland = new LogicalAND(expr0, expr1);
-	return eland;
+				Expr* expr0 = (Expr*) visit(context->exprsimple(0));
+				Expr* expr1 = (Expr*) visit(context->exprsimple(1));
+				Expr* eland = new LogicalAND(expr0, expr1);
+				return eland;
 }
 
 antlrcpp::Any Visitor::visitLogicalOR(ifccParser::LogicalORContext *context)
 {
-	Expr* expr0  = (Expr*) visit(context->exprsimple(0));
-	Expr* expr1  = (Expr*) visit(context->exprsimple(1));
-	Expr* elor = new LogicalOR(expr0, expr1);
-	return elor;
+				Expr* expr0  = (Expr*) visit(context->exprsimple(0));
+				Expr* expr1  = (Expr*) visit(context->exprsimple(1));
+				Expr* elor = new LogicalOR(expr0, expr1);
+				return elor;
 }
 
 antlrcpp::Any Visitor::visitNot(ifccParser::NotContext *context)
 {
-	Expr *expr = (Expr *)visit(context->exprsimple());
-	Expr *up = new Not(expr);
-	return up;
+				Expr *expr = (Expr *)visit(context->exprsimple());
+				Expr *up = new Not(expr);
+				return up;
 }
 
 int Visitor::getReturnCode()

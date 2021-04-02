@@ -18,7 +18,6 @@ block
 
 instr
 		: func_return
-		| vardef
 		| vardefaff
 		| varaff
 		| whiledef
@@ -48,15 +47,11 @@ func_return
 		;
 
 vardefaff
-		: TYPE NAME '=' expr ';'
-		;
-
-vardef
-		: TYPE NAME virgulename* ';'
+		: TYPE NAME ('=' expr)? virgulename* ';'
 		;
 
 virgulename
-		: ',' NAME
+		: ',' NAME ('=' expr)?
 		;
 
 varaff

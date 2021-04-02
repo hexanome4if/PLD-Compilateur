@@ -30,7 +30,6 @@ antlrcpp::Any visitElsedef(ifccParser::ElsedefContext *context) override;       
 antlrcpp::Any visitFordef(ifccParser::FordefContext *context) override;               //ok
 antlrcpp::Any visitFunc_return(ifccParser::Func_returnContext *context) override;     //ok
 antlrcpp::Any visitVardefaff(ifccParser::VardefaffContext *context) override;         //ok
-antlrcpp::Any visitVardef(ifccParser::VardefContext *context) override;               //ok
 antlrcpp::Any visitVirgulename(ifccParser::VirgulenameContext *context) override;     //ok
 antlrcpp::Any visitVaraff(ifccParser::VaraffContext *context) override;               //ok
 antlrcpp::Any visitFunccall(ifccParser::FunccallContext *context) override;           //ok
