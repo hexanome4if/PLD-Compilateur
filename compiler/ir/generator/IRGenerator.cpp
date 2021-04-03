@@ -88,7 +88,7 @@ string IRGenerator::genExpr(Expr *expr)
 	return "";
 }
 
-string IRGenerator::createTempVar(string type)
+string IRGenerator::createTempVar(TypeName type)
 {
 	Symbol *s = symbolTable->addTempSymbol(type);
 	return s->getName();

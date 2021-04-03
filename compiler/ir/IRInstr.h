@@ -33,8 +33,7 @@ public:
 
 	IRInstr(BasicBlock *bb_, Operation operation, string type, vector<string> params_);
 
-	/** Actual code generation */
-	void gen_asm(ostream &o); /**< x86 assembly code generation for this IR instruction */
+	bool hasFunctionCall();
 
 	// Get
 	BasicBlock *getBB() { return bb; }

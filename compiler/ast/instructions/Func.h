@@ -2,7 +2,7 @@
 
 #include "Node.h"
 #include "Block.h"
-#include "../../type.h"
+#include "../../symbols-management/type.h"
 
 class Func : public Node
 {

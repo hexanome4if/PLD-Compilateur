@@ -11,3 +11,13 @@ IRInstr::IRInstr(BasicBlock *bb_, Operation operation, string type, vector<strin
 	t = type;
 	params = params_;
 }
+
+bool IRInstr::hasFunctionCall()
+{
+	if (op == IRInstr::CALL)
+	{
+		return true;
+	}
+
+	return false;
+}

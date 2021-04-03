@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <math.h>
 #include "X86Translator.h"
 #include "../ir/BasicBlock.h"
 #include "../ir/IRInstr.h"
@@ -170,9 +171,16 @@ void X86Translator::genProlog(IRInstr *instr)
 	o << params[0] << ":" << endl;
 	o << "  pushq %rbp" << endl;
 	o << "  movq %rsp, %rbp" << endl;
-	o << "  subq $16, %rsp" << endl;
 
-	for (int i = 1; i < params.size(); ++i)
+	bool hasFunctionCall = params[1] == "true";
+	int definedSymbolsSize = stoi(params[2]);
+
+	if (hasFunctionCall && definedSymbolsSize > 0)
+	{
+		o << "  subq $" << to_string(int(ceil(definedSymbolsSize / 16.)) * 16) << ", %rsp" << endl;
+	}
+
+	for (int i = 3; i < params.size(); ++i)
 	{
 		if (i > 6)
 		{
@@ -182,7 +190,7 @@ void X86Translator::genProlog(IRInstr *instr)
 		}
 		else
 		{
-			string reg = getRegFromParameterIndex(i);
+			string reg = getRegFromParameterIndex(i - 2);
 			o << "  movl " << reg << ", " << getSymbolMemAddress(params[i]) << endl;
 			setSymbolInRegister(params[i], reg);
 		}
@@ -191,8 +199,17 @@ void X86Translator::genProlog(IRInstr *instr)
 
 void X86Translator::genEpilog(IRInstr *instr)
 {
-	o << "  addq $16, %rsp" << endl;
-	o << "  popq %rbp" << endl;
+	vector<string> params = instr->getParams();
+	bool hasFunctionCall = params[0] == "true";
+	int definedSymbolSize = stoi(params[1]);
+	if (hasFunctionCall && definedSymbolSize > 0)
+	{
+		o << "  leave" << endl;
+	}
+	else
+	{
+		o << "  popq %rbp" << endl;
+	}
 	o << "  ret" << endl;
 }
 

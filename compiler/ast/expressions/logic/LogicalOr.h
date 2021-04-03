@@ -15,6 +15,8 @@ public:
 		stream << ")";
 	}
 
+	virtual bool hasFunctionCall() override { return expr1->hasFunctionCall() || expr2->hasFunctionCall(); }
+
 	// Get
 	Expr *getExpr1() { return expr1; }
 	Expr *getExpr2() { return expr2; }

@@ -15,6 +15,8 @@ public:
 		stream << ")";
 	}
 
+	virtual bool hasFunctionCall() override { return expr->hasFunctionCall(); }
+
 	// Get
 	string getVarName() { return varName; }
 	Expr *getExpr() { return expr; }

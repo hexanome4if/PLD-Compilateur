@@ -18,7 +18,7 @@ string IRInstrGenerator::genAff(Aff *aff)
 
 string IRInstrGenerator::genFuncCall(FuncCall *funcCall)
 {
-	string retVar = generator->createTempVar("int32");
+	string retVar = generator->createTempVar(INT_32);
 
 	vector<string> irParams;
 	irParams.push_back(funcCall->getFuncName());

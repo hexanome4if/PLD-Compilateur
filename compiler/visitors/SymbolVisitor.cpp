@@ -23,9 +23,9 @@ antlrcpp::Any SymbolVisitor::visitFunc(ifccParser::FuncContext *context)
 
 	symbolTable->addSymbol(new FuncSymbol(functionName, functionType));
 
+	symbolTable->openContext();
 	if (types.size() > 1)
 	{
-		symbolTable->openContext();
 		for (int i = 1; i < types.size(); ++i)
 		{
 			if (symbolTable->symbolExists(names[i]->getText(), VARIABLE))
@@ -33,16 +33,13 @@ antlrcpp::Any SymbolVisitor::visitFunc(ifccParser::FuncContext *context)
 				throwError(new AlreadydeclaredSymbolError(names[i]->getText(), names[i]));
 				return nullptr;
 			}
-			symbolTable->addSymbol(new VarSymbol(names[i]->getText(), types[i]->getText()));
+			symbolTable->addSymbol(new VarSymbol(names[i]->getText(), getSymbolTypeFromString(types[i]->getText())));
 		}
 	}
 
 	visitChildren(context);
 
-	if (types.size() > 1)
-	{
-		symbolTable->closeContext();
-	}
+	symbolTable->closeContext();
 
 	return nullptr;
 }
@@ -94,7 +91,7 @@ antlrcpp::Any SymbolVisitor::visitVardefaff(ifccParser::VardefaffContext *contex
 		return nullptr;
 	}
 
-	symbolTable->addSymbol(new VarSymbol(varName, varType, context->expr() != nullptr));
+	symbolTable->addSymbol(new VarSymbol(varName, getSymbolTypeFromString(varType), context->expr() != nullptr));
 	vector<ifccParser::VirgulenameContext *> virgulename = context->virgulename();
 	vector<ifccParser::VirgulenameContext *>::iterator it;
 
@@ -109,7 +106,7 @@ antlrcpp::Any SymbolVisitor::visitVardefaff(ifccParser::VardefaffContext *contex
 		}
 
 		// Add the variable in the symbol table
-		symbolTable->addSymbol(new VarSymbol(varname, varType, (*it)->expr() != nullptr));
+		symbolTable->addSymbol(new VarSymbol(varname, getSymbolTypeFromString(varType), (*it)->expr() != nullptr));
 	}
 
 	return visitChildren(context);

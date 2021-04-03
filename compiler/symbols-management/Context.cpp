@@ -115,3 +115,21 @@ void Context::assignMemoryAddresses(int nextAddress)
 		childrenContexts[i]->assignMemoryAddresses(nextAddress);
 	}
 }
+
+int Context::getTotalContextSize()
+{
+	int totalSize = 0;
+
+	for (int i = 0; i < childrenContexts.size(); ++i)
+	{
+		totalSize += childrenContexts[i]->getTotalContextSize();
+	}
+
+	map<string, Symbol *>::iterator it;
+	for (it = symbols.begin(); it != symbols.end(); ++it)
+	{
+		totalSize += it->second->getMemorySize();
+	}
+
+	return totalSize;
+}

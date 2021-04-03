@@ -7,14 +7,19 @@ void IRBlockGenerator::genFunc(Func *func)
 	//Générer prologue
 	BasicBlock *prologue = new BasicBlock(cfg, cfg->new_BB_name(), func->getBlock()->getContext());
 	BasicBlock *body = new BasicBlock(cfg, func->getName(), func->getBlock()->getContext());
-	BasicBlock *epilogue = new BasicBlock(cfg, cfg->new_BB_name(), nullptr);
+	BasicBlock *epilogue = new BasicBlock(cfg, cfg->new_BB_name(), func->getBlock()->getContext());
 
 	cfg->add_bb(prologue);
 	cfg->add_bb(body);
 	cfg->add_bb(epilogue);
 
+	bool hasFunctionCall = func->getBlock()->hasFunctionCall();
+	int definedSymbolsSize = func->getBlock()->getContext()->getParentContext()->getTotalContextSize();
+
 	vector<string> irParams;
 	irParams.push_back(func->getName());
+	irParams.push_back(hasFunctionCall ? "true" : "false");
+	irParams.push_back(to_string(definedSymbolsSize));
 
 	vector<string> params = func->getParams();
 	for (int i = 0; i < params.size(); ++i)
@@ -31,8 +36,10 @@ void IRBlockGenerator::genFunc(Func *func)
 	irGenerator->genBlock(func->getBlock());
 
 	//Générer épilogue
-	vector<string> empty;
-	epilogue->add_IRInstr(IRInstr::EPILOG, "notype", empty);
+	irParams.clear();
+	irParams.push_back(hasFunctionCall ? "true" : "false");
+	irParams.push_back(to_string(definedSymbolsSize));
+	epilogue->add_IRInstr(IRInstr::EPILOG, "notype", irParams);
 }
 
 void IRBlockGenerator::genIf(If *ifBlock)
@@ -111,7 +118,6 @@ void IRBlockGenerator::genWhile(While *whileLoop)
 	blockWhile->setExitTrue(testBlock);
 
 	irGenerator->setCurrentBB(blockWhile);
-
 	irGenerator->genBlock(whileLoop->getBlock());
 
 	testBlock->setExitTrue(blockWhile);

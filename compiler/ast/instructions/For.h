@@ -11,6 +11,8 @@ public:
 
 	void addInstr(Instr *instr);
 
+	virtual bool hasFunctionCall() override { return false; }
+
 private:
 	Expr *init;
 	Expr *condition;

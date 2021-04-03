@@ -15,7 +15,7 @@ public:
 	Context *getNextInnerContext();
 	void reinitRun();
 	void setCreationDone();
-	Symbol *addTempSymbol(string type);
+	Symbol *addTempSymbol(TypeName type);
 	void setCurrentContext(Context *context);
 	void assignMemoryAddresses();
 	Context *currentContext;

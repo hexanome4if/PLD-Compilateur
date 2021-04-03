@@ -2,7 +2,7 @@
 // Generated from ifcc.g4 by ANTLR 4.7.2
 
 #include "AstVisitor.h"
-#include "../type.h"
+#include "../symbols-management/type.h"
 #include "../ast/instructions/Block.h"
 #include "../ast/instructions/Func.h"
 #include "../ast/instructions/Instr.h"
@@ -28,19 +28,6 @@
 #include "../ast/expressions/comparison/SupCompare.h"
 #include "../ast/expressions/logic/LogicalAnd.h"
 #include "../ast/expressions/logic/LogicalOr.h"
-
-TypeName getTypeFromString(string string_type)
-{
-	if (string_type == "int")
-	{
-		return int32;
-	}
-	if (string_type == "char")
-	{
-		return ifChar;
-	}
-	return int32;
-}
 
 AstVisitor::AstVisitor(Ast *ast, SymbolTable *symbolTable) : ast(ast), symbolTable(symbolTable)
 {
@@ -72,16 +59,13 @@ antlrcpp::Any AstVisitor::visitFunc(ifccParser::FuncContext *context)
 	string functionType = types[0]->getText();
 	string functionName = names[0]->getText();
 
-	if (types.size() > 1)
-	{
-		symbolTable->getNextInnerContext();
-	}
+	symbolTable->getNextInnerContext();
+
 	Block *block = (Block *)visit(context->block());
-	if (types.size() > 1)
-	{
-		symbolTable->closeContext();
-	}
-	Func *func = new Func(getTypeFromString(functionType), functionName, block);
+
+	symbolTable->closeContext();
+
+	Func *func = new Func(getSymbolTypeFromString(functionType), functionName, block);
 	for (int i = 1; i < types.size(); ++i)
 	{
 		func->addParam(names[i]->getText());

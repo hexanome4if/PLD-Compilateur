@@ -20,6 +20,8 @@ public:
 	string getName() { return name; }
 	SymbolType getSymbolType() { return symbolType; }
 
+	virtual int getMemorySize() { return 0; }
+
 private:
 	SymbolType symbolType;
 	string name;

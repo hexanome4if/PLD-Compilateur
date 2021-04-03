@@ -24,6 +24,8 @@ public:
 		}
 	}
 
+	virtual bool hasFunctionCall() override { return true; }
+
 	// Get
 	string getFuncName() { return funcName; }
 	vector<Expr *> getParams() { return params; }

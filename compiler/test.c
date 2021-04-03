@@ -1,13 +1,13 @@
-int sum(int numA, int numB)
+int func()
 {
-	int res = numA + numB;
-	return res;
+	int a = 2;
+	return 2;
 }
 
 int main()
 {
-	int a = 2;
-	int b = 5;
+	int a = 5;
+	int ret = func();
 
-	return sum(a, b);
+	return ret + a;
 }

@@ -44,6 +44,8 @@ public:
 
 	void add_IRInstr(IRInstr::Operation op, string t, vector<string> params);
 
+	bool hasFunctionCall();
+
 	// Get
 	BasicBlock *getExitTrue() { return exit_true; }
 	BasicBlock *getExitFalse() { return exit_false; }

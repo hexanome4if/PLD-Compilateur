@@ -14,6 +14,8 @@ public:
 		expr->debug(stream, space);
 	}
 
+	virtual bool hasFunctionCall() override { return expr->hasFunctionCall(); }
+
 	// Get
 	Expr *getExpr() { return expr; }
 

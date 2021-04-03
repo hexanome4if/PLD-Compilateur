@@ -42,6 +42,8 @@ public:
 
 	virtual void debug(ostream &stream, int space) {}
 
+	virtual bool hasFunctionCall() { return false; }
+
 	// Get
 	Type getExprType() { return exprType; }
 

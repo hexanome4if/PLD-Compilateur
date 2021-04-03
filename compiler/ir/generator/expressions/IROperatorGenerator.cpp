@@ -5,7 +5,7 @@ string IROperatorGenerator::genBin(BinOp *binOp)
 {
 	string var1 = generator->genExpr(binOp->getExpr1());
 	string var2 = generator->genExpr(binOp->getExpr2());
-	string var3 = generator->createTempVar("int32");
+	string var3 = generator->createTempVar(INT_32);
 
 	IRInstr::Operation op;
 	switch (binOp->getOperation())

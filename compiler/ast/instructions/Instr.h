@@ -19,6 +19,8 @@ public:
 
 	Instr(Type type) : Node(INSTRUCTION), instrType(type) {}
 
+	virtual bool hasFunctionCall() = 0;
+
 	// Get
 	Type getInstrType() { return instrType; }
 

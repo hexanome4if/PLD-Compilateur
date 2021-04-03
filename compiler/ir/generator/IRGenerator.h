@@ -20,7 +20,7 @@ public:
 	void genInstruction(Instr *instr);
 	string genExpr(Expr *expr);
 
-	string createTempVar(string type);
+	string createTempVar(TypeName type);
 
 	// Set
 	Context *getCurrentContext() { return currentContext; }

@@ -24,6 +24,18 @@ public:
 		}
 	}
 
+	bool hasFunctionCall()
+	{
+		for (int i = 0; i < instrs.size(); ++i)
+		{
+			if (instrs[i]->hasFunctionCall())
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
 	// Get
 	Context *getContext() { return context; }
 	vector<Instr *> getInstrs() { return instrs; }

@@ -23,9 +23,12 @@ public:
 	void addChildContext(Context *context);
 	Context *getNextChild();
 	void reinitRun();
+	void assignMemoryAddresses(int nextAddress);
+
+	int getTotalContextSize();
+
 	void debug(ostream &stream, int space);
 	void showSpace(ostream &stream, int space);
-	void assignMemoryAddresses(int nextAddress);
 
 private:
 	map<string, Symbol *> symbols;

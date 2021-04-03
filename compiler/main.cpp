@@ -40,6 +40,7 @@ int main(int argn, const char **argv)
 		return 1;
 
 	SymbolTable *symbolTable = new SymbolTable();
+
 	SymbolVisitor symbolVisitor(symbolTable);
 	symbolVisitor.visit(tree);
 	symbolTable->setCreationDone();
@@ -60,12 +61,10 @@ int main(int argn, const char **argv)
 	//ast->debug(cout);
 
 	CFG *cfg = new CFG(ast, symbolTable);
-
 	IRGenerator *irGenerator = new IRGenerator(ast, cfg, symbolTable);
 	irGenerator->generate();
 
 	symbolTable->assignMemoryAddresses();
-
 	X86Translator *translator = new X86Translator(cout, cfg);
 	translator->translate();
 

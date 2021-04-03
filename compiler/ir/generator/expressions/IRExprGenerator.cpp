@@ -3,7 +3,7 @@
 
 string IRExprGenerator::genConst(ConstExpr *constExpr)
 {
-	string var = generator->createTempVar("int32");
+	string var = generator->createTempVar(INT_32);
 
 	vector<string> params;
 	params.push_back(var);

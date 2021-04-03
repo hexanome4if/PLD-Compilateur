@@ -57,7 +57,7 @@ void SymbolTable::setCreationDone()
 	creationDone = true;
 }
 
-Symbol *SymbolTable::addTempSymbol(string type)
+Symbol *SymbolTable::addTempSymbol(TypeName type)
 {
 	string varName = "temp_" + to_string(tempNumber++);
 	Symbol *symbol = new VarSymbol(varName, type);

@@ -27,6 +27,11 @@ public:
 		}
 	}
 
+	virtual bool hasFunctionCall() override
+	{
+		return condition->hasFunctionCall() || blockIf->hasFunctionCall() || (blockElse != nullptr && blockElse->hasFunctionCall());
+	}
+
 	// Get
 	Expr *getCondition() { return condition; }
 	Block *getBlockIf() { return blockIf; }

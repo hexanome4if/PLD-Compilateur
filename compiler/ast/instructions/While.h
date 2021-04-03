@@ -19,6 +19,11 @@ public:
 		block->debug(stream, space + 1);
 	}
 
+	virtual bool hasFunctionCall() override
+	{
+		return condition->hasFunctionCall() || block->hasFunctionCall();
+	}
+
 	// Get
 	Block *getBlock() { return block; }
 	Expr *getCondition() { return condition; }
