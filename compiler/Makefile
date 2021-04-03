@@ -1,9 +1,17 @@
 OUTPUT=output
 GENERATED=antlr4-generated
-SYMBOL_TABLE=symbol-table/*.cpp
-GRAMMAR=ifcc.g4
+
+ASSEMBLY_TRANS=assembly-translation/*.cpp
+AST=ast/*.cpp
+IR=ir/*.cpp
+IR_GEN=ir/generator/*.cpp
+IR_GEN_EXPR=ir/generator/expressions/*.cpp
+SYMBOLS_MANAGEMENT=symbols-management/*.cpp
+VISITORS=visitors/*.cpp
 ANTLR4_CPP=antlr4-generated/*.cpp
 ROOT=./*.cpp
+
+GRAMMAR=ifcc.g4
 
 #override with your local installation
 ANTLR4_BINDIR=/usr/bin
@@ -16,7 +24,7 @@ LDARGS=-g
 
 TARGET = ifcc
 
-DEPS = $(ANTLR4_CPP) $(SYMBOL_TABLE) $(ROOT)
+DEPS = $(ANTLR4_CPP) $(ASSEMBLY_TRANS) $(AST) $(IR) $(IR_GEN) $(IR_GEN_EXPR) $(SYMBOLS_MANAGEMENT) $(VISITORS) $(ROOT)
 
 all: ifcc
 
