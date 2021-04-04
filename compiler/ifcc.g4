@@ -106,5 +106,6 @@ NAME: [a-zA-Z0-9]+;
 CHARAC: '\''[a-zA-Z0-9 ]'\'' ;
 
 COMMENT : '/*' .*? '*/' -> skip;
+INLINE_COMMENT : '//' .*? '\n' -> skip;
 DIRECTIVE : '#' .*? '\n' -> skip ;
 WS    : [ \t\r\n] -> channel(HIDDEN);

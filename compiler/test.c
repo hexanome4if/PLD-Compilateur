@@ -2,12 +2,13 @@
 
 int func()
 {
-	int a = 2;
+	int a = 2; // Un autre commentaire
+	// Un commentaire
+	return a;
 }
 
 void f()
 {
-	return 2;
 }
 
 int main()
