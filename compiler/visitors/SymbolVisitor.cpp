@@ -124,6 +124,7 @@ antlrcpp::Any SymbolVisitor::visitVardefaff(ifccParser::VardefaffContext *contex
 
 antlrcpp::Any SymbolVisitor::visitVirgulename(ifccParser::VirgulenameContext *context)
 {
+	visitChildren(context);
 	return context->NAME()->getText();
 }
 
@@ -155,6 +156,8 @@ antlrcpp::Any SymbolVisitor::visitFunccall(ifccParser::FunccallContext *context)
 
 	FuncSymbol *symbol = (FuncSymbol *)symbolTable->getSymbol(funcName);
 	symbol->used();
+
+	visitChildren(context);
 
 	return nullptr;
 }
@@ -203,7 +206,7 @@ antlrcpp::Any SymbolVisitor::visitAffecsimple(ifccParser::AffecsimpleContext *co
 	VarSymbol *symbol = (VarSymbol *)symbolTable->getSymbol(varName);
 	symbol->initialized();
 
-	return nullptr;
+	return visitChildren(context);
 }
 
 void postAnalysis()
