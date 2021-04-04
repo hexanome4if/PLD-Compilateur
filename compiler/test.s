@@ -1,55 +1,52 @@
-	.file	"test.c"
-	.text
-	.globl	func
-	.type	func, @function
+.BB_0:
+.global func
 func:
-.LFB0:
-	.cfi_startproc
-	pushq	%rbp
-	.cfi_def_cfa_offset 16
-	.cfi_offset 6, -16
-	movq	%rsp, %rbp
-	.cfi_def_cfa_register 6
-	movl	$2, -4(%rbp)
-	movl	$2, %eax
-	popq	%rbp
-	.cfi_def_cfa 7, 8
-	ret
-	.cfi_endproc
-.LFE0:
-	.size	func, .-func
-	.section	.rodata
-.LC0:
-	.string	"Hey"
-	.text
-	.globl	main
-	.type	main, @function
+  pushq %rbp
+  movq %rsp, %rbp
+  jmp .func
+.func:
+  movl $2, -8(%rbp)
+  movl -8(%rbp), %eax
+  movl %eax, -4(%rbp)
+  movl -4(%rbp), %eax
+  jmp .BB_1
+.BB_1:
+  popq %rbp
+  ret
+.BB_2:
+.global f
+f:
+  pushq %rbp
+  movq %rsp, %rbp
+  jmp .f
+.f:
+  jmp .BB_3
+.BB_3:
+  popq %rbp
+  ret
+.BB_4:
+.global main
 main:
-.LFB1:
-	.cfi_startproc
-	pushq	%rbp
-	.cfi_def_cfa_offset 16
-	.cfi_offset 6, -16
-	movq	%rsp, %rbp
-	.cfi_def_cfa_register 6
-	subq	$16, %rsp
-	movl	$5, -8(%rbp)
-	movl	$0, %eax
-	call	func
-	movl	%eax, -4(%rbp)
-	movl	$99, %edi
-	call	putchar@PLT
-	leaq	.LC0(%rip), %rdi
-	movl	$0, %eax
-	call	printf@PLT
-	movl	-4(%rbp), %edx
-	movl	-8(%rbp), %eax
-	addl	%edx, %eax
-	leave
-	.cfi_def_cfa 7, 8
-	ret
-	.cfi_endproc
-.LFE1:
-	.size	main, .-main
-	.ident	"GCC: (Ubuntu 7.5.0-3ubuntu1~18.04) 7.5.0"
-	.section	.note.GNU-stack,"",@progbits
+  pushq %rbp
+  movq %rsp, %rbp
+  subq $16, %rsp
+  jmp .main
+.main:
+  movl $65, -12(%rbp)
+  movl -12(%rbp), %ebx
+  movl %ebx, -4(%rbp)
+  call func
+  movl %eax, -16(%rbp)
+  movl %eax, -8(%rbp)
+  call getchar
+  movl %eax, -20(%rbp)
+  movl %eax, -32(%rbp)
+  movl -32(%rbp), %edi
+  call putchar
+  movl %eax, -24(%rbp)
+  movl $0, -28(%rbp)
+  movl -28(%rbp), %eax
+  jmp .BB_5
+.BB_5:
+  leave
+  ret

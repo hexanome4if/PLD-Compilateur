@@ -13,7 +13,11 @@ void f()
 
 int main()
 {
-	int a = 5;
+	int a = 65;
 	int ret = func();
-	return ret + a;
+
+	int userInput = getchar();
+
+	putchar(userInput);
+	return 0;
 }

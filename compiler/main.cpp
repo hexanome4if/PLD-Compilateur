@@ -15,9 +15,20 @@
 #include "ast/Ast.h"
 #include "ir/generator/IRGenerator.h"
 #include "assembly-translation/X86Translator.h"
+#include "symbols-management/FuncSymbol.h"
 
 using namespace antlr4;
 using namespace std;
+
+void standardFunctions(SymbolTable *symbolTable)
+{
+	FuncSymbol *putChar = new FuncSymbol("putchar", "int");
+	putChar->used();
+	symbolTable->addSymbol(putChar);
+	FuncSymbol *getChar = new FuncSymbol("getchar", "int");
+	getChar->used();
+	symbolTable->addSymbol(getChar);
+}
 
 int main(int argn, const char **argv)
 {
@@ -43,6 +54,8 @@ int main(int argn, const char **argv)
 		return 1;
 
 	SymbolTable *symbolTable = new SymbolTable();
+
+	standardFunctions(symbolTable);
 
 	SymbolVisitor symbolVisitor(symbolTable);
 	symbolVisitor.visit(tree);
