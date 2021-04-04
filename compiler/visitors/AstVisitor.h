@@ -7,6 +7,7 @@
 #include "../antlr4-generated/ifccVisitor.h"
 #include "../symbols-management/SymbolTable.h"
 #include "../ast/Ast.h"
+#include "BaseVisitor.h"
 
 using namespace std;
 
@@ -14,7 +15,7 @@ using namespace std;
  * This class provides an empty implementation of ifccVisitor, which can be
  * extended to create a visitor which only needs to handle a subset of the available methods.
  */
-class AstVisitor : public ifccVisitor
+class AstVisitor : public BaseVisitor
 {
 public:
 	AstVisitor(Ast *ast, SymbolTable *symbolTable);

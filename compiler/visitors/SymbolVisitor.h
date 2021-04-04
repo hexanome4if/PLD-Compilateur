@@ -11,6 +11,7 @@
 #include "../error-management/symbol/undefined-symbol-warn.h"
 #include "../error-management/symbol/unused-symbol-warn.h"
 #include "../ast/Ast.h"
+#include "BaseVisitor.h"
 
 using namespace std;
 
@@ -18,12 +19,10 @@ using namespace std;
  * This class provides an empty implementation of ifccVisitor, which can be
  * extended to create a visitor which only needs to handle a subset of the available methods.
  */
-class SymbolVisitor : public ifccBaseVisitor
+class SymbolVisitor : public BaseVisitor
 {
 public:
 	SymbolVisitor(SymbolTable *symbolTable);
-
-	void throwError(AbstractError *error);
 
 	antlrcpp::Any visitFunc(ifccParser::FuncContext *context) override;								//ok
 	antlrcpp::Any visitBlock(ifccParser::BlockContext *context) override;							//ok
@@ -37,9 +36,6 @@ public:
 
 	void postAnalysis();
 
-	ErrorManager *getErrorManager(); //ok
-
 private:
 	SymbolTable *symbolTable;
-	ErrorManager *errorManager;
 };

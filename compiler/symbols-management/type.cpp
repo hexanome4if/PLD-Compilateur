@@ -10,6 +10,8 @@ int getMemorySizeFromType(TypeName type)
 		return 4;
 	case CHAR:
 		return 1;
+	case VOID:
+		return 0;
 	}
 }
 
@@ -22,6 +24,10 @@ TypeName getSymbolTypeFromString(string string_type)
 	if (string_type == "char")
 	{
 		return CHAR;
+	}
+	if (string_type == "void")
+	{
+		return VOID;
 	}
 	return INT_32;
 }

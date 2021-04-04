@@ -7,8 +7,11 @@
 #include "antlr4-generated/ifccLexer.h"
 #include "antlr4-generated/ifccParser.h"
 #include "antlr4-generated/ifccBaseVisitor.h"
+
 #include "visitors/AstVisitor.h"
 #include "visitors/SymbolVisitor.h"
+#include "visitors/ErrorVisitor.h"
+
 #include "ast/Ast.h"
 #include "ir/generator/IRGenerator.h"
 #include "assembly-translation/X86Translator.h"
@@ -50,6 +53,18 @@ int main(int argn, const char **argv)
 	{
 		symbolErrorManager->showAll(cerr);
 		if (symbolErrorManager->hasError())
+		{
+			return 1;
+		}
+	}
+
+	ErrorVisitor errorVisitor;
+	errorVisitor.visit(tree);
+	ErrorManager *errorManager = errorVisitor.getErrorManager();
+	if (errorManager->hasErrorOrWarning())
+	{
+		errorManager->showAll(cerr);
+		if (errorManager->hasError())
 		{
 			return 1;
 		}

@@ -29,7 +29,7 @@
 #include "../ast/expressions/logic/LogicalAnd.h"
 #include "../ast/expressions/logic/LogicalOr.h"
 
-AstVisitor::AstVisitor(Ast *ast, SymbolTable *symbolTable) : ast(ast), symbolTable(symbolTable)
+AstVisitor::AstVisitor(Ast *ast, SymbolTable *symbolTable) : BaseVisitor(), ast(ast), symbolTable(symbolTable)
 {
 	symbolTable->reinitRun();
 }

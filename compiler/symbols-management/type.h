@@ -9,6 +9,7 @@ typedef enum
 	INT_64,
 	INT_32,
 	CHAR,
+	VOID,
 } TypeName;
 
 int getMemorySizeFromType(TypeName type);

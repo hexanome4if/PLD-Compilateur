@@ -1,11 +1,11 @@
 #include "SymbolVisitor.h"
 #include "../symbols-management/FuncSymbol.h"
 #include "../symbols-management/VarSymbol.h"
+#include "../error-management/symbol/VoidCannotBeUsedAsVarTypeError.h"
 
-SymbolVisitor::SymbolVisitor(SymbolTable *symbolTable)
+SymbolVisitor::SymbolVisitor(SymbolTable *symbolTable) : BaseVisitor()
 {
 	this->symbolTable = symbolTable;
-	this->errorManager = new ErrorManager();
 }
 
 antlrcpp::Any SymbolVisitor::visitFunc(ifccParser::FuncContext *context)
@@ -31,6 +31,11 @@ antlrcpp::Any SymbolVisitor::visitFunc(ifccParser::FuncContext *context)
 			if (symbolTable->symbolExists(names[i]->getText(), VARIABLE))
 			{
 				throwError(new AlreadydeclaredSymbolError(names[i]->getText(), names[i]));
+				return nullptr;
+			}
+			if (types[i]->getText() == "void")
+			{
+				throwError(new VoidCannotBeUsedAsVarTypeError(names[i]->getText(), types[i]));
 				return nullptr;
 			}
 			symbolTable->addSymbol(new VarSymbol(names[i]->getText(), getSymbolTypeFromString(types[i]->getText())));
@@ -88,6 +93,11 @@ antlrcpp::Any SymbolVisitor::visitVardefaff(ifccParser::VardefaffContext *contex
 	if (symbolTable->symbolExists(varName, VARIABLE))
 	{
 		throwError(new AlreadydeclaredSymbolError(varName, context->NAME()));
+		return nullptr;
+	}
+	if (varType == "void")
+	{
+		throwError(new VoidCannotBeUsedAsVarTypeError(varName, context->TYPE()));
 		return nullptr;
 	}
 
@@ -198,14 +208,4 @@ antlrcpp::Any SymbolVisitor::visitAffecsimple(ifccParser::AffecsimpleContext *co
 
 void postAnalysis()
 {
-}
-
-void SymbolVisitor::throwError(AbstractError *error)
-{
-	errorManager->registerError(error);
-}
-
-ErrorManager *SymbolVisitor::getErrorManager()
-{
-	return errorManager;
 }

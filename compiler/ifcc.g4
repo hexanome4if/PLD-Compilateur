@@ -99,7 +99,7 @@ binopmd: ('*' | '/');
 
 binoppm: ('-' | '+');
 
-TYPE: 'int' | 'char';
+TYPE: 'int' | 'char' | 'void';
 
 CONST : [0-9]+ ;
 NAME: [a-zA-Z0-9]+;
