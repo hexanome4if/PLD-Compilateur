@@ -21,6 +21,8 @@ public:
 
 	virtual bool hasFunctionCall() = 0;
 
+    virtual int removeUnusedSymbols(function<void(Node*)> remove, Context* context) override { return 0; }
+
 	// Get
 	Type getInstrType() { return instrType; }
 

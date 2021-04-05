@@ -19,6 +19,11 @@ public:
 		return getMemorySizeFromType(varType);
 	}
 
+    virtual void reinitUsedSymbols() override
+    {
+	    isUsed = false;
+    }
+
 	// Setters
 	void initialized() { isInitialized = true; }
 

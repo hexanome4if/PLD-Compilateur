@@ -7,6 +7,10 @@ class Not : public Expr
 public:
 	Not(Expr *e1) : Expr(NOT), expr1(e1) {}
 
+    virtual void checkUsedSymbols(Context* context) override {
+	    expr1->checkUsedSymbols(context);
+	}
+
 	virtual void debug(ostream &stream, int space) override
 	{
 		stream << "(";

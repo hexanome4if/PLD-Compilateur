@@ -6,6 +6,7 @@
 using namespace std;
 
 class Node;
+class SymbolTable;
 
 class Ast
 {
@@ -18,6 +19,9 @@ public:
 	void debug(ostream &stream);
 
 	vector<Node *> getNodes() { return nodes; }
+
+	void removeUnusedSymbols(SymbolTable* symbolTable);
+	void checkUsedSymbols(SymbolTable* symbolTable);
 
 private:
 	vector<Node *> nodes;

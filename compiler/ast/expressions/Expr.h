@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include "../../symbols-management/Context.h"
 
 using namespace std;
 
@@ -43,6 +44,8 @@ public:
 	virtual void debug(ostream &stream, int space) {}
 
 	virtual bool hasFunctionCall() { return false; }
+
+    virtual void checkUsedSymbols(Context* context) = 0;
 
 	// Get
 	Type getExprType() { return exprType; }

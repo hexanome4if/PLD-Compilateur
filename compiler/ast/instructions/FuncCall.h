@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "../expressions/Expr.h"
+#include "../../symbols-management/FuncSymbol.h"
 #include "Instr.h"
 
 using namespace std;
@@ -23,6 +24,17 @@ public:
 			stream << " | ";
 		}
 	}
+
+    virtual void checkUsedSymbols(Context* context) override {
+        FuncSymbol* funcSymbol = (FuncSymbol*)context->getSymbol(funcName);
+        funcSymbol->used();
+        for(int i = 0; i < params.size(); ++i)
+        {
+            params[i]->checkUsedSymbols(context);
+        }
+    }
+
+    virtual int removeUnusedSymbols(function<void(Node*)> remove, Context* context) override { return 0; }
 
 	virtual bool hasFunctionCall() override { return true; }
 

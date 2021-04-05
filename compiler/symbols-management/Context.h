@@ -27,6 +27,8 @@ public:
 
 	int getTotalContextSize();
 
+    void reinitUsedSymbols();
+
 	void debug(ostream &stream, int space);
 	void showSpace(ostream &stream, int space);
 

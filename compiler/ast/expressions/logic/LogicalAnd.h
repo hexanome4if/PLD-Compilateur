@@ -6,6 +6,12 @@ class LogicalAND : public Expr
 {
 public:
 	LogicalAND(Expr *e1, Expr *e2) : Expr(LOGIC_AND), expr1(e1), expr2(e2) {}
+
+    virtual void checkUsedSymbols(Context* context) override {
+        expr1->checkUsedSymbols(context);
+        expr2->checkUsedSymbols(context);
+    }
+
 	virtual void debug(ostream &stream, int space) override
 	{
 		stream << "(";

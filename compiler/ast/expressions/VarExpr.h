@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Expr.h"
+#include "../../symbols-management/VarSymbol.h"
 
 class VarExpr : public Expr
 {
@@ -11,6 +12,12 @@ public:
 	{
 		stream << "var " << varName;
 	}
+
+    virtual void checkUsedSymbols(Context* context) override
+    {
+	    VarSymbol* var = (VarSymbol*)context->getSymbol(varName);
+	    var->used();
+    }
 
 	string getVarName() { return varName; }
 

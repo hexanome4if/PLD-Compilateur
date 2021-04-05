@@ -18,6 +18,7 @@ public:
 	Symbol *addTempSymbol(TypeName type);
 	void setCurrentContext(Context *context);
 	void assignMemoryAddresses();
+	void reinitUsedSymbols();
 	Context *currentContext;
 
 private:

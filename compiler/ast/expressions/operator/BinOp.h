@@ -7,6 +7,11 @@ class BinOp : public Expr
 public:
 	BinOp(Expr *e1, Expr *e2, Expr::Operation op) : Expr(BIN_OP), expr1(e1), expr2(e2), operation(op) {}
 
+    virtual void checkUsedSymbols(Context* context) override {
+        expr1->checkUsedSymbols(context);
+        expr2->checkUsedSymbols(context);
+    }
+
 	virtual void debug(ostream &stream, int space) override
 	{
 		stream << "(";

@@ -14,7 +14,8 @@ void f()
 int main()
 {
 	int a = 65;
-	int ret = func();
+	int ret = a + func();
+	f();
 
 	int userInput = getchar();
 

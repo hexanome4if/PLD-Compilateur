@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include "Node.h"
 #include "Instr.h"
 #include "../../symbols-management/Context.h"
@@ -35,6 +36,36 @@ public:
 		}
 		return false;
 	}
+
+	virtual void checkUsedSymbols(Context* context) override
+    {
+        for(int i = 0; i < instrs.size(); ++i)
+        {
+            instrs[i]->checkUsedSymbols(this->context);
+        }
+    }
+
+    virtual int removeUnusedSymbols(function<void(Node*)> remove, Context* context) override
+    {
+	    vector<int> indexToRemove;
+	    int res = 0;
+	    for(int i = 0; i < instrs.size(); ++i)
+        {
+	        res += instrs[i]->removeUnusedSymbols([&indexToRemove, &i](Node* node) {
+	            indexToRemove.push_back(i);
+	            }, this->context);
+        }
+	    for(int i = 0; i < indexToRemove.size(); ++i)
+        {
+	        instrs.erase(instrs.begin() + indexToRemove[i] - i);
+        }
+	    return res;
+    }
+
+    void removeInstr(Instr* instr)
+    {
+	    remove(instrs.begin(), instrs.end(), instr);
+    }
 
 	// Get
 	Context *getContext() { return context; }

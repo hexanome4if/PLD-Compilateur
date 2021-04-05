@@ -3,6 +3,7 @@
 #include "Node.h"
 #include "Block.h"
 #include "../../symbols-management/type.h"
+#include "../../symbols-management/FuncSymbol.h"
 
 class Func : public Node
 {
@@ -19,6 +20,21 @@ public:
 		stream << "Function " << name << endl;
 		block->debug(stream, ++space);
 	}
+
+    virtual int removeUnusedSymbols(function<void(Node*)> remove, Context* context) override
+    {
+	    FuncSymbol* funcSymbol = (FuncSymbol*)context->getSymbol(name);
+	    if (!funcSymbol->getIsUsed())
+        {
+	        remove(this);
+	        return 1;
+        }
+        return block->removeUnusedSymbols(remove, context);
+    }
+
+    virtual void checkUsedSymbols(Context* context) override {
+        block->checkUsedSymbols(context);
+    }
 
 	// Get
 	string getName() { return name; }

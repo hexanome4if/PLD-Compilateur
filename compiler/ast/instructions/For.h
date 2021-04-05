@@ -13,6 +13,10 @@ public:
 
 	virtual bool hasFunctionCall() override { return false; }
 
+    virtual void checkUsedSymbols(Context* context) override {}
+
+    virtual int removeUnusedSymbols(function<void(Node*)> remove, Context* context) override { return 0; }
+
 private:
 	Expr *init;
 	Expr *condition;

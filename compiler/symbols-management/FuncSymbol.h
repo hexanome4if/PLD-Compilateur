@@ -12,6 +12,14 @@ public:
 
 	void used() { isUsed = true; }
 
+    virtual void reinitUsedSymbols() override
+    {
+	    if (name != "main")
+        {
+            isUsed = false;
+        }
+    }
+
 	// Get
 	bool getIsUsed() { return isUsed; }
 

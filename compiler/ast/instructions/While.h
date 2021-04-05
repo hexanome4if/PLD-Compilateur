@@ -24,6 +24,9 @@ public:
 		return condition->hasFunctionCall() || block->hasFunctionCall();
 	}
 
+    virtual int removeUnusedSymbols(function<void(Node*)> remove, Context* context) override { return 0; }
+    virtual void checkUsedSymbols(Context* context) override {}
+
 	// Get
 	Block *getBlock() { return block; }
 	Expr *getCondition() { return condition; }

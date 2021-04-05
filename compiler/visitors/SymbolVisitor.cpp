@@ -21,7 +21,12 @@ antlrcpp::Any SymbolVisitor::visitFunc(ifccParser::FuncContext *context)
 		return nullptr;
 	}
 
-	symbolTable->addSymbol(new FuncSymbol(functionName, functionType));
+	FuncSymbol* funcSymbol = new FuncSymbol(functionName, functionType);
+	if (functionName == "main")
+    {
+        funcSymbol->used();
+    }
+	symbolTable->addSymbol(funcSymbol);
 
 	symbolTable->openContext();
 	if (types.size() > 1)

@@ -133,3 +133,17 @@ int Context::getTotalContextSize()
 
 	return totalSize;
 }
+
+void Context::reinitUsedSymbols()
+{
+    map<string, Symbol*>::iterator it;
+    for(it = symbols.begin(); it != symbols.end(); ++it)
+    {
+        it->second->reinitUsedSymbols();
+    }
+
+    for (int i = 0; i < childrenContexts.size(); ++i)
+    {
+        childrenContexts[i]->reinitUsedSymbols();
+    }
+}

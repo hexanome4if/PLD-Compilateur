@@ -6,6 +6,12 @@ class LogicalOR : public Expr
 {
 public:
 	LogicalOR(Expr *e1, Expr *e2) : Expr(LOGIC_OR), expr1(e1), expr2(e2) {}
+
+    virtual void checkUsedSymbols(Context* context) override {
+        expr1->checkUsedSymbols(context);
+        expr2->checkUsedSymbols(context);
+    }
+
 	virtual void debug(ostream &stream, int space) override
 	{
 		stream << "(";

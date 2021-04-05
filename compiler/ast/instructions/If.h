@@ -27,6 +27,10 @@ public:
 		}
 	}
 
+    virtual void checkUsedSymbols(Context* context) override {}
+
+    virtual int removeUnusedSymbols(function<void(Node*)> remove, Context* context) override { return 0; }
+
 	virtual bool hasFunctionCall() override
 	{
 		return condition->hasFunctionCall() || blockIf->hasFunctionCall() || (blockElse != nullptr && blockElse->hasFunctionCall());

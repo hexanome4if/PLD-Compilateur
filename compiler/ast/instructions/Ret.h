@@ -16,6 +16,12 @@ public:
 
 	virtual bool hasFunctionCall() override { return expr->hasFunctionCall(); }
 
+    virtual int removeUnusedSymbols(function<void(Node*)> remove, Context* context) override { return 0; }
+
+    virtual void checkUsedSymbols(Context* context) override {
+	    expr->checkUsedSymbols(context);
+	}
+
 	// Get
 	Expr *getExpr() { return expr; }
 

@@ -15,6 +15,8 @@ public:
 		stream << "const " << val;
 	}
 
+    virtual void checkUsedSymbols(Context* context) override {}
+
 	// Get
 	string getVal() { return val; }
 

@@ -2,6 +2,8 @@
 
 #include <string>
 #include <iostream>
+#include <functional>
+#include "../../symbols-management/Context.h"
 
 using namespace std;
 
@@ -26,6 +28,11 @@ public:
 			stream << "  ";
 		}
 	}
+
+    virtual void checkUsedSymbols(Context* context) = 0;
+
+	// Optimizations
+    virtual int removeUnusedSymbols(function<void(Node*)> remove, Context* context) = 0;
 
 	// Get
 	Type getNodeType() { return nodeType; }

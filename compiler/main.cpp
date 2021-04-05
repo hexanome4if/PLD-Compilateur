@@ -43,9 +43,6 @@ int main(int argn, const char **argv)
 	CommonTokenStream tokens(&lexer);
 
 	tokens.fill();
-	//  for (auto token : tokens.getTokens()) {
-	//    std::cout << token->toString() << std::endl;
-	//  }
 	if (lexer.getNumberOfSyntaxErrors() > 0)
 		return 1;
 	ifccParser parser(&tokens);
@@ -86,7 +83,11 @@ int main(int argn, const char **argv)
 	Ast *ast = new Ast();
 	AstVisitor astVisitor(ast, symbolTable);
 	astVisitor.visit(tree);
-	//ast->debug(cout);
+
+
+	ast->removeUnusedSymbols(symbolTable);
+    // ast->debug(cout);
+
 
 	CFG *cfg = new CFG(ast, symbolTable);
 	IRGenerator *irGenerator = new IRGenerator(ast, cfg, symbolTable);

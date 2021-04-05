@@ -73,3 +73,8 @@ void SymbolTable::assignMemoryAddresses()
 {
 	rootContext->assignMemoryAddresses(4);
 }
+
+void SymbolTable::reinitUsedSymbols()
+{
+    currentContext->reinitUsedSymbols();
+}

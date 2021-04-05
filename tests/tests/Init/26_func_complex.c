@@ -1,6 +1,7 @@
 int g()
 {
 	int a;
+	return 0;
 }
 
 int func(int a, int b, int c, int d, int e, int f)
