@@ -48,7 +48,14 @@ public:
                     {
                         replaceWith(expr1);
                     }
-                    v = to_string(v1 / v2);
+                    if (v2 == 0)
+                    {
+                        v = "undefined";
+                    }
+                    else
+                    {
+                        v = to_string(v1 / v2);
+                    }
                     break;
                 case Expr::Operation::MULT:
                     if (v1 == 1)
