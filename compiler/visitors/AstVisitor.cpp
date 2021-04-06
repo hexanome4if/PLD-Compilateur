@@ -68,7 +68,7 @@ antlrcpp::Any AstVisitor::visitFunc(ifccParser::FuncContext *context)
 	Func *func = new Func(getSymbolTypeFromString(functionType), functionName, block);
 	for (int i = 1; i < types.size(); ++i)
 	{
-		func->addParam(names[i]->getText());
+		func->addParam(getSymbolTypeFromString(types[i]->getText()), names[i]->getText());
 	}
 
 	return (Node *)func;
@@ -195,7 +195,8 @@ antlrcpp::Any AstVisitor::visitVirgulename(ifccParser::VirgulenameContext *conte
 	if (context->expr() != nullptr)
 	{
 		Expr *expr = (Expr *)visit(context->expr());
-		aff = new Aff(varName, expr);
+		VarSymbol *vs = (VarSymbol *)symbolTable->getSymbol(varName);
+		aff = new Aff(varName, expr, vs->getVarType());
 	}
 	return aff;
 }
@@ -204,8 +205,8 @@ antlrcpp::Any AstVisitor::visitVaraff(ifccParser::VaraffContext *context)
 {
 	string varName = context->NAME()->getText();
 	Expr *expr = (Expr *)visit(context->expr());
-
-	Instr *instr = new Aff(varName, expr);
+	VarSymbol *vs = (VarSymbol *)symbolTable->getSymbol(varName);
+	Instr *instr = new Aff(varName, expr, vs->getVarType());
 	return instr;
 }
 
@@ -238,13 +239,17 @@ antlrcpp::Any AstVisitor::visitExpr(ifccParser::ExprContext *context)
 	ifccParser::ExprsimpleContext *escontext = context->exprsimple();
 	if (name.size() > 0)
 	{
+		//cout << "Has name" << endl;
 		if (escontext != nullptr)
 		{
+			//cout << "Has escontext" << endl;
 			Expr *expr = (Expr *)visit(escontext);
-			Expr *aff = new Aff(name[name.size() - 1]->getText(), expr);
+			VarSymbol *vs = (VarSymbol *)symbolTable->getSymbol(name[name.size() - 1]->getText());
+			Expr *aff = new Aff(name[name.size() - 1]->getText(), expr, vs->getVarType());
 			for (int i = name.size() - 2; i >= 0; --i)
 			{
-				aff = new Aff(name[i]->getText(), aff);
+				vs = (VarSymbol *)symbolTable->getSymbol(name[i]->getText());
+				aff = new Aff(name[i]->getText(), aff, vs->getVarType());
 			}
 			return aff;
 		}
@@ -257,10 +262,12 @@ antlrcpp::Any AstVisitor::visitExpr(ifccParser::ExprContext *context)
 			}
 			else
 			{
-				Expr *aff = new Aff(name[name.size() - 2]->getText(), new VarExpr(name[name.size() - 1]->getText()));
+				VarSymbol *vs = (VarSymbol *)symbolTable->getSymbol(name[name.size() - 2]->getText());
+				Expr *aff = new Aff(name[name.size() - 2]->getText(), new VarExpr(name[name.size() - 1]->getText()), vs->getVarType());
 				for (int i = name.size() - 3; i >= 0; --i)
 				{
-					aff = new Aff(name[i]->getText(), aff);
+					vs = (VarSymbol *)symbolTable->getSymbol(name[i]->getText());
+					aff = new Aff(name[i]->getText(), aff, vs->getVarType());
 				}
 				return aff;
 			}
@@ -315,7 +322,8 @@ antlrcpp::Any AstVisitor::visitAffecsimple(ifccParser::AffecsimpleContext *conte
 {
 	string varName = context->NAME()->getText();
 	Expr *expr = (Expr *)visit(context->exprsimple());
-	Expr *aff = new Aff(varName, expr);
+	VarSymbol *vs = (VarSymbol *)symbolTable->getSymbol(varName);
+	Expr *aff = new Aff(varName, expr, vs->getVarType());
 	return aff;
 }
 
