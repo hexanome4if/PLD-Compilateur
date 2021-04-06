@@ -43,7 +43,7 @@ void X86Translator::genBlock(BasicBlock *bb)
 
 void X86Translator::genCopy(IRInstr *instr)
 {
-				vector<string> params = instr->getParams();
+    			vector<string> params = instr->getParams();
 				string reg = putSymbolInRegister(params[1], vector<string>(), instr->getType());
 				string type = getSuffixe(instr->getType());
 				o << "  mov" << type << " " << getRegisterWithSize(reg, instr->getType()) << ", " << getSymbolMemAddress(params[0]) << endl;
@@ -52,7 +52,7 @@ void X86Translator::genCopy(IRInstr *instr)
 
 void X86Translator::genConst(IRInstr *instr)
 {
-				vector<string> params = instr->getParams();
+    			vector<string> params = instr->getParams();
 				string type = getSuffixe(instr->getType());
 				o << "  mov" << type << " $" << params[1] << ", " << getSymbolMemAddress(params[0]) << endl;
 				unsetSymbolFromRegister(params[0]);
@@ -275,7 +275,7 @@ string X86Translator::getSymbolMemAddress(string name)
 
 string X86Translator::putSymbolInRegister(string name, vector<string> requiredSymbols, TypeName tn)
 {
-				if (isSymbolInRegister(name, tn))
+    			if (isSymbolInRegister(name, tn))
 				{
 								return getSymbolAddress(name);
 				}
@@ -290,12 +290,10 @@ string X86Translator::putSymbolInRegister(string name, vector<string> requiredSy
 				}
 				else
                 {
-
                     string oldType = getSuffixe(var->getVarType());
                     o << "  mov" << oldType << " " << getSymbolMemAddress(name) << ", " << getRegisterWithSize(reg, var->getVarType()) << endl;
                 }
-
-				setSymbolInRegister(name, reg, tn);
+    			setSymbolInRegister(name, reg, tn);
 
 				return reg;
 }

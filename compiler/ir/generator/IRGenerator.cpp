@@ -79,6 +79,8 @@ string IRGenerator::genExpr(Expr *expr)
 		return operatorGenerator->genBin((BinOp *)expr);
 	case Expr::Type::CONST:
 		return exprGenerator->genConst((ConstExpr *)expr);
+    case Expr::Type::CHAR:
+        return exprGenerator->genChar((CharExpr *)expr);
 	case Expr::Type::FUNC_CALL:
 		return instrGenerator->genFuncCall((FuncCall *)expr);
 	case Expr::Type::VAR:

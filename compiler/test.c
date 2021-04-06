@@ -1,15 +1,9 @@
 #include <stdio.h>
 
-int func()
-{
-    int a = 2;
-    return 2;
-}
-
 int main()
 {
-    int a = 5;
-    int ret = func();
-
-    return ret + a;
+    int a = 2;
+    int64_t b = 4;
+    char c = 'a';
+    return 0;
 }
