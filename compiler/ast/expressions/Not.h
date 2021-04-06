@@ -11,6 +11,13 @@ public:
 	    expr1->checkUsedSymbols(context);
 	}
 
+    virtual string getGuessedValue(Context* context) override { return "undefined"; }
+
+    virtual void computeVarDependencies(VarSymbol* varSymbol, Context* context) override
+    {
+	    expr1->computeVarDependencies(varSymbol, context);
+    }
+
 	virtual void debug(ostream &stream, int space) override
 	{
 		stream << "(";

@@ -3,6 +3,7 @@
 #include "Block.h"
 #include "../expressions/Expr.h"
 #include "Instr.h"
+#include "../expressions/ConstExpr.h"
 
 class If : public Instr
 {
@@ -27,9 +28,38 @@ public:
 		}
 	}
 
-    virtual void checkUsedSymbols(Context* context) override {}
+    virtual void checkUsedSymbols(Context* context) override {
+	    condition->checkUsedSymbols(context);
+	    blockIf->checkUsedSymbols(context);
+	    if (blockElse != nullptr)
+        {
+	        blockElse->checkUsedSymbols(context);
+        }
+	}
 
-    virtual int removeUnusedSymbols(function<void(Node*)> remove, Context* context) override { return 0; }
+    virtual void computeVarDependencies(Context* context) override
+    {
+        condition->computeVarDependencies(nullptr, context);
+        blockIf->computeVarDependencies(context);
+        if (blockElse != nullptr)
+        {
+            blockElse->computeVarDependencies(context);
+        }
+    }
+
+    virtual int removeUnusedSymbols(function<void(Node*)> remove, Context* context) override
+    {
+	    return blockIf->removeUnusedSymbols(remove, context) + (blockElse != nullptr ? blockElse->removeUnusedSymbols(remove, context) : 0);
+    }
+
+    virtual void calculateExpressions(Context* context) override
+    {
+        blockIf->calculateExpressions(context);
+	    if (blockElse != nullptr)
+        {
+	        blockElse->calculateExpressions(context);
+        }
+    }
 
 	virtual bool hasFunctionCall() override
 	{

@@ -20,6 +20,7 @@ public:
 	Instr(Type type) : Node(INSTRUCTION), instrType(type) {}
 
 	virtual bool hasFunctionCall() = 0;
+	virtual void resetVariables(Context* context) {}
 
     virtual int removeUnusedSymbols(function<void(Node*)> remove, Context* context) override { return 0; }
 

@@ -86,6 +86,7 @@ int main(int argn, const char **argv)
 
 
 	ast->removeUnusedSymbols(symbolTable);
+	ast->calculateExpressions(symbolTable);
     // ast->debug(cout);
 
 

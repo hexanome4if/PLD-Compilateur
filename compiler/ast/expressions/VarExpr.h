@@ -19,6 +19,26 @@ public:
 	    var->used();
     }
 
+    virtual string getGuessedValue(Context* context) override
+    {
+	    VarSymbol* varSymbol = (VarSymbol*)context->getSymbol(varName);
+	    string val = varSymbol->getValue();
+	    if (varSymbol->getHasDependencyCycle())
+        {
+	        val = "undefined";
+        }
+	    return val;
+    }
+
+    virtual void computeVarDependencies(VarSymbol* varSymbol, Context* context) override
+    {
+	    if (varSymbol != nullptr)
+        {
+            VarSymbol* var = (VarSymbol*)context->getSymbol(varName);
+            varSymbol->addDependency(var);
+        }
+    }
+
 	string getVarName() { return varName; }
 
 private:

@@ -45,6 +45,14 @@ public:
         }
     }
 
+    virtual void computeVarDependencies(Context* context) override
+    {
+        for(int i = 0; i < instrs.size(); ++i)
+        {
+            instrs[i]->computeVarDependencies(this->context);
+        }
+    }
+
     virtual int removeUnusedSymbols(function<void(Node*)> remove, Context* context) override
     {
 	    vector<int> indexToRemove;
@@ -60,6 +68,18 @@ public:
 	        instrs.erase(instrs.begin() + indexToRemove[i] - i);
         }
 	    return res;
+    }
+
+    virtual void calculateExpressions(Context* context) override
+    {
+	    for(int i = 0; i < instrs.size(); ++i)
+        {
+	        instrs[i]->calculateExpressions(this->context);
+        }
+        for (int i = 0; i < instrs.size(); ++i)
+        {
+            instrs[i]->resetVariables(this->context);
+        }
     }
 
     void removeInstr(Instr* instr)

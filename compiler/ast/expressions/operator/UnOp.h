@@ -20,6 +20,21 @@ public:
 
 	virtual bool hasFunctionCall() override { return expr->hasFunctionCall(); }
 
+    virtual string getGuessedValue(Context* context) override
+    {
+	    string val = expr->getGuessedValue(context);
+	    if (val != "undefined")
+        {
+	        return "-" + val;
+        }
+	    return "undefined";
+    }
+
+    virtual void computeVarDependencies(VarSymbol* varSymbol, Context* context) override
+    {
+        expr->computeVarDependencies(varSymbol, context);
+    }
+
 	// Get
 	Expr *getExpr() { return expr; }
 

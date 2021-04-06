@@ -2,6 +2,7 @@
 
 #include "Block.h"
 #include "../expressions/Expr.h"
+#include "../expressions/ConstExpr.h"
 #include "Instr.h"
 
 class While : public Instr
@@ -24,8 +25,24 @@ public:
 		return condition->hasFunctionCall() || block->hasFunctionCall();
 	}
 
-    virtual int removeUnusedSymbols(function<void(Node*)> remove, Context* context) override { return 0; }
-    virtual void checkUsedSymbols(Context* context) override {}
+    virtual int removeUnusedSymbols(function<void(Node*)> remove, Context* context) override
+    {
+	    return block->removeUnusedSymbols(remove, context);
+	}
+    virtual void checkUsedSymbols(Context* context) override {
+	    block->checkUsedSymbols(context);
+	    condition->checkUsedSymbols(context);
+	}
+    virtual void computeVarDependencies(Context* context) override
+    {
+	    condition->computeVarDependencies(nullptr, context);
+        block->computeVarDependencies(context);
+    }
+
+    virtual void calculateExpressions(Context* context) override
+    {
+	    block->calculateExpressions(context);
+    }
 
 	// Get
 	Block *getBlock() { return block; }

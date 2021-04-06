@@ -2,6 +2,7 @@
 
 #include "../expressions/Expr.h"
 #include "Instr.h"
+#include "../expressions/ConstExpr.h"
 
 class Ret : public Instr
 {
@@ -21,6 +22,20 @@ public:
     virtual void checkUsedSymbols(Context* context) override {
 	    expr->checkUsedSymbols(context);
 	}
+
+    virtual void computeVarDependencies(Context* context) override
+    {
+        expr->computeVarDependencies(nullptr, context);
+    }
+
+    virtual void calculateExpressions(Context* context) override
+    {
+	    string val = expr->getGuessedValue(context);
+	    if (val != "undefined")
+        {
+	        expr = new ConstExpr(val);
+        }
+    }
 
 	// Get
 	Expr *getExpr() { return expr; }

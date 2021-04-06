@@ -1,3 +1,4 @@
+/*
 #include <stdio.h>
 
 int func()
@@ -14,11 +15,23 @@ void f()
 int main()
 {
 	int a = 65;
-	int ret = a + func();
+	int ret = a + 6;
 	f();
 
 	int userInput = getchar();
 
 	putchar(userInput);
-	return 0;
+	return ret;
 }
+*/
+
+int main()
+{
+    int a = 5;
+    if(0)
+    {
+        a = 4;
+    }
+    return a;
+}
+

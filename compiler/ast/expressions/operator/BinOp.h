@@ -12,6 +12,42 @@ public:
         expr2->checkUsedSymbols(context);
     }
 
+    virtual string getGuessedValue(Context* context) override
+    {
+	    string val1 = expr1->getGuessedValue(context);
+	    string val2 = expr2->getGuessedValue(context);
+	    if (val1 != "undefined" && val2 != "undefined")
+        {
+	        string v;
+            switch(operation)
+            {
+                case Expr::Operation::ADD:
+                    v = to_string(stoi(val1) + stoi(val2));
+                    break;
+                case Expr::Operation::DIV:
+                    v = to_string(stoi(val1) / stoi(val2));
+                    break;
+                case Expr::Operation::MULT:
+                    v = to_string(stoi(val1) * stoi(val2));
+                    break;
+                case Expr::Operation::SUBS:
+                    v = to_string(stoi(val1) - stoi(val2));
+                    break;
+                default:
+                    v = "undefined";
+                    break;
+            }
+            return v;
+        }
+	    return "undefined";
+    }
+
+    virtual void computeVarDependencies(VarSymbol* varSymbol, Context* context) override
+    {
+        expr1->computeVarDependencies(varSymbol, context);
+        expr2->computeVarDependencies(varSymbol, context);
+    }
+
 	virtual void debug(ostream &stream, int space) override
 	{
 		stream << "(";

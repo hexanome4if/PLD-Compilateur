@@ -17,6 +17,13 @@ public:
 
     virtual void checkUsedSymbols(Context* context) override {}
 
+    virtual string getGuessedValue(Context* context) override
+    {
+	    return val;
+    }
+
+    virtual void computeVarDependencies(VarSymbol* varSymbol, Context* context) override {}
+
 	// Get
 	string getVal() { return val; }
 

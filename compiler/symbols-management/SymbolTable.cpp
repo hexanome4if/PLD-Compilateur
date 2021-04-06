@@ -78,3 +78,8 @@ void SymbolTable::reinitUsedSymbols()
 {
     currentContext->reinitUsedSymbols();
 }
+
+void SymbolTable::findVariableDependencyCycle()
+{
+    currentContext->findVariableDependencyCycle();
+}

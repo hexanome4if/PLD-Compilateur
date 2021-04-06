@@ -30,9 +30,11 @@ public:
 	}
 
     virtual void checkUsedSymbols(Context* context) = 0;
+    virtual void computeVarDependencies(Context* context) = 0;
 
 	// Optimizations
     virtual int removeUnusedSymbols(function<void(Node*)> remove, Context* context) = 0;
+    virtual void calculateExpressions(Context* context) = 0;
 
 	// Get
 	Type getNodeType() { return nodeType; }

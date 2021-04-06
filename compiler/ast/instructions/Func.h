@@ -32,8 +32,18 @@ public:
         return block->removeUnusedSymbols(remove, context);
     }
 
+    virtual void calculateExpressions(Context* context) override
+    {
+	    return block->calculateExpressions(context);
+    }
+
     virtual void checkUsedSymbols(Context* context) override {
         block->checkUsedSymbols(context);
+    }
+
+    virtual void computeVarDependencies(Context* context) override
+    {
+	    block->computeVarDependencies(context);
     }
 
 	// Get

@@ -51,3 +51,22 @@ void Ast::checkUsedSymbols(SymbolTable* symbolTable)
         nodes[i]->checkUsedSymbols(nullptr);
     }
 }
+
+void Ast::calculateExpressions(SymbolTable* symbolTable)
+{
+    symbolTable->reinitRun();
+    Context* context = symbolTable->currentContext;
+
+    for (int i = 0; i < nodes.size(); ++i)
+    {
+        nodes[i]->computeVarDependencies(context);
+    }
+
+    symbolTable->reinitRun();
+    symbolTable->findVariableDependencyCycle();
+
+    for (int i = 0; i < nodes.size(); ++i)
+    {
+        nodes[i]->calculateExpressions(context);
+    }
+}

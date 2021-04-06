@@ -25,6 +25,8 @@ public:
 	void reinitRun();
 	void assignMemoryAddresses(int nextAddress);
 
+    void findVariableDependencyCycle();
+
 	int getTotalContextSize();
 
     void reinitUsedSymbols();
