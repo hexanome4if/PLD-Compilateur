@@ -104,10 +104,11 @@ void X86Translator::genDiv(IRInstr *instr)
 {
 				vector<string> params = instr->getParams();
 				string type = getSuffixe(instr->getType());
-				o << "  movl " << getSymbolAddress(params[1]) << ", %eax" << endl;
+				putSymbolInRegister(params[1], instr->getType(), "a");
+				string reg = putSymbolInRegister(params[2], vector<string>(), instr->getType());
 				o << "  cltd" << endl;
-				o << "  idivl " << getSymbolAddress(params[2]) << endl;
-				o << "  movl %eax, " << getSymbolMemAddress(params[0]) << endl;
+				o << "  idiv" << type << " " << getRegisterWithSize(reg, instr->getType()) << endl;
+				o << "  mov" << type << " %eax, " << getSymbolMemAddress(params[0]) << endl;
 
 				unsetSymbolFromRegister(params[0]);
 				setSymbolInRegister(params[0], "a", instr->getType());
