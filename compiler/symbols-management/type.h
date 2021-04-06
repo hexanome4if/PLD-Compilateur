@@ -6,10 +6,10 @@ using namespace std;
 
 typedef enum
 {
-	INT_64,
-	INT_32,
-	CHAR,
-	VOID,
+				INT_64,
+				INT_32,
+				CHAR,
+				VOID,
 } TypeName;
 
 int getMemorySizeFromType(TypeName type);

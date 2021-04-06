@@ -7,27 +7,47 @@
 class Func : public Node
 {
 public:
-	Func(TypeName t, string n, Block *b) : Node(FUNCTION), type(t), name(n), block(b) {}
+typedef struct
+{
+				string name;
+				TypeName type;
+} Param;
 
-	void addParam(string p) { params.push_back(p); }
+Func(TypeName t, string n, Block *b) : Node(FUNCTION), type(t), name(n), block(b) {
+}
 
-	void addInstr(Instr *i) { block->addInstr(i); }
+void addParam(TypeName type, string name) {
+				params.push_back({name = name, type = type});
+}
 
-	virtual void debug(ostream &stream, int space) override
-	{
-		showSpaces(stream, space);
-		stream << "Function " << name << endl;
-		block->debug(stream, ++space);
-	}
+void addInstr(Instr *i) {
+				block->addInstr(i);
+}
 
-	// Get
-	string getName() { return name; }
-	Block *getBlock() { return block; }
-	vector<string> getParams() { return params; }
+virtual void debug(ostream &stream, int space) override
+{
+				showSpaces(stream, space);
+				stream << "Function " << name << endl;
+				block->debug(stream, ++space);
+}
+
+// Get
+string getName() {
+				return name;
+}
+Block *getBlock() {
+				return block;
+}
+vector<Param> getParams() {
+				return params;
+}
+TypeName getType() {
+				return type;
+}
 
 private:
-	TypeName type;
-	string name;
-	vector<string> params;
-	Block *block;
+TypeName type;
+string name;
+vector<Param> params;
+Block *block;
 };

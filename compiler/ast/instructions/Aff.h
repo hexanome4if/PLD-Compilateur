@@ -6,22 +6,34 @@
 class Aff : public Instr, public Expr
 {
 public:
-	Aff(string varName, Expr *ex) : Instr(Instr::AFF), Expr(Expr::AFF), varName(varName), expr(ex) {}
+Aff(string varName, Expr *ex, TypeName t) : Instr(Instr::AFF), Expr(Expr::AFF), varName(varName), expr(ex), t(t) {
+}
 
-	virtual void debug(ostream &stream, int space) override
-	{
-		stream << "(" << varName << " = ";
-		expr->debug(stream, space);
-		stream << ")";
-	}
+virtual void debug(ostream &stream, int space) override
+{
+				stream << "(" << varName << " = ";
+				expr->debug(stream, space);
+				stream << ")";
+}
 
-	virtual bool hasFunctionCall() override { return expr->hasFunctionCall(); }
+virtual bool hasFunctionCall() override {
+				return expr->hasFunctionCall();
+}
 
-	// Get
-	string getVarName() { return varName; }
-	Expr *getExpr() { return expr; }
+// Get
+string getVarName() {
+				return varName;
+}
+Expr *getExpr() {
+				return expr;
+}
+
+TypeName getType() {
+				return t;
+}
 
 private:
-	string varName;
-	Expr *expr;
+string varName;
+Expr *expr;
+TypeName t;
 };
