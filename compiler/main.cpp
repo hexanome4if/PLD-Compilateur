@@ -30,14 +30,35 @@ void standardFunctions(SymbolTable *symbolTable)
 	symbolTable->addSymbol(getChar);
 }
 
+void computeParameters(int argn, const char **argv, stringstream& in, map<string, bool>& parameters)
+{
+    parameters["optimization"] = false;
+
+    for(int i = 1; i < argn; ++i)
+    {
+        string val = string(argv[i]);
+        if (val[0] == '-')
+        {
+            if (val == "-O")
+            {
+                parameters["optimization"] = true;
+            }
+        }
+        else
+        {
+            ifstream lecture(argv[i]);
+            in << lecture.rdbuf();
+        }
+    }
+}
+
 int main(int argn, const char **argv)
 {
+    map<string, bool> parameters;
 	stringstream in;
-	if (argn == 2)
-	{
-		ifstream lecture(argv[1]);
-		in << lecture.rdbuf();
-	}
+
+	computeParameters(argn, argv, in, parameters);
+
 	ANTLRInputStream input(in.str());
 	ifccLexer lexer(&input);
 	CommonTokenStream tokens(&lexer);
@@ -84,10 +105,12 @@ int main(int argn, const char **argv)
 	AstVisitor astVisitor(ast, symbolTable);
 	astVisitor.visit(tree);
 
-
-	ast->removeUnusedSymbols(symbolTable);
-	ast->calculateExpressions(symbolTable);
-    // ast->debug(cout);
+    if (parameters["optimization"])
+    {
+        ast->removeUnusedSymbols(symbolTable);
+        ast->calculateExpressions(symbolTable);
+    }
+	// ast->debug(cout);
 
 
 	CFG *cfg = new CFG(ast, symbolTable);

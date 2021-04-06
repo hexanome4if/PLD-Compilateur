@@ -1,4 +1,3 @@
-/*
 #include <stdio.h>
 
 int func()
@@ -21,17 +20,6 @@ int main()
 	int userInput = getchar();
 
 	putchar(userInput);
-	return ret;
-}
-*/
-
-int main()
-{
-    int a = 5;
-    if(0)
-    {
-        a = 4;
-    }
-    return a;
+	return 1;
 }
 
