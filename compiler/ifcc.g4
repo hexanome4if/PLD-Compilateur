@@ -20,11 +20,13 @@ block
 instr
 		: func_return
 		| vardefaff
-		| varaff
+		| aff
 		| whiledef
 		| ifdef
 		| fordef
 		| funccall ';'
+		| arraydef
+		| arraydefaff
     ;
 
 whiledef
@@ -55,8 +57,9 @@ virgulename
 		: ',' NAME ('=' expr)?
 		;
 
-varaff
-		: NAME '=' expr ';'
+aff
+		: NAME '=' expr ';'			#varaff
+		| arrayaccess '=' expr ';'	#arrayaff
 		;
 
 funccall
@@ -84,6 +87,7 @@ exprsimple
 		| funccall 												#functioncall
 		| '(' NAME '=' exprsimple ')' 		#affecsimple
 		| CHARAC									        #affecchar
+		| arrayaccess					#arrayexpr
 		| exprsimple '&' exprsimple       #andbitwise
 		| exprsimple '^' exprsimple       #xorbitwise
 		| exprsimple '|' exprsimple       #orbitwise
@@ -98,6 +102,15 @@ exprsimple
 binopmd: ('*' | '/');
 
 binoppm: ('-' | '+');
+
+
+arraydef: TYPE NAME '[' CONST ']' ';' ;
+
+arraydefaff : TYPE NAME '[' CONST? ']' '=' '{' arraycontent? '}' ';' ;
+
+arraycontent : expr (',' expr)* ;
+
+arrayaccess : NAME '[' expr ']' ;
 
 TYPE: 'int' | 'char' | 'void' | 'int64_t' | 'short' | 'long';
 

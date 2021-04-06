@@ -31,3 +31,18 @@ string IRExprGenerator::genVar(VarExpr *varExpr)
 {
 				return varExpr->getVarName();
 }
+
+string IRExprGenerator::genArrExpr(ArrExpr * arrExpr)
+{
+	string var1 = generator -> createTempVar(arrExpr->getType());
+	string var2 = arrExpr->getArrName();
+	string var3 = generator -> genExpr(arrExpr->getIndexExpr());
+
+	vector<string> params;
+	params.push_back(var1);
+	params.push_back(var2);
+	params.push_back(var3);
+
+	generator->getCurrentBB()->add_IRInstr(IRInstr::R_MEM_TAB, arrExpr->getType(), params);
+	return var1;
+}

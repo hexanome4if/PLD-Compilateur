@@ -48,6 +48,7 @@ void IRBlockGenerator::genFunc(Func *func)
 
 void IRBlockGenerator::genIf(If *ifBlock)
 {
+    cout << "Gen if" << endl;
 				BasicBlock *parentBlock = irGenerator->getCurrentBB();
 				BasicBlock *nextBlock = new BasicBlock(cfg, cfg->new_BB_name(), parentBlock->getContext());
 				BasicBlock *testBlock = new BasicBlock(cfg, cfg->new_BB_name(), parentBlock->getContext());
@@ -62,8 +63,9 @@ void IRBlockGenerator::genIf(If *ifBlock)
 
 				parentBlock->setExitTrue(testBlock);
 				irGenerator->setCurrentBB(testBlock);
-
+cout << "Gen cond" << endl;
 				string varCond = irGenerator->genExpr(ifBlock->getCondition());
+				cout << "Cond gen" << endl;
 				testBlock->setTestVarName(varCond);
 				VarSymbol *symbol = (VarSymbol *)parentBlock->getContext()->getSymbol(varCond);
 				testBlock->setTestTypeName(symbol->getVarType());
@@ -74,9 +76,9 @@ void IRBlockGenerator::genIf(If *ifBlock)
 				blockTrue->setExitTrue(nextBlock);
 
 				irGenerator->setCurrentBB(blockTrue);
-
+cout << "Gen block if" << endl;
 				irGenerator->genBlock(ifBlock->getBlockIf());
-
+cout << "Block if gen" << endl;
 				testBlock->setExitTrue(blockTrue);
 
 				if (ifBlock->getBlockElse() != nullptr)
@@ -96,6 +98,7 @@ void IRBlockGenerator::genIf(If *ifBlock)
 				}
 
 				irGenerator->setCurrentBB(nextBlock);
+				cout << "If done" << endl;
 }
 
 void IRBlockGenerator::genWhile(While *whileLoop)

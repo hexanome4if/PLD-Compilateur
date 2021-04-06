@@ -1,0 +1,29 @@
+#pragma once
+
+#include <string>
+#include "Symbol.h"
+
+using namespace std;
+
+class ArrSymbol : public Symbol
+{
+public:
+	ArrSymbol(string name, string arrType, int as) : Symbol(name, VARIABLE), arrType(arrType), arrSize(as), isInitialized(false), isUsed(false) {}
+	ArrSymbol(string name, string arrType, bool initialized) : Symbol(name, VARIABLE), arrType(arrType), isInitialized(initialized), isUsed(false) {}
+	void initialized() { isInitialized = true; }
+	void used() { isUsed = true; }
+	string getArrType() { return arrType; }
+	void setMemoryAddress(int memoryAddress) { this->memoryAddress = memoryAddress; }
+	int getMemoryAddress() { return memoryAddress; }
+	int getMemorySize()
+	{
+		return arrSize;
+	}
+	bool isInitialized;
+	bool isUsed;
+
+private:
+	string arrType;
+	int memoryAddress;
+	int arrSize;
+};

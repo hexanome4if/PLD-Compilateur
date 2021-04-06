@@ -1,9 +1,8 @@
-#include <stdio.h>
-
 int main()
 {
-    int a = 2;
-    int64_t b = 4;
-    char c = 'a';
-    return 0;
+    int a[4]={5, 4, 2, 6};
+    if (a[3]==6){
+        a[0] = 10;
+    }
+    return a[0];
 }

@@ -101,6 +101,7 @@ int main(int argn, const char **argv)
 		}
 	}
 
+	cout << "Ast" << endl;
 	Ast *ast = new Ast();
 	AstVisitor astVisitor(ast, symbolTable);
 	astVisitor.visit(tree);
@@ -113,13 +114,19 @@ int main(int argn, const char **argv)
 	// ast->debug(cout);
 
 
+
+    cout << "Ir" << endl;
 	CFG *cfg = new CFG(ast, symbolTable);
 	IRGenerator *irGenerator = new IRGenerator(ast, cfg, symbolTable);
 	irGenerator->generate();
-
+    cout << "Assign memory" << endl;
 	symbolTable->assignMemoryAddresses();
+    cout << "Translate" << endl;
 	X86Translator *translator = new X86Translator(cout, cfg);
 	translator->translate();
+
+
+
 
 	return 0;
 }

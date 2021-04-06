@@ -234,6 +234,32 @@ void X86Translator::genEpilog(IRInstr *instr)
 				o << "  ret" << endl;
 }
 
+void X86Translator::genR_Mem_Tab(IRInstr *instr)
+{
+	vector<string> params = instr->getParams();
+	string  type = getSuffixe(instr->getType());
+
+	putSymbolInRegister(params[2], instr->getType(), "a");
+	o << "  cltq" << endl;
+	o << "  mov" << type << " -" << Translator::getSymbolMemAddress(params[1]) << "(%rbp, %rax, 4), " << getRegisterWithSize("a", instr->getType()) << endl;
+	o << "  mov" << type << " " << getRegisterWithSize("a", instr->getType()) << ", " << getSymbolMemAddress(params[0]) << endl;
+
+
+}
+
+void X86Translator::genW_Mem_Tab(IRInstr *instr)
+{
+	vector<string> params = instr->getParams();
+    string type = getSuffixe(instr->getType());
+
+	putSymbolInRegister(params[1], INT_32, "a");
+	string reg = putSymbolInRegister(params[2], vector<string>(), instr->getType());
+	o << "  cltq" << endl;
+	o << "  mov" << type << " " << getRegisterWithSize(reg, instr->getType()) << ", ";
+	o <<	"-" << Translator::getSymbolMemAddress(params[0]) << "(%rbp, %rax, 4)" << endl;
+
+}
+
 string X86Translator::getRegFromParameterIndex(int index)
 {
 				switch (index)
@@ -373,3 +399,8 @@ string X86Translator::getRegisterWithSize(string reg, TypeName tn) {
 								return "";
 				}
 }
+
+
+
+
+

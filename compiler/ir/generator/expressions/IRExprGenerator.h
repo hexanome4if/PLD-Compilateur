@@ -3,6 +3,7 @@
 #include "../../../ast/expressions/ConstExpr.h"
 #include "../../../ast/expressions/VarExpr.h"
 #include "../../../ast/expressions/CharExpr.h"
+#include "../../../ast/expressions/ArrExpr.h"
 
 class IRGenerator;
 
@@ -16,6 +17,7 @@ public:
 	string genConst(ConstExpr *constExpr);
 	string genChar(CharExpr *charExpr);
 	string genVar(VarExpr *varExpr);
+	string genArrExpr(ArrExpr *arrExpr);
 	void genNot();
 
 private:

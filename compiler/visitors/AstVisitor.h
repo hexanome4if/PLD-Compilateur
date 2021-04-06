@@ -57,6 +57,12 @@ public:
 	antlrcpp::Any visitNot(ifccParser::NotContext *context) override;
 	antlrcpp::Any visitLogicalAND(ifccParser::LogicalANDContext *context) override;
 	antlrcpp::Any visitLogicalOR(ifccParser::LogicalORContext *context) override;
+	antlrcpp::Any visitArraydef(ifccParser::ArraydefContext *context) override;			//ok
+	antlrcpp::Any visitArrayaff(ifccParser::ArrayaffContext *context) override;				//ok
+	antlrcpp::Any visitArraydefaff(ifccParser::ArraydefaffContext *context) override;	//ok
+	antlrcpp::Any visitArrayexpr(ifccParser::ArrayexprContext *context) override;		//ok
+	antlrcpp::Any visitArraycontent(ifccParser::ArraycontentContext *context) override;	//ok
+	antlrcpp::Any visitArrayaccess(ifccParser::ArrayaccessContext *context) override;	//ok
 	antlrcpp::Any aggregateResult(antlrcpp::Any aggregate, const antlrcpp::Any &nextResult) override;
 
 	int getReturnCode();

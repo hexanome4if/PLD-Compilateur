@@ -8,6 +8,7 @@ public:
 	typedef enum
 	{
 		AFF,
+		ARRAFF,
 		RETURN,
 		IF,
 		WHILE,

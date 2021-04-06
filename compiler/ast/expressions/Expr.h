@@ -38,6 +38,8 @@ public:
 		OR_BIT,
 		XOR_BIT,
 		AFF,
+		ARRAFF,
+		ARR,
 		FUNC_CALL,
 	} Type;
 

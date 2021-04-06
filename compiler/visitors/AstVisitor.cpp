@@ -12,8 +12,10 @@
 #include "../ast/instructions/Ret.h"
 #include "../ast/instructions/Aff.h"
 #include "../ast/instructions/FuncCall.h"
+#include "../ast/instructions/ArrAff.h"
 #include "../ast/expressions/Expr.h"
 #include "../ast/expressions/VarExpr.h"
+#include "../ast/expressions/ArrExpr.h"
 #include "../ast/expressions/ConstExpr.h"
 #include "../ast/expressions/CharExpr.h"
 #include "../ast/expressions/Not.h"
@@ -28,6 +30,7 @@
 #include "../ast/expressions/comparison/SupCompare.h"
 #include "../ast/expressions/logic/LogicalAnd.h"
 #include "../ast/expressions/logic/LogicalOr.h"
+#include <type_traits>
 
 AstVisitor::AstVisitor(Ast *ast, SymbolTable *symbolTable) : BaseVisitor(), ast(ast), symbolTable(symbolTable)
 {
@@ -82,16 +85,20 @@ antlrcpp::Any AstVisitor::visitBlock(ifccParser::BlockContext *context)
 	for (it = instr.begin(); it != instr.end(); ++it)
 	{
 		auto visited = visit(*it);
+		//cout << "visited: " <<  typeid(visited).name() << endl;
 		if (visited.is<Instr *>())
 		{
+			//cout << "addInstr" << endl;
 			block->addInstr((Instr *)visited);
 		}
 		else if (visited.is<vector<Instr *>>())
 		{
 			vector<Instr *> v_aff = visited.as<vector<Instr *>>();
+			//cout << "addInstr2" << endl;
 			for (int i = 0; i < v_aff.size(); ++i)
 			{
 				block->addInstr(v_aff[i]);
+				//cout << "addInstr3" << endl;
 			}
 		}
 	}
@@ -111,11 +118,21 @@ antlrcpp::Any AstVisitor::visitInstr(ifccParser::InstrContext *context)
 	{
 		return visit(context->vardefaff());
 	}
+	else if(context->arraydef())
+	{
+		auto inst = visit(context->arraydef());
+		return inst;
+	}
+	else if(context->arraydefaff())
+	{
+		return visit(context->arraydefaff());
+	}
 	else
 	{
 		instr = visitChildren(context);
 	}
 	return instr;
+
 }
 
 antlrcpp::Any AstVisitor::visitWhiledef(ifccParser::WhiledefContext *context)
@@ -461,6 +478,69 @@ antlrcpp::Any AstVisitor::visitNot(ifccParser::NotContext *context)
 	Expr *expr = (Expr *)visit(context->exprsimple());
 	Expr *up = new Not(expr);
 	return up;
+}
+
+/* Visit Array */
+antlrcpp::Any AstVisitor::visitArraydef(ifccParser::ArraydefContext *context)
+{
+	return nullptr;
+}
+
+antlrcpp::Any AstVisitor::visitArrayaff(ifccParser::ArrayaffContext *context)
+{
+	string arrName = context -> arrayaccess() -> NAME() -> getText();
+	Expr* expr = (Expr*) visit(context->expr());
+	Expr* index = (Expr*) visit(context->arrayaccess());
+	Instr* instr = new ArrAff(arrName, index, expr);
+	return instr;
+}
+
+antlrcpp::Any AstVisitor::visitArraydefaff(ifccParser::ArraydefaffContext *context)
+{
+	string arrType = context -> TYPE() -> getText();
+	string arrName = context -> NAME() -> getText();
+	vector<Instr*> arr_aff;
+
+	if(context->arraycontent() != nullptr)
+	{
+		vector<Expr*> exprs = visit(context->arraycontent());
+		vector<Expr*>::iterator it;
+		int index = 0;
+		for(it = exprs.begin() ; it!=exprs.end(); ++it)
+		{
+			Expr * cur_index = new ConstExpr(to_string(index++), INT_32);
+			Instr* instr = new ArrAff(arrName, cur_index,*it);
+			arr_aff.push_back(instr);
+		}
+	}
+
+	return arr_aff;
+}
+
+antlrcpp::Any AstVisitor::visitArraycontent(ifccParser::ArraycontentContext *context)
+{
+	vector<Expr*> exprs;
+	vector<ifccParser::ExprContext*> expr = context->expr();
+	vector<ifccParser::ExprContext*>::iterator it;
+	for(it = expr.begin(); it != expr.end(); ++it)
+	{
+		auto visited = visit(*it);
+		exprs.push_back((Expr*) visited);
+	}
+	return exprs;
+}
+
+antlrcpp::Any AstVisitor::visitArrayaccess(ifccParser::ArrayaccessContext *context)
+{
+	return visit(context->expr());
+}
+
+antlrcpp::Any AstVisitor::visitArrayexpr(ifccParser::ArrayexprContext *context) {
+	string name = context->arrayaccess()->NAME()->getText();
+	VarSymbol* varSymbol = (VarSymbol*)symbolTable->getSymbol(name);
+	Expr* index = (Expr*) visit(context->arrayaccess());
+	Expr* arrExpr = new ArrExpr(name, index, varSymbol->getVarType());
+	return arrExpr;
 }
 
 int AstVisitor::getReturnCode()

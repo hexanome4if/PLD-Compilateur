@@ -66,6 +66,9 @@ void IRGenerator::genInstruction(Instr *instruction)
 	case Instr::IF:
 		blockGenerator->genIf((If *)instruction);
 		break;
+	case Instr::ARRAFF:
+		instrGenerator->genArrAff((ArrAff*) instruction);
+		break;
 	}
 }
 
@@ -87,6 +90,8 @@ string IRGenerator::genExpr(Expr *expr)
 		return exprGenerator->genVar((VarExpr *)expr);
 	case Expr::Type::UN_OP:
 		return operatorGenerator->genUn((UnOp *)expr);
+	case Expr::Type::ARRAFF:
+		return exprGenerator -> genArrExpr((ArrExpr*)expr);
 	}
 	return "";
 }

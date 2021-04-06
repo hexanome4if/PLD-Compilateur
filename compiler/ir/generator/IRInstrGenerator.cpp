@@ -49,3 +49,21 @@ string IRInstrGenerator::genRet(Ret *ret)
 
 				return varExpr;
 }
+
+string IRInstrGenerator::genArrAff(ArrAff * arrAff)
+{
+	string var1 = arrAff->getArrName();
+	string var2 = generator->genExpr(arrAff->getIndexExpr());
+	string var3 = generator->genExpr(arrAff->getExpr());
+
+	VarSymbol* varSymbol = (VarSymbol*)generator->getCurrentContext()->getSymbol(arrAff->getArrName());
+
+	vector<string> params;
+	params.push_back(var1);
+	params.push_back(var2);
+	params.push_back(var3);
+
+	generator->getCurrentBB()->add_IRInstr(IRInstr::W_MEM_TAB, varSymbol->getVarType(), params);
+
+	return var1;
+}
