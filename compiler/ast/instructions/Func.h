@@ -8,19 +8,10 @@
 class Func : public Node
 {
 public:
-	typedef struct
-	{
-		string name;
-		TypeName type;
-	} Param;
+
 
 	Func(TypeName t, string n, Block *b) : Node(FUNCTION), type(t), name(n), block(b)
 	{
-	}
-
-	void addParam(TypeName type, string name)
-	{
-		params.push_back({name = name, type = type});
 	}
 
 	void addInstr(Instr *i)
@@ -69,10 +60,6 @@ public:
 	{
 		return block;
 	}
-	vector<Param> getParams()
-	{
-		return params;
-	}
 	TypeName getType()
 	{
 		return type;
@@ -81,6 +68,5 @@ public:
 private:
 	TypeName type;
 	string name;
-	vector<Param> params;
 	Block *block;
 };

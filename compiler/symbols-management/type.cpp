@@ -43,3 +43,12 @@ TypeName getSymbolTypeFromString(string string_type)
 				}
 				return INT_32;
 }
+
+TypeName getBiggerType(TypeName type1, TypeName type2)
+{
+    if (getMemorySizeFromType(type1) < getMemorySizeFromType(type2))
+    {
+        return type2;
+    }
+    return type1;
+}

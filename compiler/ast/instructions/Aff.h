@@ -71,7 +71,7 @@ public:
 		varSymbol->setValue(val);
 		if (val != "undefined")
 		{
-			expr = new ConstExpr(val);
+			expr = new ConstExpr(val, getExprSymbolType());
 		}
 	}
 

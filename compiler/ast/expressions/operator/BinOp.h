@@ -42,7 +42,7 @@ public:
                 case Expr::Operation::DIV:
                     if (v1 == 0)
                     {
-                        replaceWith(new ConstExpr("0"));
+                        replaceWith(new ConstExpr("0", INT_32));
                     }
                     else if (v2 == 1)
                     {
@@ -68,7 +68,7 @@ public:
                     }
                     if (v1 == 0 || v2 == 0)
                     {
-                        replaceWith(new ConstExpr("0"));
+                        replaceWith(new ConstExpr("0", INT_32));
                     }
                     v = to_string(v1 * v2);
                     break;
@@ -104,6 +104,7 @@ public:
 	}
 
 	virtual bool hasFunctionCall() override { return expr1->hasFunctionCall() || expr2->hasFunctionCall(); }
+    virtual TypeName getExprSymbolType() override { return getBiggerType(expr1->getExprSymbolType(), expr2->getExprSymbolType()); }
 
 	// Get
 	Expr *getExpr1() { return expr1; }

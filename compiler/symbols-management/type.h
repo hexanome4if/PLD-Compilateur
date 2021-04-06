@@ -15,3 +15,5 @@ typedef enum
 int getMemorySizeFromType(TypeName type);
 
 TypeName getSymbolTypeFromString(string string_type);
+
+TypeName getBiggerType(TypeName type1, TypeName type2);

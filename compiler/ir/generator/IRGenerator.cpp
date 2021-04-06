@@ -35,6 +35,7 @@ void IRGenerator::genNode(Node *node)
 void IRGenerator::genBlock(Block *block)
 {
 	symbolTable->setCurrentContext(block->getContext());
+	setCurrentContext(block->getContext());
 	vector<Instr *> instrs = block->getInstrs();
 	for (int i = 0; i < instrs.size(); i++)
 	{

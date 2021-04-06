@@ -53,6 +53,7 @@ public:
 
 	// Get
 	Type getExprType() { return exprType; }
+    virtual TypeName getExprSymbolType() { return INT_32; }
 
 private:
 	Type exprType;

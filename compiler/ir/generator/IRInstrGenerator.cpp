@@ -23,17 +23,19 @@ string IRInstrGenerator::genFuncCall(FuncCall *funcCall)
 				vector<string> irParams;
 				irParams.push_back(funcCall->getFuncName());
 				irParams.push_back(retVar);
+                FuncSymbol* funcSymbol = (FuncSymbol*)generator->getCurrentContext()->getSymbol(funcCall->getFuncName());
 
+                vector<FuncSymbol::Param> funcParams = funcSymbol->getParams();
 				vector<Expr *> params = funcCall->getParams();
 				for (int i = 0; i < params.size(); ++i)
 				{
 								string varExpr = generator->genExpr(params[i]);
 								irParams.push_back(varExpr);
+								irParams.push_back(to_string(funcParams[i].type));
 				}
 
 				generator->getCurrentBB()->add_IRInstr(IRInstr::CALL, generator->getCurrentFunc()->getType(), irParams);
-
-				return retVar;
+ 				return retVar;
 }
 
 string IRInstrGenerator::genRet(Ret *ret)

@@ -20,6 +20,7 @@ X86Translator::X86Translator(ostream &stream, CFG *cfg) : Translator(stream, cfg
 
 void X86Translator::genBlock(BasicBlock *bb)
 {
+                clearRegisters();
 				currentContext = bb->getContext();
 
 				o << "." << bb->getLabel() << ":" << endl;
@@ -29,8 +30,8 @@ void X86Translator::genBlock(BasicBlock *bb)
 				if (bb->getTestVarName() != "")
 				{
 								string reg = putSymbolInRegister(bb->getTestVarName(), vector<string>(), bb->getTestTypeName());
-								string type = getSuffixe(instr->getType());
-								o << "  cmp" << type << " $0, " << reg << endl;
+								string type = getSuffixe(bb->getTestTypeName());
+								o << "  cmp" << type << " $0, " << getRegisterWithSize(reg, bb->getTestTypeName()) << endl;
 								o << "  je ." << bb->getExitFalse()->getLabel() << endl;
 				}
 
@@ -45,7 +46,7 @@ void X86Translator::genCopy(IRInstr *instr)
 				vector<string> params = instr->getParams();
 				string reg = putSymbolInRegister(params[1], vector<string>(), instr->getType());
 				string type = getSuffixe(instr->getType());
-				o << "  mov" << type << " " << reg << ", " << getSymbolMemAddress(params[0]) << endl;
+				o << "  mov" << type << " " << getRegisterWithSize(reg, instr->getType()) << ", " << getSymbolMemAddress(params[0]) << endl;
 				unsetSymbolFromRegister(params[0]);
 }
 
@@ -61,11 +62,11 @@ void X86Translator::genAdd(IRInstr *instr)
 {
 				vector<string> params = instr->getParams();
 				string reg1 = putSymbolInRegister(params[1], vector<string>{params[2]}, instr->getType());
-				string reg2 = putSymbolInRegister(params[2], vector<string>{params[2]}, instr->getType());
+				string reg2 = putSymbolInRegister(params[2], vector<string>{params[1]}, instr->getType());
 				string type = getSuffixe(instr->getType());
 
-				o << "  add" << type << " " << reg2 << ", " << reg1 << endl;
-				o << "  mov" << type << " " << reg1 << ", " << getSymbolMemAddress(params[0]) << endl;
+				o << "  add" << type << " " << getRegisterWithSize(reg2, instr->getType()) << ", " << getRegisterWithSize(reg1, instr->getType()) << endl;
+				o << "  mov" << type << " " << getRegisterWithSize(reg1, instr->getType()) << ", " << getSymbolMemAddress(params[0]) << endl;
 
 				unsetSymbolFromRegister(params[0]);
 				setSymbolInRegister(params[0], reg1, instr->getType());
@@ -75,11 +76,11 @@ void X86Translator::genSub(IRInstr *instr)
 {
 				vector<string> params = instr->getParams();
 				string reg1 = putSymbolInRegister(params[1], vector<string>{params[2]}, instr->getType());
-				string reg2 = putSymbolInRegister(params[2], vector<string>{params[2]}, instr->getType());
+				string reg2 = putSymbolInRegister(params[2], vector<string>{params[1]}, instr->getType());
 				string type = getSuffixe(instr->getType());
 
-				o << "  sub" << type << " " << reg2 << ", " << reg1 << endl;
-				o << "  mov" << type << " " << reg1 << ", " << getSymbolMemAddress(params[0]) << endl;
+				o << "  sub" << type << " " << getRegisterWithSize(reg2, instr->getType()) << ", " << getRegisterWithSize(reg1, instr->getType()) << endl;
+				o << "  mov" << type << " " << getRegisterWithSize(reg1, instr->getType()) << ", " << getSymbolMemAddress(params[0]) << endl;
 
 				unsetSymbolFromRegister(params[0]);
 				setSymbolInRegister(params[0], reg1, instr->getType());
@@ -89,11 +90,11 @@ void X86Translator::genMul(IRInstr *instr)
 {
 				vector<string> params = instr->getParams();
 				string reg1 = putSymbolInRegister(params[1], vector<string>{params[2]}, instr->getType());
-				string reg2 = putSymbolInRegister(params[2], vector<string>{params[2]}, instr->getType());
+				string reg2 = putSymbolInRegister(params[2], vector<string>{params[1]}, instr->getType());
 				string type = getSuffixe(instr->getType());
 
-				o << "  imul" << type << " " << reg2 << ", " << reg1 << endl;
-				o << "  mov" << type << " " << reg1 << ", " << getSymbolMemAddress(params[0]) << endl;
+				o << "  imul" << type << " " << getRegisterWithSize(reg2, instr->getType()) << ", " << getRegisterWithSize(reg1, instr->getType()) << endl;
+				o << "  mov" << type << " " << getRegisterWithSize(reg1, instr->getType()) << ", " << getSymbolMemAddress(params[0]) << endl;
 
 				unsetSymbolFromRegister(params[0]);
 				setSymbolInRegister(params[0], reg1, instr->getType());
@@ -109,7 +110,7 @@ void X86Translator::genDiv(IRInstr *instr)
 				o << "  movl %eax, " << getSymbolMemAddress(params[0]) << endl;
 
 				unsetSymbolFromRegister(params[0]);
-				setSymbolInRegister(params[0], "a");
+				setSymbolInRegister(params[0], "a", instr->getType());
 }
 
 void X86Translator::genComp(IRInstr *instr, string op)
@@ -117,8 +118,8 @@ void X86Translator::genComp(IRInstr *instr, string op)
 				vector<string> params = instr->getParams();
 				string type = getSuffixe(instr->getType());
 				string reg1 = putSymbolInRegister(params[1], vector<string>{params[2]}, instr->getType());
-				string reg2 = putSymbolInRegister(params[2], vector<string>{params[2]}, instr->getType());
-				o << "  cmp" << type << " " << reg1 << ", " << reg2 << endl;
+				string reg2 = putSymbolInRegister(params[2], vector<string>{params[1]}, instr->getType());
+				o << "  cmp" << type << " " << getRegisterWithSize(reg1, instr->getType()) << ", " << getRegisterWithSize(reg2, instr->getType()) << endl;
 				o << op << " %al" << endl;
 				o << "  movzbl %al, %eax" << endl;
 				o << "  movl %eax, " << getSymbolMemAddress(params[0]) << endl;
@@ -145,17 +146,19 @@ void X86Translator::genCompLt(IRInstr *instr)
 void X86Translator::genCall(IRInstr *instr)
 {
 				vector<string> params = instr->getParams();
-				for (int i = params.size() - 1; i >= 2; --i)
+				for (int i = params.size() - 1; i >= 2; i -= 2)
 				{
-								if (i > 7)
+				                TypeName tn = static_cast<TypeName>(stoi(params[i]));
+				                string type = getSuffixe(tn);
+								if (i > 13)
 								{
-												o << "  movl " << getSymbolAddress(params[i]) << ", %edx" << endl;
+								                putSymbolInRegister(params[i - 1], tn, "d");
 												o << "  pushq %rdx" << endl;
 								}
 								else
 								{
-												string reg = getRegFromParameterIndex(i - 1);
-												o << "  movl " << getSymbolAddress(params[i]) << ", " << reg << endl;
+                                                string reg = getRegFromParameterIndex((i - 1) / 2);
+								                putSymbolInRegister(params[i - 1], tn, reg);
 								}
 				}
 
@@ -168,14 +171,15 @@ void X86Translator::genCall(IRInstr *instr)
 				}
 				string type = getSuffixe(instr->getType());
 				o << "  mov" << type << " " << getRegisterWithSize("a", instr->getType()) << ", " << getSymbolMemAddress(params[1]) << endl;
-				setSymbolInRegister(params[1], "a");
+				setSymbolInRegister(params[1], "a", instr->getType());
 }
 
 void X86Translator::genRet(IRInstr *instr)
 {
 				vector<string> params = instr->getParams();
 				string type = getSuffixe(instr->getType());
-				o << "  mov" << type << " " << getSymbolAddress(params[0]) << ", " << getRegisterWithSize("a", instr->getType()) << endl;
+                string reg = putSymbolInRegister(params[0], vector<string>(), instr->getType());
+				o << "  mov" << type << " " << getRegisterWithSize(reg, instr->getType()) << ", " << getRegisterWithSize("a", instr->getType()) << endl;
 }
 
 void X86Translator::genProlog(IRInstr *instr)
@@ -196,19 +200,18 @@ void X86Translator::genProlog(IRInstr *instr)
 
 				for (int i = 3; i < params.size(); i+=2)
 				{
-								int tn = stoi(params[i+1]);
+								TypeName tn = static_cast<TypeName>(stoi(params[i+1]));
 								string type = getSuffixe(tn);
-								string reg1 = putSymbolInRegister(params[i], vector<string>(), tn);
-								if (i > 6)
+								if (i > 14)
 								{
 												o << "  mov" << type << " " << to_string(16 + (i - 7) * 8) << "(%rbp), " << getRegisterWithSize("a", tn) << endl;
-												o << "  mov" << type << " " << getRegisterWithSize("a", tn) << ", " << reg1 << endl;
+												o << "  mov" << type << " " << getRegisterWithSize("a", tn) << ", " << getSymbolMemAddress(params[i]) << endl;
 												setSymbolInRegister(params[i], "a", tn);
 								}
 								else
 								{
 												string reg = getRegFromParameterIndex((i - 1)/2);
-												o << "  mov" << type << " " << getRegisterWithSize(reg, tn) << ", " << reg1 << endl;
+												o << "  mov" << type << " " << getRegisterWithSize(reg, tn) << ", " << getSymbolMemAddress(params[i]) << endl;
 												setSymbolInRegister(params[i], reg, tn);
 								}
 				}
@@ -235,27 +238,27 @@ string X86Translator::getRegFromParameterIndex(int index)
 				switch (index)
 				{
 				case 1:
-								return "%rdi";
+								return "f";
 				case 2:
-								return "%rsi";
+								return "e";
 				case 3:
-								return "%rdx";
+								return "d";
 				case 4:
-								return "%rcx";
+								return "c";
 				case 5:
-								return "%r8";
+								return "8";
 				case 6:
-								return "%r9";
+								return "9";
 				}
 				return "";
 }
 
 string X86Translator::getSymbolAddress(string name)
 {
-				map<string, string>::iterator it;
+				map<string, vector<string>*>::iterator it;
 				for (it = registers.begin(); it != registers.end(); ++it)
 				{
-								if (it->second == name)
+								if (it->second != nullptr && it->second->at(0) == name)
 								{
 												return it->first;
 								}
@@ -282,24 +285,49 @@ string X86Translator::putSymbolInRegister(string name, vector<string> requiredSy
 				{
 								string oldType = getSuffixe(var->getVarType());
 								o << "  mov" << oldType << " " << getSymbolMemAddress(name) << ", " << getRegisterWithSize(reg, var->getVarType()) << endl;
-
 								o << "  movs" << oldType << type << " " << getRegisterWithSize(reg, var->getVarType()) << ", " << getRegisterWithSize(reg, tn) << endl;
 				}
+				else
+                {
 
-				o << "  mov" << type << " " << getSymbolMemAddress(name) << ", " << reg << endl;
+                    string oldType = getSuffixe(var->getVarType());
+                    o << "  mov" << oldType << " " << getSymbolMemAddress(name) << ", " << getRegisterWithSize(reg, var->getVarType()) << endl;
+                }
 
 				setSymbolInRegister(name, reg, tn);
 
 				return reg;
 }
 
+string X86Translator::putSymbolInRegister(string name, TypeName tn, string reg)
+{
+    string type = getSuffixe(tn);
+    VarSymbol *var = (VarSymbol *)currentContext->getSymbol(name);
+    if(getMemorySizeFromType(var->getVarType()) < getMemorySizeFromType(tn))
+    {
+        string oldType = getSuffixe(var->getVarType());
+        o << "  mov" << oldType << " " << getSymbolMemAddress(name) << ", " << getRegisterWithSize(reg, var->getVarType()) << endl;
+        o << "  movs" << oldType << type << " " << getRegisterWithSize(reg, var->getVarType()) << ", " << getRegisterWithSize(reg, tn) << endl;
+    }
+    else
+    {
+
+        string oldType = getSuffixe(var->getVarType());
+        o << "  mov" << oldType << " " << getSymbolMemAddress(name) << ", " << getRegisterWithSize(reg, var->getVarType()) << endl;
+    }
+
+    setSymbolInRegister(name, reg, tn);
+
+    return reg;
+}
+
 string X86Translator::getSuffixe(TypeName tn) {
 				switch (getMemorySizeFromType(tn)) {
-				case 64:
-								return "q";
-				case 32:
-								return "l";
 				case 8:
+								return "q";
+				case 4:
+								return "l";
+				case 1:
 								return "b";
 				default:
 								return "l";
@@ -308,29 +336,38 @@ string X86Translator::getSuffixe(TypeName tn) {
 
 string X86Translator::getRegisterWithSize(string reg, TypeName tn) {
 				switch (getMemorySizeFromType(tn)) {
-				case 64:
-								if(reg<'e') {
+				case 8:
+				                if (reg > "7"  && reg <= "9") {
+				                    return "%r" + reg;
+                                }
+								else if(reg < "e") {
 												return "%r" + reg + "x";
-								} else if(reg == 'e') {
+								} else if(reg == "e") {
 												return "%rsi";
-								} else if(reg == 'f') {
+								} else if(reg == "f") {
 												return "%rdi";
 								}
 
-				case 32:
-								if(reg<'e') {
+				case 4:
+                    if (reg > "7" && reg <= "9") {
+                        return "%r" + reg + "d";
+                    }
+                    else if(reg < "e") {
 												return "%e" + reg + "x";
-								} else if(reg == 'e') {
+								} else if(reg == "e") {
 												return "%esi";
-								} else if(reg == 'f') {
+								} else if(reg == "f") {
 												return "%edi";
 								}
-				case 8:
-								if(reg<'e') {
+				case 1:
+                    if (reg > "7"  && reg <= "9") {
+                        return "%r" + reg + "b";
+                    }
+                    else if(reg < "e") {
 												return "%" + reg + "l";
-								} else if(reg == 'e') {
+								} else if(reg == "e") {
 												return "%sil";
-								} else if(reg == 'f') {
+								} else if(reg == "f") {
 												return "%dil";
 								}
 				default:

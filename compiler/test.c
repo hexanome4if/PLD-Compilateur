@@ -2,24 +2,14 @@
 
 int func()
 {
-	int a = 2; // Un autre commentaire
-	// Un commentaire
-	return a;
-}
-
-void f()
-{
+    int a = 2;
+    return 2;
 }
 
 int main()
 {
-	int a = 65;
-	int ret = a + 6;
-	f();
+    int a = 5;
+    int ret = func();
 
-	int userInput = getchar();
-
-	putchar(userInput);
-	return 1;
+    return ret + a;
 }
-

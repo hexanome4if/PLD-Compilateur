@@ -25,13 +25,16 @@ virtual void genEpilog(IRInstr *instr) override;
 
 virtual void genBlock(BasicBlock *bb) override;
 
-void genComp(IRInstr *instr, string op);
-string getRegFromParameterIndex(int index);
+virtual string putSymbolInRegister(string name, vector<string> requiredSymbols, TypeName tn) override;
+virtual string putSymbolInRegister(string name, TypeName tn, string reg) override;
 
 virtual string getSymbolAddress(string name) override;
 virtual string getSymbolMemAddress(string name) override;
+
+void genComp(IRInstr *instr, string op);
+string getRegFromParameterIndex(int index);
 string getSuffixe(TypeName tn);
 
-virtual string putSymbolInRegister(string name, vector<string> requiredSymbols) override;
+
 virtual string getRegisterWithSize(string reg, TypeName tn) override;
 };

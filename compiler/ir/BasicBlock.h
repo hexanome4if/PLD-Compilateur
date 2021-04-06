@@ -42,7 +42,7 @@ public:
 BasicBlock(CFG *cfg, string entry_label, Context *ctx);
 void gen_asm(ostream &o);   /**< x86 assembly code generation for this basic block (very simple) */
 
-void add_IRInstr(IRInstr::Operation op, string t, vector<string> params);
+void add_IRInstr(IRInstr::Operation op, TypeName t, vector<string> params);
 
 bool hasFunctionCall();
 

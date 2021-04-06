@@ -3,13 +3,13 @@
 
 string IRExprGenerator::genConst(ConstExpr *constExpr)
 {
-				string var = generator->createTempVar(INT_32);
+				string var = generator->createTempVar(constExpr->getConstType());
 
 				vector<string> params;
 				params.push_back(var);
 				params.push_back(constExpr->getVal());
 
-				generator->getCurrentBB()->add_IRInstr(IRInstr::LD_CONST, INT_32, params); //TODO gérer le type
+				generator->getCurrentBB()->add_IRInstr(IRInstr::LD_CONST, constExpr->getConstType(), params);
 
 				return var;
 }

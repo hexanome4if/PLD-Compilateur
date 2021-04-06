@@ -66,10 +66,6 @@ antlrcpp::Any AstVisitor::visitFunc(ifccParser::FuncContext *context)
 	symbolTable->closeContext();
 
 	Func *func = new Func(getSymbolTypeFromString(functionType), functionName, block);
-	for (int i = 1; i < types.size(); ++i)
-	{
-		func->addParam(getSymbolTypeFromString(types[i]->getText()), names[i]->getText());
-	}
 
 	return (Node *)func;
 }
@@ -170,7 +166,7 @@ antlrcpp::Any AstVisitor::visitVardefaff(ifccParser::VardefaffContext *context)
 	if (context->expr() != nullptr)
 	{
 		Expr *expr = (Expr *)visit(context->expr());
-		Instr *aff = new Aff(varName, expr);
+		Instr *aff = new Aff(varName, expr, getSymbolTypeFromString(varType));
 		v_aff.push_back(aff);
 	}
 	vector<ifccParser::VirgulenameContext *> virgulename = context->virgulename();
@@ -257,13 +253,14 @@ antlrcpp::Any AstVisitor::visitExpr(ifccParser::ExprContext *context)
 		{
 			if (name.size() == 1)
 			{
-				Expr *expr = new VarExpr(name[name.size() - 1]->getText());
+			    VarSymbol* vs = (VarSymbol*)symbolTable->getSymbol(name[name.size() - 1]->getText());
+				Expr *expr = new VarExpr(vs->getVarType(), name[name.size() - 1]->getText());
 				return expr;
 			}
 			else
 			{
 				VarSymbol *vs = (VarSymbol *)symbolTable->getSymbol(name[name.size() - 2]->getText());
-				Expr *aff = new Aff(name[name.size() - 2]->getText(), new VarExpr(name[name.size() - 1]->getText()), vs->getVarType());
+				Expr *aff = new Aff(name[name.size() - 2]->getText(), new VarExpr(vs->getVarType(), name[name.size() - 1]->getText()), vs->getVarType());
 				for (int i = name.size() - 3; i >= 0; --i)
 				{
 					vs = (VarSymbol *)symbolTable->getSymbol(name[i]->getText());
@@ -288,14 +285,15 @@ antlrcpp::Any AstVisitor::visitPar(ifccParser::ParContext *context)
 antlrcpp::Any AstVisitor::visitConst(ifccParser::ConstContext *context)
 {
 	string value = context->CONST()->getText();
-	Expr *constExpr = new ConstExpr(value);
+	Expr *constExpr = new ConstExpr(value, INT_32);
 	return constExpr;
 }
 
 antlrcpp::Any AstVisitor::visitName(ifccParser::NameContext *context)
 {
 	string varName = context->NAME()->getText();
-	Expr *expr = new VarExpr(varName);
+	VarSymbol* vs = (VarSymbol*)symbolTable->getSymbol(varName);
+	Expr *expr = new VarExpr(vs->getVarType(), varName);
 	return expr;
 }
 

@@ -5,7 +5,7 @@ string IROperatorGenerator::genBin(BinOp *binOp)
 {
 				string var1 = generator->genExpr(binOp->getExpr1());
 				string var2 = generator->genExpr(binOp->getExpr2());
-				string var3 = generator->createTempVar(INT_32); //TODO gérer le type
+				string var3 = generator->createTempVar(binOp->getExprSymbolType());
 
 				IRInstr::Operation op;
 				switch (binOp->getOperation())
@@ -31,7 +31,7 @@ string IROperatorGenerator::genBin(BinOp *binOp)
 				params.push_back(var1);
 				params.push_back(var2);
 
-				generator->getCurrentBB()->add_IRInstr(op, INT_32, params); //TODO gérer le type
+				generator->getCurrentBB()->add_IRInstr(op, binOp->getExprSymbolType(), params);
 
 				return var3;
 }
@@ -39,7 +39,7 @@ string IROperatorGenerator::genBin(BinOp *binOp)
 // TODO change this
 string IROperatorGenerator::genUn(UnOp *unOp)
 {
-				Expr *zero = new ConstExpr("0");
+				Expr *zero = new ConstExpr("0", unOp->getExpr()->getExprSymbolType());
 
 				Expr *minus = new BinOp(zero, unOp->getExpr(), Expr::SUBS);
 

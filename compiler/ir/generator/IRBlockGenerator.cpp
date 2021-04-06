@@ -21,11 +21,12 @@ void IRBlockGenerator::genFunc(Func *func)
 				irParams.push_back(hasFunctionCall ? "true" : "false");
 				irParams.push_back(to_string(definedSymbolsSize));
 
-				vector<Param> params = func->getParams();
+				FuncSymbol* funcSymbol = (FuncSymbol*)func->getBlock()->getContext()->getSymbol(func->getName());
+				vector<FuncSymbol::Param> params = funcSymbol->getParams();
 				for (int i = 0; i < params.size(); ++i)
 				{
 								irParams.push_back(params[i].name);
-								irParams.push_back(params[i].type);
+								irParams.push_back(to_string(params[i].type));
 				}
 
 				prologue->add_IRInstr(IRInstr::PROLOG, VOID, irParams);

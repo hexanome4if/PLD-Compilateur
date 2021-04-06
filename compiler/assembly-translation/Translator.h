@@ -3,6 +3,7 @@
 #include <iostream>
 #include <map>
 #include <vector>
+#include "../symbols-management/type.h"
 
 using namespace std;
 
@@ -39,6 +40,7 @@ virtual void genBlock(BasicBlock *bb) = 0;
 virtual void genBlockInstructions(BasicBlock *bb);
 
 virtual string putSymbolInRegister(string name, vector<string> requiredSymbols, TypeName tn) = 0;
+virtual string putSymbolInRegister(string name, TypeName tn, string reg) = 0;
 
 virtual string getAvailableRegister(vector<string> requiredSymbols);
 virtual string getSymbolAddress(string name) = 0;
@@ -48,7 +50,9 @@ virtual void unsetSymbolFromRegister(string name);
 virtual void setSymbolInRegister(string symbolName, string reg, TypeName tn);
 virtual string getRegisterWithSize(string reg, TypeName tn) = 0;
 
-map<string, vector<string> >  registers;
+virtual void clearRegisters();
+
+map<string, vector<string>* >  registers;
 Context *currentContext;
 ostream &o;
 CFG *cfg;

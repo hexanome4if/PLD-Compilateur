@@ -21,7 +21,7 @@ void Translator::translate()
 
 void Translator::genInstr(IRInstr *instr)
 {
-				switch (instr->getOp())
+    			switch (instr->getOp())
 				{
 				case IRInstr::COPY:
 								genCopy(instr);
@@ -70,14 +70,14 @@ void Translator::genInstr(IRInstr *instr)
 string Translator::getAvailableRegister(vector<string> requiredSymbols)
 {
 				vector<string> overridableRegisters;
-				map<string, vector<string> >::iterator it;
+				map<string, vector<string> *>::iterator it;
 				for (it = registers.begin(); it != registers.end(); ++it)
 				{
 								if (it->second == nullptr)
 								{
 												return it->first;
 								}
-								else
+								else if (find(requiredSymbols.begin(), requiredSymbols.end(), it->second->at(0)) == requiredSymbols.end())
 								{
 												overridableRegisters.push_back(it->first);
 								}
@@ -87,10 +87,10 @@ string Translator::getAvailableRegister(vector<string> requiredSymbols)
 
 bool Translator::isSymbolInRegister(string name, TypeName tn)
 {
-				map<string, vector<string> >::iterator it;
+				map<string, vector<string> *>::iterator it;
 				for (it = registers.begin(); it != registers.end(); ++it)
 				{
-								if (*(it->second)[0] == name && *(it->second)[1] == to_string(tn))
+								if (it->second != nullptr && it->second->at(0) == name && it->second->at(1) == to_string(tn))
 								{
 												return true;
 								}
@@ -105,10 +105,10 @@ string Translator::getSymbolMemAddress(string name)
 
 void Translator::unsetSymbolFromRegister(string name)
 {
-				map<string, vector<string> >::iterator it;
+				map<string, vector<string> *>::iterator it;
 				for (it = registers.begin(); it != registers.end(); ++it)
 				{
-								if (it->second == name)
+								if (it->second != nullptr && it->second->at(0) == name)
 								{
 												registers[it->first] = nullptr;
 								}
@@ -128,4 +128,13 @@ void Translator::genBlockInstructions(BasicBlock *bb)
 				{
 								genInstr(instrs[i]);
 				}
+}
+
+void Translator::clearRegisters()
+{
+    map<string, vector<string> *>::iterator it;
+    for (it = registers.begin(); it != registers.end(); ++it)
+    {
+            registers[it->first] = nullptr;
+    }
 }

@@ -54,7 +54,7 @@ public:
             });
             if (val == "undefined")
             {
-                params[i] = new ConstExpr(val);
+                params[i] = new ConstExpr(val, params[i]->getExprSymbolType());
             }
         }
     }

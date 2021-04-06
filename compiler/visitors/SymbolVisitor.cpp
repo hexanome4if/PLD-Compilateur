@@ -43,6 +43,7 @@ antlrcpp::Any SymbolVisitor::visitFunc(ifccParser::FuncContext *context)
 				throwError(new VoidCannotBeUsedAsVarTypeError(names[i]->getText(), types[i]));
 				return nullptr;
 			}
+			funcSymbol->addParam(getSymbolTypeFromString(types[i]->getText()), names[i]->getText());
 			symbolTable->addSymbol(new VarSymbol(names[i]->getText(), getSymbolTypeFromString(types[i]->getText())));
 		}
 	}
