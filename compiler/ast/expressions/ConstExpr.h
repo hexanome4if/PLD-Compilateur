@@ -17,7 +17,7 @@ public:
 
     virtual void checkUsedSymbols(Context* context) override {}
 
-    virtual string getGuessedValue(Context* context) override
+    virtual string getGuessedValue(Context* context, function<void(Expr*)> replaceWith) override
     {
 	    return val;
     }

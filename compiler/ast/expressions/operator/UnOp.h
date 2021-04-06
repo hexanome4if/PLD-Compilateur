@@ -20,9 +20,11 @@ public:
 
 	virtual bool hasFunctionCall() override { return expr->hasFunctionCall(); }
 
-    virtual string getGuessedValue(Context* context) override
+    virtual string getGuessedValue(Context* context, function<void(Expr*)> replaceWith) override
     {
-	    string val = expr->getGuessedValue(context);
+	    string val = expr->getGuessedValue(context, [this](Expr* rep){
+	        this->expr = rep;
+	    });
 	    if (val != "undefined")
         {
 	        return "-" + val;

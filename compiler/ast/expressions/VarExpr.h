@@ -19,7 +19,7 @@ public:
 	    var->used();
     }
 
-    virtual string getGuessedValue(Context* context) override
+    virtual string getGuessedValue(Context* context, function<void(Expr*)> replaceWith) override
     {
 	    VarSymbol* varSymbol = (VarSymbol*)context->getSymbol(varName);
 	    string val = varSymbol->getValue();

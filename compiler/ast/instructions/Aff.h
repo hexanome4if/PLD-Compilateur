@@ -58,7 +58,9 @@ public:
 
     virtual void calculateExpressions(Context* context) override
     {
-	    string val = expr->getGuessedValue(context);
+	    string val = expr->getGuessedValue(context, [this](Expr* rep) {
+	        this->expr = rep;
+	    });
         VarSymbol* varSymbol = (VarSymbol*)context->getSymbol(varName);
         varSymbol->setValue(val);
 	    if (val != "undefined")
@@ -67,9 +69,11 @@ public:
         }
     }
 
-    virtual string getGuessedValue(Context* context) override
+    virtual string getGuessedValue(Context* context, function<void(Expr*)> replaceWith) override
     {
-	    return expr->getGuessedValue(context);
+	    return expr->getGuessedValue(context, [this](Expr* rep){
+	        this->expr = rep;
+	    });
 	}
 
 	// Get

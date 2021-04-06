@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../Expr.h"
+#include "../ConstExpr.h"
 
 class BinOp : public Expr
 {
@@ -12,26 +13,64 @@ public:
         expr2->checkUsedSymbols(context);
     }
 
-    virtual string getGuessedValue(Context* context) override
+    virtual string getGuessedValue(Context* context, function<void(Expr*)> replaceWith) override
     {
-	    string val1 = expr1->getGuessedValue(context);
-	    string val2 = expr2->getGuessedValue(context);
+	    string val1 = expr1->getGuessedValue(context, [this](Expr* rep) {
+	        this->expr1 = rep;
+	    });
+	    string val2 = expr2->getGuessedValue(context, [this](Expr* rep) {
+	        this->expr2 = rep;
+	    });
 	    if (val1 != "undefined" && val2 != "undefined")
         {
 	        string v;
+	        int v1 = stoi(val1);
+	        int v2 = stoi(val2);
             switch(operation)
             {
                 case Expr::Operation::ADD:
-                    v = to_string(stoi(val1) + stoi(val2));
+                    if (v1 == 0)
+                    {
+                        replaceWith(expr2);
+                    }
+                    else if (v2 == 0)
+                    {
+                        replaceWith(expr1);
+                    }
+                    v = to_string(v1 + v2);
                     break;
                 case Expr::Operation::DIV:
-                    v = to_string(stoi(val1) / stoi(val2));
+                    if (v1 == 0)
+                    {
+                        replaceWith(new ConstExpr("0"));
+                    }
+                    else if (v2 == 1)
+                    {
+                        replaceWith(expr1);
+                    }
+                    v = to_string(v1 / v2);
                     break;
                 case Expr::Operation::MULT:
-                    v = to_string(stoi(val1) * stoi(val2));
+                    if (v1 == 1)
+                    {
+                        replaceWith(expr2);
+                    }
+                    else if (v2 == 1)
+                    {
+                        replaceWith(expr1);
+                    }
+                    if (v1 == 0 || v2 == 0)
+                    {
+                        replaceWith(new ConstExpr("0"));
+                    }
+                    v = to_string(v1 * v2);
                     break;
                 case Expr::Operation::SUBS:
-                    v = to_string(stoi(val1) - stoi(val2));
+                    if (v2 == 0)
+                    {
+                        replaceWith(expr1);
+                    }
+                    v = to_string(v1 - v2);
                     break;
                 default:
                     v = "undefined";

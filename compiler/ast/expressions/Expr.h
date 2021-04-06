@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <functional>
 #include "../../symbols-management/Context.h"
 #include "../../symbols-management/VarSymbol.h"
 
@@ -47,7 +48,7 @@ public:
 	virtual bool hasFunctionCall() { return false; }
 
     virtual void checkUsedSymbols(Context* context) = 0;
-    virtual string getGuessedValue(Context* context) = 0;
+    virtual string getGuessedValue(Context* context, function<void(Expr*)> replaceWith) = 0;
     virtual void computeVarDependencies(VarSymbol* varSymbol, Context* context) = 0;
 
 	// Get

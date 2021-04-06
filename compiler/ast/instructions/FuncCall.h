@@ -49,7 +49,9 @@ public:
     {
         for (int i = 0; i < params.size(); ++i)
         {
-            string val = params[i]->getGuessedValue(context);
+            string val = params[i]->getGuessedValue(context, [this, &i](Expr* rep){
+                this->params[i] = rep;
+            });
             if (val == "undefined")
             {
                 params[i] = new ConstExpr(val);
@@ -59,7 +61,7 @@ public:
 
     virtual int removeUnusedSymbols(function<void(Node*)> remove, Context* context) override { return 0; }
 
-    virtual string getGuessedValue(Context* context) override { return "undefined"; }
+    virtual string getGuessedValue(Context* context, function<void(Expr*)> replaceWith) override { return "undefined"; }
 
 	virtual bool hasFunctionCall() override { return true; }
 

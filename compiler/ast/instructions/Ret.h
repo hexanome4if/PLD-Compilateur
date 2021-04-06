@@ -30,7 +30,9 @@ public:
 
     virtual void calculateExpressions(Context* context) override
     {
-	    string val = expr->getGuessedValue(context);
+	    string val = expr->getGuessedValue(context, [this](Expr* rep){
+	        this->expr = rep;
+	    });
 	    if (val != "undefined")
         {
 	        expr = new ConstExpr(val);

@@ -12,7 +12,7 @@ public:
         expr2->checkUsedSymbols(context);
     }
 
-    virtual string getGuessedValue(Context* context) override { return "undefined"; }
+    virtual string getGuessedValue(Context* context, function<void(Expr*)> replaceWith) override { return "undefined"; }
 
     virtual void computeVarDependencies(VarSymbol* varSymbol, Context* context) override
     {
