@@ -33,6 +33,12 @@ public:
 	antlrcpp::Any visitAffecsimple(ifccParser::AffecsimpleContext *context) override; //ok
 	antlrcpp::Any visitName(ifccParser::NameContext *context) override;								//ok
 	antlrcpp::Any visitExpr(ifccParser::ExprContext *context) override;
+	antlrcpp::Any visitArraydef(ifccParser::ArraydefContext *context) override;			//ok
+	antlrcpp::Any visitArraydefaff(ifccParser::ArraydefaffContext *context) override;	//ok
+	antlrcpp::Any visitArrayaff(ifccParser::ArrayaffContext *context) override; 		//ok
+	antlrcpp::Any visitArrayexpr(ifccParser::ArrayexprContext *context) override;		//TO DO 
+	antlrcpp::Any visitArraycontent(ifccParser::ArraycontentContext *context) override;	//ok
+	antlrcpp::Any visitArrayaccess(ifccParser::ArrayaccessContext *context) override;	//TO DO
 
 	void postAnalysis();
 

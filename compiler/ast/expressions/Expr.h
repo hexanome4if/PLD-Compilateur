@@ -38,6 +38,8 @@ public:
 		OR_BIT,
 		XOR_BIT,
 		AFF,
+		ARRAFF,
+		ARR,
 		FUNC_CALL,
 	} Type;
 
@@ -53,6 +55,7 @@ public:
 
 	// Get
 	Type getExprType() { return exprType; }
+    virtual TypeName getExprSymbolType() { return INT_32; }
 
 private:
 	Type exprType;

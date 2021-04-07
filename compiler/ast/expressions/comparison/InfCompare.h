@@ -30,6 +30,7 @@ public:
 	}
 
 	virtual bool hasFunctionCall() override { return expr1->hasFunctionCall() || expr2->hasFunctionCall(); }
+    virtual TypeName getExprSymbolType() override { return getBiggerType(expr1->getExprSymbolType(), expr2->getExprSymbolType()); }
 
 	// Get
 	Expr *getExpr1() { return expr1; }

@@ -6,7 +6,7 @@
 class VarExpr : public Expr
 {
 public:
-	VarExpr(string v) : Expr(VAR), varName(v) {}
+    VarExpr(TypeName type, string v) : Expr(VAR), varType(type), varName(v) {}
 
 	virtual void debug(ostream &stream, int space) override
 	{
@@ -39,8 +39,12 @@ public:
         }
     }
 
+    // Get
 	string getVarName() { return varName; }
+    TypeName getVarType() { return varType; }
+    virtual TypeName getExprSymbolType() override { return varType; }
 
 private:
 	string varName;
+    TypeName varType;
 };

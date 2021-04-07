@@ -1,25 +1,8 @@
-#include <stdio.h>
-
-int func()
-{
-	int a = 2; // Un autre commentaire
-	// Un commentaire
-	return a;
-}
-
-void f()
-{
-}
-
 int main()
 {
-	int a = 65;
-	int ret = a + 6;
-	f();
-
-	int userInput = getchar();
-
-	putchar(userInput);
-	return 1;
+				int a[4]={5, 4, 2, 6};
+				if (a[3]) {
+								a[0] = a[2];
+				}
+				return a[0];
 }
-

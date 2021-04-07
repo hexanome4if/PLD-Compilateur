@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Translator.h"
+#include "../symbols-management/type.h"
 
 class X86Translator : public Translator
 {
@@ -21,14 +22,22 @@ protected:
 	virtual void genRet(IRInstr *instr) override;
 	virtual void genProlog(IRInstr *instr) override;
 	virtual void genEpilog(IRInstr *instr) override;
+	virtual void genR_Mem_Tab(IRInstr *instr) override;
+	virtual void genW_Mem_Tab(IRInstr *instr) override;
 
 	virtual void genBlock(BasicBlock *bb) override;
 
-	void genComp(IRInstr *instr, string op);
-	string getRegFromParameterIndex(int index);
+	virtual string putSymbolInRegister(string name, vector<string> requiredSymbols, TypeName tn) override;
+	virtual string putSymbolInRegister(string name, TypeName tn, string reg) override;
 
 	virtual string getSymbolAddress(string name) override;
 	virtual string getSymbolMemAddress(string name) override;
 
-	virtual string putSymbolInRegister(string name, vector<string> requiredSymbols) override;
+	void genComp(IRInstr *instr, string op);
+	string getRegFromParameterIndex(int index);
+	string getSuffixe(TypeName tn);
+
+	virtual string getRegisterWithSize(string reg, TypeName tn) override;
+
+		//virtual string putArrayValueInRegister(string name, int index, vector<string> requiredSymbols) override;
 };

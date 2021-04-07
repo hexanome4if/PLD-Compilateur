@@ -17,6 +17,10 @@ public:
 		stream << "charac " << val;
 	}
 
+	// Get
+	string getVal() { return val; }
+	char getChar() { return val[0]; }
+
 private:
 	string val;
 };

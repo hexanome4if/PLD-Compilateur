@@ -37,6 +37,8 @@ public:
         expr->computeVarDependencies(varSymbol, context);
     }
 
+    virtual TypeName getExprSymbolType() override { return expr->getExprSymbolType(); }
+
 	// Get
 	Expr *getExpr() { return expr; }
 

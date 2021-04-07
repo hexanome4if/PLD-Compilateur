@@ -8,7 +8,7 @@ using namespace std;
 class ConstExpr : public Expr
 {
 public:
-	ConstExpr(string v) : Expr(CONST), val(v) {}
+    ConstExpr(string v, TypeName type) : Expr(CONST), constType(type), val(v) {}
 
 	virtual void debug(ostream &stream, int space) override
 	{
@@ -26,7 +26,10 @@ public:
 
 	// Get
 	string getVal() { return val; }
+    TypeName getConstType() { return constType; }
+    virtual TypeName getExprSymbolType() override { return constType; }
 
 private:
 	string val;
+    TypeName constType;
 };

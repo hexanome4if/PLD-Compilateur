@@ -12,7 +12,7 @@ BasicBlock::BasicBlock(CFG *cfg, string entry_label, Context *ctx)
 	label = entry_label;
 }
 
-void BasicBlock ::add_IRInstr(IRInstr::Operation op, string t, vector<string> params)
+void BasicBlock ::add_IRInstr(IRInstr::Operation op, TypeName t, vector<string> params)
 {
 	IRInstr *instr = new IRInstr(this, op, t, params);
 	instrs.push_back(instr);
