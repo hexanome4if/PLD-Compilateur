@@ -116,8 +116,6 @@ int main(int argn, const char **argv)
 		ast->removeUnusedSymbols(symbolTable);
 		ast->calculateExpressions(symbolTable);
 	}
-	ast->removeUnusedSymbols(symbolTable);
-	ast->calculateExpressions(symbolTable);
 
 	if (parameters["ast"])
 	{
