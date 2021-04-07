@@ -2,6 +2,7 @@
 
 #include "../../../ast/expressions/ConstExpr.h"
 #include "../../../ast/expressions/VarExpr.h"
+#include "../../../ast/expressions/Not.h"
 
 class IRGenerator;
 
@@ -14,7 +15,7 @@ public:
 	void genChar();
 	string genConst(ConstExpr *constExpr);
 	string genVar(VarExpr *varExpr);
-	void genNot();
+	string genNot(Not *_not);
 
 private:
 	IRGenerator *generator;

@@ -11,13 +11,26 @@ void f()
 {
 }
 
-int main()
+int test()
 {
-	int a = 65;
-	int ret = func();
+	int a, b, c;
+	b = 3;
+	c = 4;
+	a = b & c;
 
-	int userInput = getchar();
+	//int userInput = getchar();
 
-	putchar(userInput);
-	return 0;
+	//putchar(userInput);
+	return a;
+}
+
+int main () {
+	
+	int a = 1 - 2 + 3;
+
+	if (a == 2){
+		a = 0;
+	}
+
+	return a;
 }

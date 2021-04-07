@@ -86,7 +86,9 @@ int main(int argn, const char **argv)
 	Ast *ast = new Ast();
 	AstVisitor astVisitor(ast, symbolTable);
 	astVisitor.visit(tree);
+	
 	//ast->debug(cout);
+	//cout << "---------------------"<< endl;
 
 	CFG *cfg = new CFG(ast, symbolTable);
 	IRGenerator *irGenerator = new IRGenerator(ast, cfg, symbolTable);

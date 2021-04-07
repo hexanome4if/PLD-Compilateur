@@ -18,3 +18,16 @@ string IRExprGenerator::genVar(VarExpr *varExpr)
 {
 	return varExpr->getVarName();
 }
+
+
+string IRExprGenerator::genNot(Not* _not )
+{
+	string var = generator->genExpr(_not->getExpr());
+
+	vector<string> params;
+	params.push_back(var);
+
+	generator->getCurrentBB()->add_IRInstr(IRInstr::B_NOT, "int32", params);
+
+	return var;
+}

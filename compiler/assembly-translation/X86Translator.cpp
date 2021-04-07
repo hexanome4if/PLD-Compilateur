@@ -129,6 +129,20 @@ void X86Translator::genCompLt(IRInstr *instr)
 	genComp(instr, "setl");
 }
 
+void X86Translator::genAnd(IRInstr *instr)
+{
+	vector<string> params = instr->getParams();
+	string reg1 = putSymbolInRegister(params[1], vector<string>{params[2]});
+
+	o << "  adl " << getSymbolAddress(params[2]) << ", " << reg1 << endl;
+	o << "  movl " << reg1 << ", " << getSymbolMemAddress(params[0]) << endl;
+
+	unsetSymbolFromRegister(params[0]);
+	setSymbolInRegister(params[0], reg1);
+}
+
+
+
 void X86Translator::genCall(IRInstr *instr)
 {
 	vector<string> params = instr->getParams();

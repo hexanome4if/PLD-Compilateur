@@ -29,6 +29,7 @@ public:
 	// Get
 	void setCurrentContext(Context *context) { currentContext = context; }
 	void setCurrentBB(BasicBlock *bb) { currentBB = bb; }
+	IRExprGenerator *getIRExprGenerator() { return exprGenerator; }
 
 private:
 	Ast *ast;

@@ -27,7 +27,11 @@ public:
 		DIV,
 		RET,
 		PROLOG,
-		EPILOG
+		EPILOG,
+		B_AND,
+		B_OR,
+		B_XOR,
+		B_NOT
 	} Operation;
 	/** The instructions themselves -- feel free to subclass instead */
 
