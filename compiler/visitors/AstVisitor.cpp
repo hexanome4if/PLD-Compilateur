@@ -500,17 +500,19 @@ antlrcpp::Any AstVisitor::visitArraydefaff(ifccParser::ArraydefaffContext *conte
 	string arrType = context -> TYPE() -> getText();
 	string arrName = context -> NAME() -> getText();
 	vector<Instr*> arr_aff;
-
+	int i = 0;
+	int arrsize = ((ArrSymbol*)symbolTable->getSymbol(arrName))->getLength();
 	if(context->arraycontent() != nullptr)
 	{
 		vector<Expr*> exprs = visit(context->arraycontent());
 		vector<Expr*>::iterator it;
 		int index = 0;
-		for(it = exprs.begin() ; it!=exprs.end(); ++it)
+		for(it = exprs.begin() ; it!=exprs.end() && i<arrsize ; ++it)
 		{
 			Expr * cur_index = new ConstExpr(to_string(index++), INT_32);
 			Instr* instr = new ArrAff(arrName, cur_index,*it);
 			arr_aff.push_back(instr);
+			i++;
 		}
 	}
 

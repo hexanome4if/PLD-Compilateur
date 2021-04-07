@@ -231,7 +231,7 @@ antlrcpp::Any SymbolVisitor::visitArraydef(ifccParser::ArraydefContext *context)
 	return nullptr;
 }
 
-antlrcpp::Any SymbolVisitor::visitArraydefaff(ifccParser::ArraydefaffContext *context) 
+antlrcpp::Any SymbolVisitor::visitArraydefaff(ifccParser::ArraydefaffContext *context)
 {
 	string arrType = context->TYPE()->getText();
 	string arrName = context->NAME()->getText();
@@ -246,8 +246,8 @@ antlrcpp::Any SymbolVisitor::visitArraydefaff(ifccParser::ArraydefaffContext *co
 	{
 		int arrSize = stoi(context->CONST()->getText());
 		symbolTable->addSymbol(new ArrSymbol(arrName, getSymbolTypeFromString(arrType), arrSize));
-	} 
-	else 
+	}
+	else
 	{
 		if(context->arraycontent() != nullptr)
 		{
@@ -259,11 +259,14 @@ antlrcpp::Any SymbolVisitor::visitArraydefaff(ifccParser::ArraydefaffContext *co
 			symbolTable->addSymbol(new ArrSymbol(arrName, getSymbolTypeFromString(arrType), 0));
 		}
 	}
-	
+
+	ArrSymbol *symbol = (ArrSymbol *)symbolTable->getSymbol(arrName);
+	symbol->initialized();
+
 	return visitChildren(context);
 }
 
-antlrcpp::Any SymbolVisitor::visitArraycontent(ifccParser::ArraycontentContext *context) 
+antlrcpp::Any SymbolVisitor::visitArraycontent(ifccParser::ArraycontentContext *context)
 {
 	return visitChildren(context);
 }

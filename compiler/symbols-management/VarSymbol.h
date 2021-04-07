@@ -100,6 +100,9 @@ public:
 	{
 		this->memoryAddress = memoryAddress + getMemorySize() - getMemorySizeFromType(varType);
 	}
+	int getLength(){
+		return length;
+	}
 
 private:
 	int length;
