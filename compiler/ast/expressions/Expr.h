@@ -1,6 +1,9 @@
 #pragma once
 
 #include <iostream>
+#include <functional>
+#include "../../symbols-management/Context.h"
+#include "../../symbols-management/VarSymbol.h"
 
 using namespace std;
 
@@ -35,6 +38,8 @@ public:
 		OR_BIT,
 		XOR_BIT,
 		AFF,
+		ARRAFF,
+		ARR,
 		FUNC_CALL,
 	} Type;
 
@@ -44,8 +49,13 @@ public:
 
 	virtual bool hasFunctionCall() { return false; }
 
+    virtual void checkUsedSymbols(Context* context) = 0;
+    virtual string getGuessedValue(Context* context, function<void(Expr*)> replaceWith) = 0;
+    virtual void computeVarDependencies(VarSymbol* varSymbol, Context* context) = 0;
+
 	// Get
 	Type getExprType() { return exprType; }
+    virtual TypeName getExprSymbolType() { return INT_32; }
 
 private:
 	Type exprType;

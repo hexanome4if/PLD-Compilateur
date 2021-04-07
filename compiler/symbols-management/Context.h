@@ -25,7 +25,11 @@ public:
 	void reinitRun();
 	void assignMemoryAddresses(int nextAddress);
 
+    void findVariableDependencyCycle();
+
 	int getTotalContextSize();
+
+    void reinitUsedSymbols();
 
 	void debug(ostream &stream, int space);
 	void showSpace(ostream &stream, int space);

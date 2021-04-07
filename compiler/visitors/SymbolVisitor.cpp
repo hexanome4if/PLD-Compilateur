@@ -21,7 +21,12 @@ antlrcpp::Any SymbolVisitor::visitFunc(ifccParser::FuncContext *context)
 		return nullptr;
 	}
 
-	symbolTable->addSymbol(new FuncSymbol(functionName, functionType));
+	FuncSymbol* funcSymbol = new FuncSymbol(functionName, functionType);
+	if (functionName == "main")
+    {
+        funcSymbol->used();
+    }
+	symbolTable->addSymbol(funcSymbol);
 
 	symbolTable->openContext();
 	if (types.size() > 1)
@@ -38,6 +43,7 @@ antlrcpp::Any SymbolVisitor::visitFunc(ifccParser::FuncContext *context)
 				throwError(new VoidCannotBeUsedAsVarTypeError(names[i]->getText(), types[i]));
 				return nullptr;
 			}
+			funcSymbol->addParam(getSymbolTypeFromString(types[i]->getText()), names[i]->getText());
 			symbolTable->addSymbol(new VarSymbol(names[i]->getText(), getSymbolTypeFromString(types[i]->getText())));
 		}
 	}
@@ -205,6 +211,95 @@ antlrcpp::Any SymbolVisitor::visitAffecsimple(ifccParser::AffecsimpleContext *co
 
 	VarSymbol *symbol = (VarSymbol *)symbolTable->getSymbol(varName);
 	symbol->initialized();
+
+	return visitChildren(context);
+}
+
+antlrcpp::Any SymbolVisitor::visitArraydef(ifccParser::ArraydefContext *context)
+{
+	string arrType = context->TYPE()->getText();
+	string arrName = context->NAME()->getText();
+	int arrSize = stoi(context->CONST()->getText());
+
+	if (symbolTable->symbolExists(arrName, VARIABLE))
+	{
+		throwError(new AlreadydeclaredSymbolError(arrName, context->NAME()));
+		return nullptr;
+	}
+	// Add the array in the symbol table
+	symbolTable->addSymbol(new ArrSymbol(arrName, getSymbolTypeFromString(arrType), arrSize));
+	return nullptr;
+}
+
+antlrcpp::Any SymbolVisitor::visitArraydefaff(ifccParser::ArraydefaffContext *context) 
+{
+	string arrType = context->TYPE()->getText();
+	string arrName = context->NAME()->getText();
+
+	if (symbolTable->symbolExists(arrName, VARIABLE))
+	{
+		throwError(new AlreadydeclaredSymbolError(arrName, context->NAME()));
+		return nullptr;
+	}
+
+	if(context->CONST() != nullptr)
+	{
+		int arrSize = stoi(context->CONST()->getText());
+		symbolTable->addSymbol(new ArrSymbol(arrName, getSymbolTypeFromString(arrType), arrSize));
+	} 
+	else 
+	{
+		if(context->arraycontent() != nullptr)
+		{
+			int arrSize = context->arraycontent()->expr().size();
+			symbolTable->addSymbol(new ArrSymbol(arrName, getSymbolTypeFromString(arrType), arrSize));
+		}
+		else
+		{
+			symbolTable->addSymbol(new ArrSymbol(arrName, getSymbolTypeFromString(arrType), 0));
+		}
+	}
+	
+	return visitChildren(context);
+}
+
+antlrcpp::Any SymbolVisitor::visitArraycontent(ifccParser::ArraycontentContext *context) 
+{
+	return visitChildren(context);
+}
+
+antlrcpp::Any SymbolVisitor::visitArrayaff(ifccParser::ArrayaffContext *context)
+{
+	string arrName = context->arrayaccess()->NAME()->getText();
+
+	if (!symbolTable->symbolExists(arrName, VARIABLE))
+	{
+		throwError(new UndeclaredSymbolError(arrName, context->arrayaccess()->NAME()));
+		return nullptr;
+	}
+
+	ArrSymbol *symbol = (ArrSymbol *)symbolTable->getSymbol(arrName);
+	symbol->initialized();
+	return visitChildren(context);
+}
+
+antlrcpp::Any SymbolVisitor::visitArrayexpr(ifccParser::ArrayexprContext *context)
+{
+	return visitChildren(context);
+}
+
+antlrcpp::Any SymbolVisitor::visitArrayaccess(ifccParser::ArrayaccessContext *context)
+{
+	string arrName = context->NAME()->getText();
+
+	if (!symbolTable->symbolExists(arrName, VARIABLE))
+	{
+		throwError(new UndeclaredSymbolError(arrName, context->NAME()));
+		return nullptr;
+	}
+
+	ArrSymbol *symbol = (ArrSymbol *)symbolTable->getSymbol(arrName);
+	symbol->used();
 
 	return visitChildren(context);
 }

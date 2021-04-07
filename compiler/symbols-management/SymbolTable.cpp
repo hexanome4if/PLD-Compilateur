@@ -73,3 +73,13 @@ void SymbolTable::assignMemoryAddresses()
 {
 	rootContext->assignMemoryAddresses(4);
 }
+
+void SymbolTable::reinitUsedSymbols()
+{
+    currentContext->reinitUsedSymbols();
+}
+
+void SymbolTable::findVariableDependencyCycle()
+{
+    currentContext->findVariableDependencyCycle();
+}

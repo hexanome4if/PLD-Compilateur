@@ -22,14 +22,37 @@ public:
 
 	string createTempVar(TypeName type);
 
-	// Set
-	Context *getCurrentContext() { return currentContext; }
-	BasicBlock *getCurrentBB() { return currentBB; }
+	// Get
+	Context *getCurrentContext()
+	{
+		return currentContext;
+	}
+	BasicBlock *getCurrentBB()
+	{
+		return currentBB;
+	}
 
 	// Get
-	void setCurrentContext(Context *context) { currentContext = context; }
-	void setCurrentBB(BasicBlock *bb) { currentBB = bb; }
 	IRExprGenerator *getIRExprGenerator() { return exprGenerator; }
+	Func *getCurrentFunc()
+	{
+		return currentFunc;
+	}
+
+	// Set
+	void setCurrentContext(Context *context)
+	{
+		currentContext = context;
+	}
+	void setCurrentBB(BasicBlock *bb)
+	{
+		currentBB = bb;
+	}
+
+	void setCurrentFunc(Func *func)
+	{
+		currentFunc = func;
+	}
 
 private:
 	Ast *ast;
@@ -37,6 +60,7 @@ private:
 	SymbolTable *symbolTable;
 	BasicBlock *currentBB;
 	Context *currentContext;
+	Func *currentFunc = nullptr;
 
 	IRBlockGenerator *blockGenerator;
 	IRInstrGenerator *instrGenerator;

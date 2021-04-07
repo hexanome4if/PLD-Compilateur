@@ -30,22 +30,46 @@ void standardFunctions(SymbolTable *symbolTable)
 	symbolTable->addSymbol(getChar);
 }
 
+void computeParameters(int argn, const char **argv, stringstream &in, map<string, bool> &parameters)
+{
+	parameters["x86"] = true;
+	parameters["optimization"] = false;
+	parameters["ast"] = false;
+	for (int i = 1; i < argn; ++i)
+	{
+		string val = string(argv[i]);
+		if (val[0] == '-')
+		{
+			if (val == "-O")
+			{
+				parameters["optimization"] = true;
+			}
+			else if (val == "-AST")
+			{
+				parameters["x86"] = false;
+				parameters["ast"] = true;
+			}
+		}
+		else
+		{
+			ifstream lecture(argv[i]);
+			in << lecture.rdbuf();
+		}
+	}
+}
+
 int main(int argn, const char **argv)
 {
+	map<string, bool> parameters;
 	stringstream in;
-	if (argn == 2)
-	{
-		ifstream lecture(argv[1]);
-		in << lecture.rdbuf();
-	}
+
+	computeParameters(argn, argv, in, parameters);
+
 	ANTLRInputStream input(in.str());
 	ifccLexer lexer(&input);
 	CommonTokenStream tokens(&lexer);
 
 	tokens.fill();
-	//  for (auto token : tokens.getTokens()) {
-	//    std::cout << token->toString() << std::endl;
-	//  }
 	if (lexer.getNumberOfSyntaxErrors() > 0)
 		return 1;
 	ifccParser parser(&tokens);
@@ -86,17 +110,28 @@ int main(int argn, const char **argv)
 	Ast *ast = new Ast();
 	AstVisitor astVisitor(ast, symbolTable);
 	astVisitor.visit(tree);
-	
-	//ast->debug(cout);
-	//cout << "---------------------"<< endl;
+
+	if (parameters["optimization"])
+	{
+		ast->removeUnusedSymbols(symbolTable);
+		ast->calculateExpressions(symbolTable);
+	}
+
+	if (parameters["ast"])
+	{
+		ast->debug(cout);
+	}
 
 	CFG *cfg = new CFG(ast, symbolTable);
 	IRGenerator *irGenerator = new IRGenerator(ast, cfg, symbolTable);
 	irGenerator->generate();
-
 	symbolTable->assignMemoryAddresses();
-	X86Translator *translator = new X86Translator(cout, cfg);
-	translator->translate();
+
+	if (parameters["x86"])
+	{
+		X86Translator *translator = new X86Translator(cout, cfg);
+		translator->translate();
+	}
 
 	return 0;
 }

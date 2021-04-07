@@ -62,6 +62,12 @@ void Translator::genInstr(IRInstr *instr)
 	case IRInstr::EPILOG:
 		genEpilog(instr);
 		break;
+	case IRInstr::R_MEM_TAB:
+		genR_Mem_Tab(instr);
+		break;
+	case IRInstr::W_MEM_TAB:
+		genW_Mem_Tab(instr);
+		break;
 	default:
 		break;
 	}
@@ -70,14 +76,14 @@ void Translator::genInstr(IRInstr *instr)
 string Translator::getAvailableRegister(vector<string> requiredSymbols)
 {
 	vector<string> overridableRegisters;
-	map<string, string>::iterator it;
+	map<string, vector<string> *>::iterator it;
 	for (it = registers.begin(); it != registers.end(); ++it)
 	{
-		if (it->second == "")
+		if (it->second == nullptr)
 		{
 			return it->first;
 		}
-		else if (find(requiredSymbols.begin(), requiredSymbols.end(), it->second) == requiredSymbols.end())
+		else if (find(requiredSymbols.begin(), requiredSymbols.end(), it->second->at(0)) == requiredSymbols.end())
 		{
 			overridableRegisters.push_back(it->first);
 		}
@@ -85,12 +91,12 @@ string Translator::getAvailableRegister(vector<string> requiredSymbols)
 	return overridableRegisters[0];
 }
 
-bool Translator::isSymbolInRegister(string name)
+bool Translator::isSymbolInRegister(string name, TypeName tn)
 {
-	map<string, string>::iterator it;
+	map<string, vector<string> *>::iterator it;
 	for (it = registers.begin(); it != registers.end(); ++it)
 	{
-		if (it->second == name)
+		if (it->second != nullptr && it->second->at(0) == name && it->second->at(1) == to_string(tn))
 		{
 			return true;
 		}
@@ -105,19 +111,19 @@ string Translator::getSymbolMemAddress(string name)
 
 void Translator::unsetSymbolFromRegister(string name)
 {
-	map<string, string>::iterator it;
+	map<string, vector<string> *>::iterator it;
 	for (it = registers.begin(); it != registers.end(); ++it)
 	{
-		if (it->second == name)
+		if (it->second != nullptr && it->second->at(0) == name)
 		{
-			registers[it->first] = "";
+			registers[it->first] = nullptr;
 		}
 	}
 }
 
-void Translator::setSymbolInRegister(string symbolName, string reg)
+void Translator::setSymbolInRegister(string symbolName, string reg, TypeName tn)
 {
-	registers[reg] = symbolName;
+	registers[reg] = new vector<string>{symbolName, to_string(tn)};
 }
 
 void Translator::genBlockInstructions(BasicBlock *bb)
@@ -127,5 +133,14 @@ void Translator::genBlockInstructions(BasicBlock *bb)
 	for (int i = 0; i < instrs.size(); ++i)
 	{
 		genInstr(instrs[i]);
+	}
+}
+
+void Translator::clearRegisters()
+{
+	map<string, vector<string> *>::iterator it;
+	for (it = registers.begin(); it != registers.end(); ++it)
+	{
+		registers[it->first] = nullptr;
 	}
 }

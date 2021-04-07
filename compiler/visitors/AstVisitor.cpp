@@ -12,8 +12,10 @@
 #include "../ast/instructions/Ret.h"
 #include "../ast/instructions/Aff.h"
 #include "../ast/instructions/FuncCall.h"
+#include "../ast/instructions/ArrAff.h"
 #include "../ast/expressions/Expr.h"
 #include "../ast/expressions/VarExpr.h"
+#include "../ast/expressions/ArrExpr.h"
 #include "../ast/expressions/ConstExpr.h"
 #include "../ast/expressions/CharExpr.h"
 #include "../ast/expressions/Not.h"
@@ -28,6 +30,7 @@
 #include "../ast/expressions/comparison/SupCompare.h"
 #include "../ast/expressions/logic/LogicalAnd.h"
 #include "../ast/expressions/logic/LogicalOr.h"
+#include <type_traits>
 
 AstVisitor::AstVisitor(Ast *ast, SymbolTable *symbolTable) : BaseVisitor(), ast(ast), symbolTable(symbolTable)
 {
@@ -66,10 +69,6 @@ antlrcpp::Any AstVisitor::visitFunc(ifccParser::FuncContext *context)
 	symbolTable->closeContext();
 
 	Func *func = new Func(getSymbolTypeFromString(functionType), functionName, block);
-	for (int i = 1; i < types.size(); ++i)
-	{
-		func->addParam(names[i]->getText());
-	}
 
 	return (Node *)func;
 }
@@ -86,16 +85,20 @@ antlrcpp::Any AstVisitor::visitBlock(ifccParser::BlockContext *context)
 	for (it = instr.begin(); it != instr.end(); ++it)
 	{
 		auto visited = visit(*it);
+		//cout << "visited: " <<  typeid(visited).name() << endl;
 		if (visited.is<Instr *>())
 		{
+			//cout << "addInstr" << endl;
 			block->addInstr((Instr *)visited);
 		}
 		else if (visited.is<vector<Instr *>>())
 		{
 			vector<Instr *> v_aff = visited.as<vector<Instr *>>();
+			//cout << "addInstr2" << endl;
 			for (int i = 0; i < v_aff.size(); ++i)
 			{
 				block->addInstr(v_aff[i]);
+				//cout << "addInstr3" << endl;
 			}
 		}
 	}
@@ -106,7 +109,6 @@ antlrcpp::Any AstVisitor::visitBlock(ifccParser::BlockContext *context)
 
 antlrcpp::Any AstVisitor::visitInstr(ifccParser::InstrContext *context)
 {
-	//cout << "Instr" << endl;
 	Instr *instr;
 	if (context->funccall())
 	{
@@ -116,13 +118,21 @@ antlrcpp::Any AstVisitor::visitInstr(ifccParser::InstrContext *context)
 	{
 		return visit(context->vardefaff());
 	}
+	else if(context->arraydef())
+	{
+		auto inst = visit(context->arraydef());
+		return inst;
+	}
+	else if(context->arraydefaff())
+	{
+		return visit(context->arraydefaff());
+	}
 	else
 	{
 		instr = visitChildren(context);
 	}
-	// Instr *instr = (Instr *)visitChildren(context);
-	//cout << "End instr" << endl;
 	return instr;
+
 }
 
 antlrcpp::Any AstVisitor::visitWhiledef(ifccParser::WhiledefContext *context)
@@ -166,7 +176,6 @@ antlrcpp::Any AstVisitor::visitFunc_return(ifccParser::Func_returnContext *conte
 
 antlrcpp::Any AstVisitor::visitVardefaff(ifccParser::VardefaffContext *context)
 {
-	// cout << "Var def aff" << endl;
 	string varType = context->TYPE()->getText();
 	string varName = context->NAME()->getText();
 
@@ -174,7 +183,7 @@ antlrcpp::Any AstVisitor::visitVardefaff(ifccParser::VardefaffContext *context)
 	if (context->expr() != nullptr)
 	{
 		Expr *expr = (Expr *)visit(context->expr());
-		Instr *aff = new Aff(varName, expr);
+		Instr *aff = new Aff(varName, expr, getSymbolTypeFromString(varType));
 		v_aff.push_back(aff);
 	}
 	vector<ifccParser::VirgulenameContext *> virgulename = context->virgulename();
@@ -189,7 +198,6 @@ antlrcpp::Any AstVisitor::visitVardefaff(ifccParser::VardefaffContext *context)
 		}
 	}
 
-	// cout << "End var def aff" << endl;
 	return v_aff;
 }
 
@@ -200,7 +208,8 @@ antlrcpp::Any AstVisitor::visitVirgulename(ifccParser::VirgulenameContext *conte
 	if (context->expr() != nullptr)
 	{
 		Expr *expr = (Expr *)visit(context->expr());
-		aff = new Aff(varName, expr);
+		VarSymbol *vs = (VarSymbol *)symbolTable->getSymbol(varName);
+		aff = new Aff(varName, expr, vs->getVarType());
 	}
 	return aff;
 }
@@ -209,14 +218,13 @@ antlrcpp::Any AstVisitor::visitVaraff(ifccParser::VaraffContext *context)
 {
 	string varName = context->NAME()->getText();
 	Expr *expr = (Expr *)visit(context->expr());
-
-	Instr *instr = new Aff(varName, expr);
+	VarSymbol *vs = (VarSymbol *)symbolTable->getSymbol(varName);
+	Instr *instr = new Aff(varName, expr, vs->getVarType());
 	return instr;
 }
 
 antlrcpp::Any AstVisitor::visitFunccall(ifccParser::FunccallContext *context)
 {
-	//cout << "Func call" << endl;
 	string funcName = context->NAME()->getText();
 	FuncCall *fc = new FuncCall(funcName);
 	if (context->expr() != nullptr)
@@ -229,7 +237,6 @@ antlrcpp::Any AstVisitor::visitFunccall(ifccParser::FunccallContext *context)
 			fc->addParam((Expr *)visit(*it));
 		}
 	}
-	//cout << "End func call" << endl;
 	Instr *i = fc;
 	return i;
 }
@@ -241,7 +248,6 @@ antlrcpp::Any AstVisitor::visitVirguleexpr(ifccParser::VirguleexprContext *conte
 
 antlrcpp::Any AstVisitor::visitExpr(ifccParser::ExprContext *context)
 {
-	//cout << "Expr" << endl;
 	vector<antlr4::tree::TerminalNode *> name = context->NAME();
 	ifccParser::ExprsimpleContext *escontext = context->exprsimple();
 	if (name.size() > 0)
@@ -251,10 +257,12 @@ antlrcpp::Any AstVisitor::visitExpr(ifccParser::ExprContext *context)
 		{
 			//cout << "Has escontext" << endl;
 			Expr *expr = (Expr *)visit(escontext);
-			Expr *aff = new Aff(name[name.size() - 1]->getText(), expr);
+			VarSymbol *vs = (VarSymbol *)symbolTable->getSymbol(name[name.size() - 1]->getText());
+			Expr *aff = new Aff(name[name.size() - 1]->getText(), expr, vs->getVarType());
 			for (int i = name.size() - 2; i >= 0; --i)
 			{
-				aff = new Aff(name[i]->getText(), aff);
+				vs = (VarSymbol *)symbolTable->getSymbol(name[i]->getText());
+				aff = new Aff(name[i]->getText(), aff, vs->getVarType());
 			}
 			return aff;
 		}
@@ -262,15 +270,18 @@ antlrcpp::Any AstVisitor::visitExpr(ifccParser::ExprContext *context)
 		{
 			if (name.size() == 1)
 			{
-				Expr *expr = new VarExpr(name[name.size() - 1]->getText());
+			    VarSymbol* vs = (VarSymbol*)symbolTable->getSymbol(name[name.size() - 1]->getText());
+				Expr *expr = new VarExpr(vs->getVarType(), name[name.size() - 1]->getText());
 				return expr;
 			}
 			else
 			{
-				Expr *aff = new Aff(name[name.size() - 2]->getText(), new VarExpr(name[name.size() - 1]->getText()));
+				VarSymbol *vs = (VarSymbol *)symbolTable->getSymbol(name[name.size() - 2]->getText());
+				Expr *aff = new Aff(name[name.size() - 2]->getText(), new VarExpr(vs->getVarType(), name[name.size() - 1]->getText()), vs->getVarType());
 				for (int i = name.size() - 3; i >= 0; --i)
 				{
-					aff = new Aff(name[i]->getText(), aff);
+					vs = (VarSymbol *)symbolTable->getSymbol(name[i]->getText());
+					aff = new Aff(name[i]->getText(), aff, vs->getVarType());
 				}
 				return aff;
 			}
@@ -291,14 +302,15 @@ antlrcpp::Any AstVisitor::visitPar(ifccParser::ParContext *context)
 antlrcpp::Any AstVisitor::visitConst(ifccParser::ConstContext *context)
 {
 	string value = context->CONST()->getText();
-	Expr *constExpr = new ConstExpr(value);
+	Expr *constExpr = new ConstExpr(value, INT_32);
 	return constExpr;
 }
 
 antlrcpp::Any AstVisitor::visitName(ifccParser::NameContext *context)
 {
 	string varName = context->NAME()->getText();
-	Expr *expr = new VarExpr(varName);
+	VarSymbol* vs = (VarSymbol*)symbolTable->getSymbol(varName);
+	Expr *expr = new VarExpr(vs->getVarType(), varName);
 	return expr;
 }
 
@@ -325,7 +337,8 @@ antlrcpp::Any AstVisitor::visitAffecsimple(ifccParser::AffecsimpleContext *conte
 {
 	string varName = context->NAME()->getText();
 	Expr *expr = (Expr *)visit(context->exprsimple());
-	Expr *aff = new Aff(varName, expr);
+	VarSymbol *vs = (VarSymbol *)symbolTable->getSymbol(varName);
+	Expr *aff = new Aff(varName, expr, vs->getVarType());
 	return aff;
 }
 
@@ -465,6 +478,69 @@ antlrcpp::Any AstVisitor::visitNot(ifccParser::NotContext *context)
 	Expr *expr = (Expr *)visit(context->exprsimple());
 	Expr *up = new Not(expr);
 	return up;
+}
+
+/* Visit Array */
+antlrcpp::Any AstVisitor::visitArraydef(ifccParser::ArraydefContext *context)
+{
+	return nullptr;
+}
+
+antlrcpp::Any AstVisitor::visitArrayaff(ifccParser::ArrayaffContext *context)
+{
+	string arrName = context -> arrayaccess() -> NAME() -> getText();
+	Expr* expr = (Expr*) visit(context->expr());
+	Expr* index = (Expr*) visit(context->arrayaccess());
+	Instr* instr = new ArrAff(arrName, index, expr);
+	return instr;
+}
+
+antlrcpp::Any AstVisitor::visitArraydefaff(ifccParser::ArraydefaffContext *context)
+{
+	string arrType = context -> TYPE() -> getText();
+	string arrName = context -> NAME() -> getText();
+	vector<Instr*> arr_aff;
+
+	if(context->arraycontent() != nullptr)
+	{
+		vector<Expr*> exprs = visit(context->arraycontent());
+		vector<Expr*>::iterator it;
+		int index = 0;
+		for(it = exprs.begin() ; it!=exprs.end(); ++it)
+		{
+			Expr * cur_index = new ConstExpr(to_string(index++), INT_32);
+			Instr* instr = new ArrAff(arrName, cur_index,*it);
+			arr_aff.push_back(instr);
+		}
+	}
+
+	return arr_aff;
+}
+
+antlrcpp::Any AstVisitor::visitArraycontent(ifccParser::ArraycontentContext *context)
+{
+	vector<Expr*> exprs;
+	vector<ifccParser::ExprContext*> expr = context->expr();
+	vector<ifccParser::ExprContext*>::iterator it;
+	for(it = expr.begin(); it != expr.end(); ++it)
+	{
+		auto visited = visit(*it);
+		exprs.push_back((Expr*) visited);
+	}
+	return exprs;
+}
+
+antlrcpp::Any AstVisitor::visitArrayaccess(ifccParser::ArrayaccessContext *context)
+{
+	return visit(context->expr());
+}
+
+antlrcpp::Any AstVisitor::visitArrayexpr(ifccParser::ArrayexprContext *context) {
+	string name = context->arrayaccess()->NAME()->getText();
+	VarSymbol* varSymbol = (VarSymbol*)symbolTable->getSymbol(name);
+	Expr* index = (Expr*) visit(context->arrayaccess());
+	Expr* arrExpr = new ArrExpr(name, index, varSymbol->getVarType());
+	return arrExpr;
 }
 
 int AstVisitor::getReturnCode()

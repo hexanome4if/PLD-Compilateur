@@ -22,7 +22,9 @@ public:
 
 	virtual int getMemorySize() { return 0; }
 
-private:
+    virtual void reinitUsedSymbols() = 0;
+
+protected:
 	SymbolType symbolType;
 	string name;
 };
