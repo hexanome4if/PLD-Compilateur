@@ -121,12 +121,10 @@ int main(int argn, const char **argv)
 	{
 		ast->debug(cout);
 	}
-
 	CFG *cfg = new CFG(ast, symbolTable);
 	IRGenerator *irGenerator = new IRGenerator(ast, cfg, symbolTable);
 	irGenerator->generate();
 	symbolTable->assignMemoryAddresses();
-
 	if (parameters["x86"])
 	{
 		X86Translator *translator = new X86Translator(cout, cfg);

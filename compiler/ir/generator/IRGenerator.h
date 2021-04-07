@@ -7,6 +7,7 @@
 #include "IRInstrGenerator.h"
 #include "expressions/IRExprGenerator.h"
 #include "expressions/IROperatorGenerator.h"
+#include "expressions/IRCompGenerator.h"
 
 class IRGenerator
 {
@@ -66,4 +67,5 @@ private:
 	IRInstrGenerator *instrGenerator;
 	IRExprGenerator *exprGenerator;
 	IROperatorGenerator *operatorGenerator;
+	IRCompGenerator *compGenerator;
 };

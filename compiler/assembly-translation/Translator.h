@@ -37,6 +37,9 @@ protected:
 	virtual void genEpilog(IRInstr *instr) = 0;
 	virtual void genR_Mem_Tab(IRInstr *instr) = 0;
 	virtual void genW_Mem_Tab(IRInstr *instr) = 0;
+	virtual void genAnd(IRInstr *instr) = 0;
+	virtual void genOr(IRInstr *instr) = 0;
+	virtual void genXor(IRInstr *instr) = 0;
 
 	virtual void genBlock(BasicBlock *bb) = 0;
 	virtual void genBlockInstructions(BasicBlock *bb);
