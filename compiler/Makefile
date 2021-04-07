@@ -1,6 +1,16 @@
 OUTPUT=output
 GENERATED=antlr4-generated
-SYMBOL_TABLE=symbol-table
+
+ASSEMBLY_TRANS=assembly-translation/*.cpp
+AST=ast/*.cpp
+IR=ir/*.cpp
+IR_GEN=ir/generator/*.cpp
+IR_GEN_EXPR=ir/generator/expressions/*.cpp
+SYMBOLS_MANAGEMENT=symbols-management/*.cpp
+VISITORS=visitors/*.cpp
+ANTLR4_CPP=antlr4-generated/*.cpp
+ROOT=./*.cpp
+
 GRAMMAR=ifcc.g4
 
 #override with your local installation
@@ -12,26 +22,27 @@ CC=clang++
 CCARGS=-g -c -I $(ANTLR4_INCDIR) -I $(GENERATED) -std=c++11 -Wno-defaulted-function-deleted -Wno-unknown-warning-option
 LDARGS=-g
 
+TARGET = ifcc
+
+DEPS = $(ANTLR4_CPP) $(ASSEMBLY_TRANS) $(AST) $(IR) $(IR_GEN) $(IR_GEN_EXPR) $(SYMBOLS_MANAGEMENT) $(VISITORS) $(ROOT)
+
 all: ifcc
 
-ifcc: dirs antlr  main.cpp visitor.cpp visitor.h
-	$(CC) $(CCARGS) main.cpp  -o $(OUTPUT)/main.o 
-	$(CC) $(CCARGS) $(GENERATED)/ifccBaseVisitor.cpp -o $(OUTPUT)/ifccBaseVisitor.o 
-	$(CC) $(CCARGS) $(GENERATED)/ifccLexer.cpp -o $(OUTPUT)/ifccLexer.o 
-	$(CC) $(CCARGS) $(GENERATED)/ifccVisitor.cpp -o $(OUTPUT)/ifccVisitor.o 
-	$(CC) $(CCARGS) $(GENERATED)/ifccParser.cpp -o $(OUTPUT)/ifccParser.o
-	$(CC) $(CCARGS) $(SYMBOL_TABLE)/Symbol.cpp -o $(OUTPUT)/Symbol.o
-	$(CC) $(CCARGS) $(SYMBOL_TABLE)/Context.cpp -o $(OUTPUT)/Context.o
-	$(CC) $(CCARGS) $(SYMBOL_TABLE)/SymbolTable.cpp -o $(OUTPUT)/SymbolTable.o
-	$(CC) $(CCARGS) visitor.cpp -o $(OUTPUT)/visitor.o 
-	$(CC) $(LDARGS) $(OUTPUT)/main.o $(OUTPUT)/Symbol.o $(OUTPUT)/Context.o $(OUTPUT)/SymbolTable.o $(OUTPUT)/ifccBaseVisitor.o $(OUTPUT)/ifccLexer.o $(OUTPUT)/ifccVisitor.o $(OUTPUT)/ifccParser.o $(OUTPUT)/visitor.o $(ANTLR4_LIBDIR)/libantlr4-runtime.a -o ifcc
+ifcc: dirs antlr compile edl
+
+edl:
+	$(CC) $(LDARGS) -o $(TARGET) $(OUTPUT)/*.o $(ANTLR4_LIBDIR)/libantlr4-runtime.a
+
+compile:
+	-$(CC) $(CCARGS) $(DEPS)
+	mv *.o $(OUTPUT)
 
 antlr: $(GRAMMAR)
 	$(ANTLR4_BINDIR)/antlr4 -visitor -no-listener -Dlanguage=Cpp -o $(GENERATED) $(GRAMMAR)
 
 dirs:
-	mkdir -p $(OUTPUT) 
-	mkdir -p $(GENERATED) 
+	mkdir -p $(OUTPUT)
+	mkdir -p $(GENERATED)
 
 clean:
 	rm -rf $(OUTPUT)

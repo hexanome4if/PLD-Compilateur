@@ -1,8 +1,8 @@
-#include <inttypes.h>
-
 int main()
 {
-				int a = 40;
-				int b = -a;
-				return b;
+				int a[4]={5, 4, 2, 6};
+				if (a[3]) {
+								a[0] = a[2];
+				}
+				return a[0];
 }
