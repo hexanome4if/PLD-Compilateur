@@ -7,55 +7,65 @@
 #include "IRInstrGenerator.h"
 #include "expressions/IRExprGenerator.h"
 #include "expressions/IROperatorGenerator.h"
+#include "expressions/IRCompGenerator.h"
 
 class IRGenerator
 {
 public:
-IRGenerator(Ast *ast, CFG *cfg, SymbolTable *symbolTable);
+	IRGenerator(Ast *ast, CFG *cfg, SymbolTable *symbolTable);
 
-void generate();
+	void generate();
 
-void genNode(Node *node);
-void genBlock(Block *block);
-void genInstruction(Instr *instr);
-string genExpr(Expr *expr);
+	void genNode(Node *node);
+	void genBlock(Block *block);
+	void genInstruction(Instr *instr);
+	string genExpr(Expr *expr);
 
-string createTempVar(TypeName type);
+	string createTempVar(TypeName type);
 
-// Get
-Context *getCurrentContext() {
-				return currentContext;
-}
-BasicBlock *getCurrentBB() {
-				return currentBB;
-}
+	// Get
+	Context *getCurrentContext()
+	{
+		return currentContext;
+	}
+	BasicBlock *getCurrentBB()
+	{
+		return currentBB;
+	}
 
-Func *getCurrentFunc() {
-				return currentFunc;
-}
+	// Get
+	IRExprGenerator *getIRExprGenerator() { return exprGenerator; }
+	Func *getCurrentFunc()
+	{
+		return currentFunc;
+	}
 
-// Set
-void setCurrentContext(Context *context) {
-				currentContext = context;
-}
-void setCurrentBB(BasicBlock *bb) {
-				currentBB = bb;
-}
+	// Set
+	void setCurrentContext(Context *context)
+	{
+		currentContext = context;
+	}
+	void setCurrentBB(BasicBlock *bb)
+	{
+		currentBB = bb;
+	}
 
-void setCurrentFunc(Func *func) {
-				currentFunc = func;
-}
+	void setCurrentFunc(Func *func)
+	{
+		currentFunc = func;
+	}
 
 private:
-Ast *ast;
-CFG *cfg;
-SymbolTable *symbolTable;
-BasicBlock *currentBB;
-Context *currentContext;
-Func* currentFunc = nullptr;
+	Ast *ast;
+	CFG *cfg;
+	SymbolTable *symbolTable;
+	BasicBlock *currentBB;
+	Context *currentContext;
+	Func *currentFunc = nullptr;
 
-IRBlockGenerator *blockGenerator;
-IRInstrGenerator *instrGenerator;
-IRExprGenerator *exprGenerator;
-IROperatorGenerator *operatorGenerator;
+	IRBlockGenerator *blockGenerator;
+	IRInstrGenerator *instrGenerator;
+	IRExprGenerator *exprGenerator;
+	IROperatorGenerator *operatorGenerator;
+	IRCompGenerator *compGenerator;
 };

@@ -8,6 +8,7 @@ IRGenerator::IRGenerator(Ast *ast, CFG *cfg, SymbolTable *symbolTable) : ast(ast
 
 	exprGenerator = new IRExprGenerator(this);
 	operatorGenerator = new IROperatorGenerator(this);
+	compGenerator = new IRCompGenerator(this);
 }
 
 void IRGenerator::generate()
@@ -67,7 +68,7 @@ void IRGenerator::genInstruction(Instr *instruction)
 		blockGenerator->genIf((If *)instruction);
 		break;
 	case Instr::ARRAFF:
-		instrGenerator->genArrAff((ArrAff*) instruction);
+		instrGenerator->genArrAff((ArrAff *)instruction);
 		break;
 	}
 }
@@ -82,8 +83,8 @@ string IRGenerator::genExpr(Expr *expr)
 		return operatorGenerator->genBin((BinOp *)expr);
 	case Expr::Type::CONST:
 		return exprGenerator->genConst((ConstExpr *)expr);
-    case Expr::Type::CHAR:
-        return exprGenerator->genChar((CharExpr *)expr);
+	case Expr::Type::CHAR:
+		return exprGenerator->genChar((CharExpr *)expr);
 	case Expr::Type::FUNC_CALL:
 		return instrGenerator->genFuncCall((FuncCall *)expr);
 	case Expr::Type::VAR:
@@ -91,7 +92,15 @@ string IRGenerator::genExpr(Expr *expr)
 	case Expr::Type::UN_OP:
 		return operatorGenerator->genUn((UnOp *)expr);
 	case Expr::Type::ARRAFF:
-		return exprGenerator -> genArrExpr((ArrExpr*)expr);
+		return exprGenerator->genArrExpr((ArrExpr *)expr);
+	case Expr::Type::EQ_COMP:
+		return compGenerator->genEqual((EqualCompare *)expr);
+	case Expr::Type::INF_COMP:
+		return compGenerator->genInf((InfCompare *)expr);
+	case Expr::Type::NEQ_COMP:
+		return compGenerator->genNotEqual((NotEqualCompare *)expr);
+	case Expr::Type::SUP_COMP:
+		return compGenerator->genSup((SupCompare *)expr);
 	}
 	return "";
 }

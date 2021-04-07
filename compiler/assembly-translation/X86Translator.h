@@ -18,6 +18,10 @@ protected:
 	virtual void genCompEq(IRInstr *instr) override;
 	virtual void genCompLe(IRInstr *instr) override;
 	virtual void genCompLt(IRInstr *instr) override;
+	virtual void genAnd(IRInstr *instr) override;
+	virtual void genOr(IRInstr *instr) override;
+	virtual void genXor(IRInstr *instr) override;
+	
 	virtual void genCall(IRInstr *instr) override;
 	virtual void genRet(IRInstr *instr) override;
 	virtual void genProlog(IRInstr *instr) override;
