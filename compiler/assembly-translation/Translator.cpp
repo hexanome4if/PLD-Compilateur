@@ -50,6 +50,18 @@ void Translator::genInstr(IRInstr *instr)
 	case IRInstr::CMP_LT:
 		genCompLt(instr);
 		break;
+	case IRInstr::B_AND:
+		genAnd(instr);
+		break;
+	case IRInstr::B_OR:
+		genOr(instr);
+		break;
+	case IRInstr::B_XOR:
+		genXor(instr);
+		break;
+	case IRInstr::B_NOT:
+		genNot(instr);
+		break;
 	case IRInstr::CALL:
 		genCall(instr);
 		break;

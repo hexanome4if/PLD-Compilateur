@@ -134,14 +134,49 @@ void X86Translator::genAnd(IRInstr *instr)
 	vector<string> params = instr->getParams();
 	string reg1 = putSymbolInRegister(params[1], vector<string>{params[2]});
 
-	o << "  adl " << getSymbolAddress(params[2]) << ", " << reg1 << endl;
+	o << "  andl " << getSymbolAddress(params[2]) << ", " << reg1 << endl;
 	o << "  movl " << reg1 << ", " << getSymbolMemAddress(params[0]) << endl;
 
 	unsetSymbolFromRegister(params[0]);
 	setSymbolInRegister(params[0], reg1);
 }
 
+void X86Translator::genOr(IRInstr *instr)
+{
+	vector<string> params = instr->getParams();
+	string reg1 = putSymbolInRegister(params[1], vector<string>{params[2]});
 
+	o << "  orl " << getSymbolAddress(params[2]) << ", " << reg1 << endl;
+	o << "  movl " << reg1 << ", " << getSymbolMemAddress(params[0]) << endl;
+
+	unsetSymbolFromRegister(params[0]);
+	setSymbolInRegister(params[0], reg1);
+}
+
+void X86Translator::genXor(IRInstr *instr)
+{
+	vector<string> params = instr->getParams();
+	string reg1 = putSymbolInRegister(params[1], vector<string>{params[2]});
+
+	o << "  xorl " << getSymbolAddress(params[2]) << ", " << reg1 << endl;
+	o << "  movl " << reg1 << ", " << getSymbolMemAddress(params[0]) << endl;
+
+	unsetSymbolFromRegister(params[0]);
+	setSymbolInRegister(params[0], reg1);
+}
+
+void X86Translator::genNot(IRInstr *instr)
+{
+	vector<string> params = instr->getParams();
+
+	o << "  cmpl $0, " << getSymbolAddress(params[1]) << endl;
+	o << "  sete %al" << endl;
+	o << "  movzbl %al, %eax" << endl;
+	o << "  movl %eax, " << getSymbolMemAddress(params[0]) << endl;
+
+	unsetSymbolFromRegister(params[0]);
+	setSymbolInRegister(params[0], "%eax");
+}
 
 void X86Translator::genCall(IRInstr *instr)
 {

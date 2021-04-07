@@ -20,6 +20,7 @@ protected:
 	virtual void genAnd(IRInstr *instr) override;
 	virtual void genOr(IRInstr *instr) override;
 	virtual void genXor(IRInstr *instr) override;
+	virtual void genNot(IRInstr *instr) override;
 	
 	virtual void genCall(IRInstr *instr) override;
 	virtual void genRet(IRInstr *instr) override;

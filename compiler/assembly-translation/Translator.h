@@ -30,6 +30,12 @@ protected:
 	virtual void genCompEq(IRInstr *instr) = 0;
 	virtual void genCompLe(IRInstr *instr) = 0;
 	virtual void genCompLt(IRInstr *instr) = 0;
+
+	virtual void genAnd(IRInstr *instr) = 0;
+	virtual void genOr(IRInstr *instr) = 0;
+	virtual void genXor(IRInstr *instr) = 0;
+	virtual void genNot(IRInstr *instr) = 0;
+
 	virtual void genCall(IRInstr *instr) = 0;
 	virtual void genRet(IRInstr *instr) = 0;
 	virtual void genProlog(IRInstr *instr) = 0;
