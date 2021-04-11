@@ -242,6 +242,9 @@ tab[0] = 12;
 return tab[0];
 ```
 
+Cette exemple ne retourne pas **12** contrairement à ce que l'on s'attend.
+Ceci est dû à une conversion de type qui n'est pas bien gérée au niveau de la traduction en Assembleur x86.
+
 - L'accès à la dernière case du tableau quand la taille n'a pas été fournie explicitement. On soupçonne qu'on alloue une case mémoire en moins.
 
 ```c
@@ -262,9 +265,6 @@ return tab[4];
 int a[10] = {1,2,3,4} ;
 return a[6];
 ```
-
-Cette exemple ne retourne pas **12** contrairement à ce que l'on s'attend.
-Ceci est dû à une conversion de type qui n'est pas bien gérée au niveau de la traduction en Assembleur x86.
 
 ### Utilisation des fonctions standard **putchar** et **getchar**
 
