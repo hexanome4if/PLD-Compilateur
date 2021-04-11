@@ -17,15 +17,15 @@ antlrcpp::Any SymbolVisitor::visitFunc(ifccParser::FuncContext *context)
 
 	if (symbolTable->symbolExists(functionName, FUNCTION))
 	{
-		throwError(new AlreadydeclaredSymbolError(functionName, names[0]));
+		throwError(new AlreadyDeclaredSymbolError(functionName, names[0]));
 		return nullptr;
 	}
 
-	FuncSymbol* funcSymbol = new FuncSymbol(functionName, functionType);
+	FuncSymbol *funcSymbol = new FuncSymbol(functionName, functionType);
 	if (functionName == "main")
-    {
-        funcSymbol->used();
-    }
+	{
+		funcSymbol->used();
+	}
 	symbolTable->addSymbol(funcSymbol);
 
 	symbolTable->openContext();
@@ -35,7 +35,7 @@ antlrcpp::Any SymbolVisitor::visitFunc(ifccParser::FuncContext *context)
 		{
 			if (symbolTable->symbolExists(names[i]->getText(), VARIABLE))
 			{
-				throwError(new AlreadydeclaredSymbolError(names[i]->getText(), names[i]));
+				throwError(new AlreadyDeclaredSymbolError(names[i]->getText(), names[i]));
 				return nullptr;
 			}
 			if (types[i]->getText() == "void")
@@ -98,7 +98,7 @@ antlrcpp::Any SymbolVisitor::visitVardefaff(ifccParser::VardefaffContext *contex
 
 	if (symbolTable->symbolExists(varName, VARIABLE))
 	{
-		throwError(new AlreadydeclaredSymbolError(varName, context->NAME()));
+		throwError(new AlreadyDeclaredSymbolError(varName, context->NAME()));
 		return nullptr;
 	}
 	if (varType == "void")
@@ -117,7 +117,7 @@ antlrcpp::Any SymbolVisitor::visitVardefaff(ifccParser::VardefaffContext *contex
 
 		if (symbolTable->symbolExists(varname, VARIABLE))
 		{
-			throwError(new AlreadydeclaredSymbolError(varName, (*it)->NAME()));
+			throwError(new AlreadyDeclaredSymbolError(varName, (*it)->NAME()));
 			return nullptr;
 		}
 
@@ -156,7 +156,7 @@ antlrcpp::Any SymbolVisitor::visitFunccall(ifccParser::FunccallContext *context)
 
 	if (!symbolTable->symbolExists(funcName, FUNCTION))
 	{
-		throwError(new AlreadydeclaredSymbolError(funcName, context->NAME()));
+		throwError(new AlreadyDeclaredSymbolError(funcName, context->NAME()));
 		return nullptr;
 	}
 
@@ -223,7 +223,7 @@ antlrcpp::Any SymbolVisitor::visitArraydef(ifccParser::ArraydefContext *context)
 
 	if (symbolTable->symbolExists(arrName, VARIABLE))
 	{
-		throwError(new AlreadydeclaredSymbolError(arrName, context->NAME()));
+		throwError(new AlreadyDeclaredSymbolError(arrName, context->NAME()));
 		return nullptr;
 	}
 	// Add the array in the symbol table
@@ -238,18 +238,18 @@ antlrcpp::Any SymbolVisitor::visitArraydefaff(ifccParser::ArraydefaffContext *co
 
 	if (symbolTable->symbolExists(arrName, VARIABLE))
 	{
-		throwError(new AlreadydeclaredSymbolError(arrName, context->NAME()));
+		throwError(new AlreadyDeclaredSymbolError(arrName, context->NAME()));
 		return nullptr;
 	}
 
-	if(context->CONST() != nullptr)
+	if (context->CONST() != nullptr)
 	{
 		int arrSize = stoi(context->CONST()->getText());
 		symbolTable->addSymbol(new ArrSymbol(arrName, getSymbolTypeFromString(arrType), arrSize));
 	}
 	else
 	{
-		if(context->arraycontent() != nullptr)
+		if (context->arraycontent() != nullptr)
 		{
 			int arrSize = context->arraycontent()->expr().size();
 			symbolTable->addSymbol(new ArrSymbol(arrName, getSymbolTypeFromString(arrType), arrSize));

@@ -3,7 +3,7 @@
 #include "antlr4-runtime.h"
 #include "../antlr4-generated/ifccBaseVisitor.h"
 
-#include "../error-management/error-manager.h"
+#include "../error-management/ErrorManager.h"
 
 class BaseVisitor : public ifccBaseVisitor
 {

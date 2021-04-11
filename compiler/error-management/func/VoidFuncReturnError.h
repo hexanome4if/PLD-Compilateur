@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../abstract-error.h"
+#include "../AbstractError.h"
 
 class VoidFuncReturnError : public AbstractError
 {

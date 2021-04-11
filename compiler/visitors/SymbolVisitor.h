@@ -5,11 +5,10 @@
 #include "antlr4-runtime.h"
 #include "../antlr4-generated/ifccBaseVisitor.h"
 #include "../symbols-management/SymbolTable.h"
-#include "../error-management/error-manager.h"
-#include "../error-management/symbol/alreadydeclared-symbol-error.h"
-#include "../error-management/symbol/undeclared-symbol-error.h"
-#include "../error-management/symbol/undefined-symbol-warn.h"
-#include "../error-management/symbol/unused-symbol-warn.h"
+#include "../error-management/symbol/AlreadyDeclaredSymbolError.h"
+#include "../error-management/symbol/UndeclaredSymbolError.h"
+#include "../error-management/symbol/UndefinedSymbolWarn.h"
+#include "../error-management/symbol/UnusedSymbolWarn.h"
 #include "../ast/Ast.h"
 #include "BaseVisitor.h"
 
@@ -33,12 +32,12 @@ public:
 	antlrcpp::Any visitAffecsimple(ifccParser::AffecsimpleContext *context) override; //ok
 	antlrcpp::Any visitName(ifccParser::NameContext *context) override;								//ok
 	antlrcpp::Any visitExpr(ifccParser::ExprContext *context) override;
-	antlrcpp::Any visitArraydef(ifccParser::ArraydefContext *context) override;			//ok
-	antlrcpp::Any visitArraydefaff(ifccParser::ArraydefaffContext *context) override;	//ok
-	antlrcpp::Any visitArrayaff(ifccParser::ArrayaffContext *context) override; 		//ok
-	antlrcpp::Any visitArrayexpr(ifccParser::ArrayexprContext *context) override;		//TO DO 
-	antlrcpp::Any visitArraycontent(ifccParser::ArraycontentContext *context) override;	//ok
-	antlrcpp::Any visitArrayaccess(ifccParser::ArrayaccessContext *context) override;	//TO DO
+	antlrcpp::Any visitArraydef(ifccParser::ArraydefContext *context) override;					//ok
+	antlrcpp::Any visitArraydefaff(ifccParser::ArraydefaffContext *context) override;		//ok
+	antlrcpp::Any visitArrayaff(ifccParser::ArrayaffContext *context) override;					//ok
+	antlrcpp::Any visitArrayexpr(ifccParser::ArrayexprContext *context) override;				//TO DO
+	antlrcpp::Any visitArraycontent(ifccParser::ArraycontentContext *context) override; //ok
+	antlrcpp::Any visitArrayaccess(ifccParser::ArrayaccessContext *context) override;		//TO DO
 
 	void postAnalysis();
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "symbol-error.h"
+#include "SymbolError.h"
 
 class VoidCannotBeUsedAsVarTypeError : public SymbolError
 {
