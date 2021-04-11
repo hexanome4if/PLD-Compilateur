@@ -242,6 +242,27 @@ tab[0] = 12;
 return tab[0];
 ```
 
+- L'accès à la dernière case du tableau quand la taille n'a pas été fournie explicitement. On soupçonne qu'on alloue une case mémoire en moins.
+
+```c
+int tab[]={1,2,3,4,5,6};
+
+return tab[5];
+```
+- Ceci n'est pas véritablement un bug mais plutôt un comportement normal qu'on juste pas bien cadré par manque de temps. Quand on "tronque" le tableau et que l'on tente d'accéder au contenu des cases qui n'ont pas été gardées, on a des résultats que l'on ne contrôle pas et notre compilateur ne lève pas de warning.
+
+```c
+int tab[3]={1,2,3,4,5,6};
+return tab[4];
+```
+
+- Pareil quand le tableau n'est pas tronqué mais que, au contraire, la définition explicite n'intialise pas toutes les cases, GCC remplit par des zéros mais notre compilateur n'implémente pas de convention similaire et ce comportement n'est pas bien géré.
+
+```c
+int a[10] = {1,2,3,4} ;
+return a[6];
+```
+
 Cette exemple ne retourne pas **12** contrairement à ce que l'on s'attend.
 Ceci est dû à une conversion de type qui n'est pas bien gérée au niveau de la traduction en Assembleur x86.
 
