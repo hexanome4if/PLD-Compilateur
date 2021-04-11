@@ -256,6 +256,7 @@ return tab[5];
 
 ```c
 int tab[3]={1,2,3,4,5,6};
+
 return tab[4];
 ```
 
@@ -263,7 +264,16 @@ return tab[4];
 
 ```c
 int a[10] = {1,2,3,4} ;
+
 return a[6];
+```
+Les cases mémoires sont bien allouées et on peut les lire et écrire dessus, c'est juste qu'on a pas mis en place de logique pour l'initialisation. Par exemple, ce programme fonctionne très bien.
+
+```c
+int a[10000];
+a[6789] = 6;
+a[9876] = a[6789];
+return a[9876];
 ```
 
 ### Utilisation des fonctions standard **putchar** et **getchar**
