@@ -4,6 +4,14 @@
 
 Certaines fonctionnalités n'ont pas été testées de manière exhaustive et peuvent donc présenter des bugs.
 
+## Accès rapide
+
+- [Documentation utilisateur](#documentation-utilisateur)
+- [Fonctionnalités implémentées et choix d'implémentation](#fonctionnalités-implémentées-et-choix-dimplémentation)
+- [Documentation développeur](#documentation-développeur)
+- [Gestion de projet](#gestion-de-projet)
+- [Intégration continue](#intégration-continue)
+
 ## Documentation utilisateur
 
 ### Utilisation basique
